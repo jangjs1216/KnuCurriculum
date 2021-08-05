@@ -2,11 +2,14 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.BufferedReader;
@@ -17,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
 
+    /*
+    [ 2021-08-06 장준승 Fragment 추가 ]
+     */
+    BottomNavigationView bottomNavigationView;
+
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
 
@@ -24,6 +32,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bottomNavigationView = findViewById(R.id.bottomNavi);
+
+        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId()){
+                    case R.id.item_fragment1:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment1()).commit();
+                        break;
+                    case R.id.item_fragment2:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment2()).commit();
+                        break;
+                    case R.id.item_fragment3:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment3()).commit();
+                        break;
+                    case R.id.item_fragment4:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment4()).commit();
+                        break;
+                }
+                return true;
+            }
+        });
 
         mFirebaseAuth=FirebaseAuth.getInstance();
 

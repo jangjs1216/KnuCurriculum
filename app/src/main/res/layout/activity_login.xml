@@ -14,6 +14,7 @@
         android:ems="10"
         android:hint="이메일을 입력하세요"
         android:inputType="textEmailAddress"
+        android:text="jangjs@naver.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,6 +26,7 @@
         android:layout_marginTop="100dp"
         android:ems="10"
         android:hint="비밀번호를 입력하세요"
+        android:text="abcd1234"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
