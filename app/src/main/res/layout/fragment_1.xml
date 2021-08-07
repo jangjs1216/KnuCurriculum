@@ -1,14 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragment1">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/layout_userInfo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="메인화면입니다." />
+        android:layout_height="100dp"
+        android:orientation="horizontal">
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/layout_userProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_userName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="안승재" />
+
+            <TextView
+                android:id="@+id/tv_userUniv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="경북대학교" />
+
+            <TextView
+                android:id="@+id/tv_userMajor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="모바일공학전공" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_UserPoint"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="bottom|right"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_userTotalPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전체학점" />
+
+            <TextView
+                android:id="@+id/tv_userMajorPoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전공학점" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="커리큘럼 촤랴략" />
+
+
+</LinearLayout>
