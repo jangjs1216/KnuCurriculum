@@ -2,6 +2,7 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -80,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    //설정버튼 추가-안승재
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.actionbar_menu,menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_btn_setting:
+                //설정 프래그먼트 연결부분
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     //과목코드 받아오기 함수
