@@ -19,6 +19,10 @@
         <activity android:name=".login.LoginActivity"/>
         <activity android:name=".login.RegisterActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".Post_write"/>
+        <activity android:name=".NoticeBoardActivity"/>
+        <activity android:name=".Post_Comment"/>
+        <activity android:name=".Post_Update"/>
     </application>
 
 </manifest>

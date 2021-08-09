@@ -14,7 +14,7 @@
         android:ems="10"
         android:hint="이메일을 입력하세요"
         android:inputType="textEmailAddress"
-        android:text="jangjs@naver.com"
+        android:text="thstjdgk@naver.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
         android:layout_marginTop="100dp"
         android:ems="10"
         android:hint="비밀번호를 입력하세요"
-        android:text="abcd1234"
+        android:text="thstjdgk"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -63,6 +63,33 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd"
-        app:layout_constraintVertical_bias="0.766"></com.google.android.gms.common.SignInButton>
+        app:layout_constraintVertical_bias="0.766"/>
+
+    <LinearLayout
+        android:id="@+id/layout_nickname"
+        android:layout_width="349dp"
+        android:layout_height="67dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/et_pwd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_email">
+
+        <EditText
+            android:id="@+id/et_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="닉네임을 입력하세요"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btn_nickname"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="확인" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

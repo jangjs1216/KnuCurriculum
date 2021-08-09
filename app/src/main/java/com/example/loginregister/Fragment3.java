@@ -1,5 +1,6 @@
 package com.example.loginregister;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -31,6 +33,24 @@ public class Fragment3 extends Fragment {
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
+
+
+        Button forum1=view.findViewById(R.id.forum1);
+        Button forum2=view.findViewById(R.id.forum2);
+        Button forum3=view.findViewById(R.id.forum3);
+        Button forum4=view.findViewById(R.id.forum4);
+        Button forum5=view.findViewById(R.id.forum5);
+        Button forum6=view.findViewById(R.id.forum6);
+        Button forum7=view.findViewById(R.id.forum7);
+
+        forum1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(),NoticeBoardActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return view;
     }
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {

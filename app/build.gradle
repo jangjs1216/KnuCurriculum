@@ -10,11 +10,11 @@ android {
 
     defaultConfig {
         applicationId "com.example.loginregister"
-        minSdkVersion 18
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,7 +31,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.otaliastudios:zoomlayout:1.8.0'
     implementation 'de.blox.treeview:treeview:0.0.3'
     implementation 'androidx.navigation:navigation-fragment:2.3.2'
     implementation 'androidx.navigation:navigation-ui:2.3.2'

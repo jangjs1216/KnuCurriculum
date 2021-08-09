@@ -25,7 +25,7 @@ public class KeepLoginActivity extends AppCompatActivity {
         }
         else {
             intent=new Intent(KeepLoginActivity.this, MainActivity.class);
-            intent.putExtra("GangSeo",SavedSharedPreferences.getUserName(this));
+            intent.putExtra("1",SavedSharedPreferences.getUserName(this));
             startActivity(intent);
             this.finish();
         }
