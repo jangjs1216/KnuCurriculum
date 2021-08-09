@@ -1,4 +1,4 @@
-package com.example.loginregister;
+package com.example.loginregister.login;
 
 // 사용자 계정 정보 모델 클래스
 public class UserAccount {
