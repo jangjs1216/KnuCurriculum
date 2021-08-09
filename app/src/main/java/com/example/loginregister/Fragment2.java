@@ -25,7 +25,7 @@ import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
-    private View view;
+    private View v;
     private Toolbar toolbar;
     private final static String TAG ="Frag2";
     TreeNode rootNode;
@@ -39,9 +39,9 @@ public class Fragment2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_2, container, false);
+        v = inflater.inflate(R.layout.fragment_2, container, false);
         //툴바 시작
-        toolbar = (androidx.appcompat.widget.Toolbar)view.findViewById(R.id.tb_frag3);
+        toolbar = (androidx.appcompat.widget.Toolbar)v.findViewById(R.id.tb_frag3);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
@@ -49,7 +49,7 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         //툴바끝
 
-        TreeView treeView = view.findViewById(R.id.treeview);
+        TreeView treeView = v.findViewById(R.id.treeview);
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -101,7 +101,7 @@ public class Fragment2 extends Fragment {
         adapter.setRootNode(rootNode);
 
         // Inflate the layout for this fragment
-        return view;
+        return v;
     }
 
     private String getNodeText() {
