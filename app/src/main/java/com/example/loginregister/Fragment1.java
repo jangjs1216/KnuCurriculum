@@ -36,6 +36,7 @@ public class Fragment1 extends Fragment {
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
+       // actionBar.setLogo(getResources().getDrawable(R.drawable.knucurricular_app_icon));//앱아이콘
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
        // actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성

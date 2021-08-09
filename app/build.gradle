@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     annotationProcessor 'androidx.room:room-compiler:2.2.5'
     implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
+    compile 'org.jetbrains:annotations:16.0.2'
 }
