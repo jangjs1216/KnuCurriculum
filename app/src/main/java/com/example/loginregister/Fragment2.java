@@ -1,5 +1,6 @@
 package com.example.loginregister;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.database.annotations.NotNull;
+import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ public class Fragment2 extends Fragment {
     TreeNode rootNode;
     int nodeCount = 0;
     ArrayList<TreeNode> treeNodeList;
+    ZoomLayout zoomLayout;
 
     /*
     [20210807] 장준승 Fragment2 시각화 구현
@@ -49,7 +53,17 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         //툴바끝
 
-        TreeView treeView = v.findViewById(R.id.treeview);
+        zoomLayout = v.findViewById(R.id.layout_zoom);
+        TreeView treeView = new TreeView(container.getContext()){
+            @Override
+            public boolean onScroll(MotionEvent downEvent, MotionEvent event, float distanceX, float distanceY) {
+                return false;
+            }
+        };
+        treeView.setLevelSeparation(50);
+        treeView.setLineColor(Color.BLACK);
+        treeView.setLineThickness(5);
+
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -100,6 +114,10 @@ public class Fragment2 extends Fragment {
 
         adapter.setRootNode(rootNode);
 
+        treeView.setMinimumWidth(3000);
+        treeView.setMinimumHeight(3000);
+
+        zoomLayout.addView(treeView);
         // Inflate the layout for this fragment
         return v;
     }
