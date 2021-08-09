@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FirebaseAuth mFirebaseAuth;
+
 
     /*
     [ 2021-08-06 장준승 Fragment 추가 ]
@@ -59,18 +59,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mFirebaseAuth=FirebaseAuth.getInstance();
 
-        Button btn_logout = findViewById(R.id.btn_logout);
-        btn_logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 로그아웃 하기
-                mFirebaseAuth.signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+
+
 
 
         //과목코드 받아오기 함수시작

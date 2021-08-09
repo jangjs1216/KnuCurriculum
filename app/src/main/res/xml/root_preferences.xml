@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 <!--설정창 xml파일-->
 
     <PreferenceCategory app:title="알람">
@@ -7,20 +8,13 @@
             app:key="sync"
             app:title="게시글 알람"
             app:summaryOff="게시글 알람을 받지않습니다."
+            app:summaryOn="게시글 알람을 받습니다."
             />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
     </PreferenceCategory>
 
 
 
-<!--    예시-->
+    <!--    예시-->
 <!--    <PreferenceCategory app:title="@string/messages_header">-->
 
 <!--        <EditTextPreference-->

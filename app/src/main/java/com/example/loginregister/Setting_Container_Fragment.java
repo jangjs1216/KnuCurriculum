@@ -1,5 +1,6 @@
 package com.example.loginregister;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +31,8 @@ public class Setting_Container_Fragment extends Fragment {
     private Toolbar toolbar;
     private FragmentManager fm;
     private FragmentTransaction ft;
+    private FirebaseAuth mFirebaseAuth;
+    private TextView tv_logout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,8 +49,22 @@ public class Setting_Container_Fragment extends Fragment {
         fm=getChildFragmentManager();
         ft=fm.beginTransaction();
         ft.add(R.id.container_setting,new SettingsFragment()).commit();
+        //로그아웃
+        tv_logout = view.findViewById(R.id.tv_logout);
+        tv_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG,"펑");
+                mFirebaseAuth= FirebaseAuth.getInstance();
+                mFirebaseAuth.signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
+
+
     @Override
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -62,5 +83,6 @@ public class Setting_Container_Fragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }
