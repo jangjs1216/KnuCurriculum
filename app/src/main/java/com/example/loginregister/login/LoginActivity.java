@@ -129,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // 로그인 성공했을 경우
                             Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                            SavedSharedPreferences.setUserName(LoginActivity.this,mEtEmail.getText().toString());
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             // 여기서 구글계정 정보 받아올 수 있음
                             startActivity(intent);
