@@ -1,5 +1,6 @@
 package com.example.loginregister;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -7,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +31,7 @@ import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
+    private FragmentActivity myContext;
     private View v;
     private Toolbar toolbar;
     private final static String TAG ="Frag2";
@@ -81,6 +85,10 @@ public class Fragment2 extends Fragment {
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         String curData = viewHolder.mTextView.getText().toString();
 
+                        FragmentManager fragmentManager = myContext.getSupportFragmentManager();
+                        BottomSheetDialog bottomSheetDialog = BottomSheetDialog.getInstance();
+                        bottomSheetDialog.show(fragmentManager, "bottomsheetdialog");
+
                         for(TreeNode tn : treeNodeList)
                         {
                             if(curData == tn.getData().toString())
@@ -108,9 +116,17 @@ public class Fragment2 extends Fragment {
         rootNode = new TreeNode(getNodeText());
         treeNodeList.add(rootNode);
 
-        TreeNode node1 = new TreeNode(getNodeText());
-        rootNode.addChild(node1);
-        treeNodeList.add(node1);
+        /* 최정인 DB 인접리스트를 통한 트리 표현 */
+        boolean adj[][] = new boolean[4][4];
+        for(int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                adj[i][j] = false;
+            }
+        }
+        adj[0][1] = adj[0][2] = adj[2][3] = true;
+
+        /* rootNode랑 인접리스트(fromDB) 넣어주면 트리 시각화 */
+        makeTreeFromDB(rootNode, adj);
 
         adapter.setRootNode(rootNode);
 
@@ -120,6 +136,19 @@ public class Fragment2 extends Fragment {
         zoomLayout.addView(treeView);
         // Inflate the layout for this fragment
         return v;
+    }
+
+    public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
+        int currNodeIndex = Integer.parseInt(currNode.getData().toString().substring(5));
+
+        for(int i = 0; i < adj.length; i++){
+            if(adj[currNodeIndex][i] == true){
+                final TreeNode newChild = new TreeNode(getNodeText());
+                treeNodeList.add(newChild);
+                currNode.addChild(newChild);
+                makeTreeFromDB(newChild, adj);
+            }
+        }
     }
 
     private String getNodeText() {
@@ -143,5 +172,11 @@ public class Fragment2 extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        myContext=(FragmentActivity) activity;
+        super.onAttach(activity);
     }
 }
