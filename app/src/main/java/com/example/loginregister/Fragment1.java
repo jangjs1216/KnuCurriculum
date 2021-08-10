@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -115,17 +116,21 @@ public class Fragment1 extends Fragment {
 
     public void setProfile(View view){
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
+            Log.e("frag1", String.valueOf(mAuth.getCurrentUser()));
             mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.getResult()!=null){
-                                user_nick=(String)task.getResult().getData().get(FirebaseID.nickname);//
+                               user_nick = task.getResult().getString("nickname");
                                 tv_username.setText(user_nick);
                             }
                         }
                     });
+
+
+
         }
     }
 }
