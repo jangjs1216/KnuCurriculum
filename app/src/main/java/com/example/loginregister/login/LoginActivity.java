@@ -84,11 +84,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         // 로그인 성공
-                        SavedSharedPreferences.setUserName(LoginActivity.this,mEtEmail.getText().toString());
+                        SavedSharedPreferences.setUserName(LoginActivity.this, mEtEmail.getText().toString());
                         // 닉네임 설정...해야되는데 들어가지질 않누ㅜㅜㅜ
-                        FirebaseFirestore db=FirebaseFirestore.getInstance();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         DocumentReference docRef = db.collection("user").document(user.getUid());
 
                         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -96,39 +96,33 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
-                                    if (document != null && document.exists()) {
-                                        str_nickname=document.get("email").toString();
-                                        Log.d("@@@",str_nickname);
+                                    if (document.get("nickname").toString() == null) {
+                                        mEtEmail.setVisibility(View.INVISIBLE);
+                                        mEtPwd.setVisibility(View.INVISIBLE);
+                                        Google_Login.setVisibility(View.INVISIBLE);
+                                        btn_login.setVisibility(View.INVISIBLE);
+                                        btn_register.setVisibility(View.INVISIBLE);
+                                        layout_nickname.setVisibility(View.VISIBLE);
+
+                                        EditText et_nickname = findViewById(R.id.et_nickname);
+                                        Button btn_nickname = findViewById(R.id.btn_nickname);
+                                        btn_nickname.setOnClickListener(view -> {
+                                            Map<String, Object> userMap = new HashMap<>();
+                                            userMap.put(FirebaseID.nickname, et_nickname);
+                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                            finish(); // 현재 액티비티 파괴
+                                        });
+                                    } else {
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish(); // 현재 액티비티 파괴
                                     }
                                 }
                             }
                         });
-
-                        if(str_nickname==null) {
-
-                            mEtEmail.setVisibility(View.INVISIBLE);
-                            mEtPwd.setVisibility(View.INVISIBLE);
-                            Google_Login.setVisibility(View.INVISIBLE);
-                            btn_login.setVisibility(View.INVISIBLE);
-                            btn_register.setVisibility(View.INVISIBLE);
-                            layout_nickname.setVisibility(View.VISIBLE);
-
-                            EditText et_nickname = findViewById(R.id.et_nickname);
-                            Button btn_nickname = findViewById(R.id.btn_nickname);
-                            btn_nickname.setOnClickListener(view -> {
-                                Map<String, Object> userMap = new HashMap<>();
-                                userMap.put(FirebaseID.nickname,et_nickname);
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish(); // 현재 액티비티 파괴
-                            });
-                        }
-                        else {
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish(); // 현재 액티비티 파괴
-                        }
-                    } else {
+                    }
+                    else {
                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                     }
                 }
