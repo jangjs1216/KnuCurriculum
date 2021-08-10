@@ -19,8 +19,9 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
 import com.otaliastudios.zoom.ZoomLayout;
 
@@ -32,6 +33,7 @@ import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
     private FragmentActivity myContext;
+    String curData;
     private View v;
     private Toolbar toolbar;
     private final static String TAG ="Frag2";
@@ -68,6 +70,9 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
+        LinearLayout LL1, LL2, LL3;
+        View view = inflater.inflate(R.layout.dialog_bottomsheet, container,false);
+
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -83,13 +88,12 @@ public class Fragment2 extends Fragment {
                     public void onClick(View v) {
                         //노드 클릭시 추가 구현
                         Log.e("###", viewHolder.mTextView.getText().toString());
-                        String curData = viewHolder.mTextView.getText().toString();
+                        curData = viewHolder.mTextView.getText().toString();
 
-                        FragmentManager fragmentManager = myContext.getSupportFragmentManager();
-                        BottomSheetDialog bottomSheetDialog = BottomSheetDialog.getInstance();
-                        bottomSheetDialog.show(fragmentManager, "bottomsheetdialog");
-
-                        for(TreeNode tn : treeNodeList)
+                        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+                        bottomSheetDialog.setContentView(R.layout.dialog_bottomsheet);
+                        bottomSheetDialog.show();
+                        /*for(TreeNode tn : treeNodeList)
                         {
                             if(curData == tn.getData().toString())
                             {
@@ -104,7 +108,8 @@ public class Fragment2 extends Fragment {
                             final TreeNode newChild = new TreeNode(getNodeText());
                             treeNodeList.add(newChild);
                             rootNode.addChild(newChild);
-                        }
+                        }*/
+
                     }
                 });
             }
