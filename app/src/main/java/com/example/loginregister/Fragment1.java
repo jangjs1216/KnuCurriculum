@@ -24,7 +24,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
@@ -41,6 +48,10 @@ public class Fragment1 extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private Recycler_Adapter recycler_adapter;
+    private TextView tv_username;
+    private String user_nick;
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +75,7 @@ public class Fragment1 extends Fragment {
             }
         });
         //
+
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
@@ -71,13 +83,14 @@ public class Fragment1 extends Fragment {
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
-       // actionBar.setLogo(getResources().getDrawable(R.drawable.knucurricular_app_icon));//앱아이콘
+        // actionBar.setLogo(getResources().getDrawable(R.drawable.knucurricular_app_icon));//앱아이콘
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
-       // actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
-
-
-
+        // actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
+        // 프로필 설정
+        tv_username = view.findViewById(R.id.tv_userName);
+        setProfile(view);
+        //
         return view;
     }
 
@@ -101,9 +114,18 @@ public class Fragment1 extends Fragment {
     }
 
     public void setProfile(View view){
-        Intent intent =getActivity().getIntent();
-        //로그인액티비티에서 메인으로 넘어올때 계정정보 인텐트에 실어보내면 받아와서 사용가능
-        //>>최정인씨 부탁드립니다.
-        //앱바 사용해서 상단에 검색창이랑 설정창 띄워서 프래그먼트 연결
+        if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
+            mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.getResult()!=null){
+                                user_nick=(String)task.getResult().getData().get(FirebaseID.nickname);//
+                                tv_username.setText(user_nick);
+                            }
+                        }
+                    });
+        }
     }
 }
