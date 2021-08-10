@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,21 +22,48 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 
 import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class Fragment1 extends Fragment {
     private static  final String TAG = "Frag1";
     private Toolbar toolbar;
     private FragmentManager fm;
+    private Button btn_add;
     private FragmentTransaction ft;
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private ArrayList<Recycler_Data> arrayList;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private Recycler_Adapter recycler_adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_1, container, false);
+        //리싸이클러뷰
+        recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_recyclerview);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        arrayList = new ArrayList<>();
+        recycler_adapter = new Recycler_Adapter(arrayList);
+        recyclerView.setAdapter(recycler_adapter);
+
+        btn_add = view.findViewById(R.id.btn_recycler_add);
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Recycler_Data recycler_data = new Recycler_Data("헤헤","된당");
+                arrayList.add(recycler_data);
+                recycler_adapter.notifyDataSetChanged();
+            }
+        });
+        //
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
@@ -66,9 +95,6 @@ public class Fragment1 extends Fragment {
                 ft.replace(R.id.main_frame, new Setting_Container_Fragment());
                 ft.addToBackStack(null);
                 ft.commit();
-                break;
-            case android.R.id.home:
-                //뒷프래그먼트로 이동;
                 break;
         }
         return super.onOptionsItemSelected(item);
