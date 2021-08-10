@@ -32,7 +32,6 @@ import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
-    private FragmentActivity myContext;
     String curData;
     private View v;
     private Toolbar toolbar;
@@ -41,6 +40,7 @@ public class Fragment2 extends Fragment {
     int nodeCount = 0;
     ArrayList<TreeNode> treeNodeList;
     ZoomLayout zoomLayout;
+    BottomSheetDialog bottomSheetDialog;
 
     /*
     [20210807] 장준승 Fragment2 시각화 구현
@@ -70,9 +70,6 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
-        LinearLayout LL1, LL2, LL3;
-        View view = inflater.inflate(R.layout.dialog_bottomsheet, container,false);
-
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -90,26 +87,16 @@ public class Fragment2 extends Fragment {
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         curData = viewHolder.mTextView.getText().toString();
 
-                        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity());
+                        bottomSheetDialog = new BottomSheetDialog(getActivity());
                         bottomSheetDialog.setContentView(R.layout.dialog_bottomsheet);
                         bottomSheetDialog.show();
-                        /*for(TreeNode tn : treeNodeList)
-                        {
-                            if(curData == tn.getData().toString())
-                            {
-                                final TreeNode newChild = new TreeNode(getNodeText());
-                                treeNodeList.add(newChild);
-                                tn.addChild(newChild);
-                                break;
-                            }
-                        }
-                        if("Node 0" == curData)
-                        {
-                            final TreeNode newChild = new TreeNode(getNodeText());
-                            treeNodeList.add(newChild);
-                            rootNode.addChild(newChild);
-                        }*/
 
+                        LinearLayout LL1 = bottomSheetDialog.findViewById(R.id.LL1);
+                        LinearLayout LL2 = bottomSheetDialog.findViewById(R.id.LL2);
+                        LinearLayout LL3 = bottomSheetDialog.findViewById(R.id.LL3);
+                        LL1.setOnClickListener(bottomSheetOnClickListener);
+                        LL2.setOnClickListener(bottomSheetOnClickListener);
+                        LL3.setOnClickListener(bottomSheetOnClickListener);
                     }
                 });
             }
@@ -143,6 +130,39 @@ public class Fragment2 extends Fragment {
         return v;
     }
 
+    /* [최정인] 노드 선택시 나오는 BottomSheetDialog 클릭 리스너 */
+    View.OnClickListener bottomSheetOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.LL1:
+                    for(TreeNode tn : treeNodeList)
+                    {
+                        if(curData == tn.getData().toString())
+                        {
+                            final TreeNode newChild = new TreeNode(getNodeText());
+                            treeNodeList.add(newChild);
+                            tn.addChild(newChild);
+                            break;
+                        }
+                    }
+                    if("Node 0" == curData)
+                    {
+                        final TreeNode newChild = new TreeNode(getNodeText());
+                        treeNodeList.add(newChild);
+                        rootNode.addChild(newChild);
+                    }
+                    bottomSheetDialog.dismiss();
+                    break;
+                case R.id.LL2:
+                    break;
+                case R.id.LL3:
+                    break;
+            }
+        }
+    };
+
+    /* [최정인] DB로 얻은 인접리스트로 트리 시각화 */
     public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
         int currNodeIndex = Integer.parseInt(currNode.getData().toString().substring(5));
 
@@ -177,11 +197,5 @@ public class Fragment2 extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        myContext=(FragmentActivity) activity;
-        super.onAttach(activity);
     }
 }
