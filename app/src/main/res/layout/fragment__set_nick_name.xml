@@ -38,6 +38,15 @@
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tb_setNickname"></LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="1px"
@@ -66,9 +75,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+        android:background="@drawable/custon_button"
         android:clickable="true"
+        android:paddingLeft="16sp"
+        android:paddingTop="5sp"
+        android:paddingRight="16sp"
+        android:paddingBottom="5sp"
         android:text="확인"
-        android:textColor="@color/black"
+        android:textColor="@color/btn_theme"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

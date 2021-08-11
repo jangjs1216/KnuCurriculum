@@ -124,11 +124,12 @@ public class Fragment1 extends Fragment {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.getResult()!=null){
                                user_nick = task.getResult().getString("nickname");
-                               if(user_nick!=null) {
+                               if(user_nick!=null&&user_nick.length()!=0) {
                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
                                    tv_username.setText(user_nick);
                                }
                                else{
+                                   ft.replace(R.id.main_frame,new Fragment_SetNickName()).commit();
                                    Log.e(TAG,"닉네임없음");
                                }
                             }

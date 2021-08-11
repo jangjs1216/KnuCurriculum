@@ -54,7 +54,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private FirebaseAuth mAuth; // 파이어베이스 인증 객체
     private GoogleApiClient mGoogleApiClient; // 구글 API 클라이언트 객체
 
-    String str_nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +66,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
         Google_Login=findViewById(R.id.Google_Login);
-        Button btn_login = findViewById(R.id.btn_login);
-        Button btn_register = findViewById(R.id.btn_register);
-        LinearLayout layout_nickname = findViewById(R.id.layout_nickname);
+        TextView btn_login = findViewById(R.id.btn_login);
+        TextView btn_register = findViewById(R.id.btn_register);
 
-        layout_nickname.setVisibility(View.INVISIBLE);
 
         btn_login.setOnClickListener(v -> {
             // 로그인 요청
@@ -82,7 +79,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        Intent intent = new Intent(LoginActivity.this, SetNicknameActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
@@ -137,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // 로그인 성공했을 경우
-                            Intent intent = new Intent(LoginActivity.this, SetNicknameActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                             // 여기서 구글계정 정보 받아올 수 있음
