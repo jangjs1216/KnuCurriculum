@@ -19,12 +19,13 @@ public class KeepLoginActivity extends AppCompatActivity {
 
         if(SavedSharedPreferences.getUserName(getApplicationContext()).length()==0)
         {
+            //정보없으면
             intent=new Intent(KeepLoginActivity.this, LoginActivity.class);
             startActivity(intent);
             this.finish();
         }
         else {
-            intent=new Intent(KeepLoginActivity.this, MainActivity.class);
+            intent=new Intent(KeepLoginActivity.this, SetNicknameActivity.class);
             intent.putExtra("1",SavedSharedPreferences.getUserName(this));
             startActivity(intent);
             this.finish();

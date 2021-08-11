@@ -7,7 +7,7 @@
     tools:context=".login.SetNicknameActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/tb_frag1"
+        android:id="@+id/tb_setNickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,6 +75,7 @@
         app:layout_constraintTop_toBottomOf="@+id/et_setNickName" />
 
     <LinearLayout
+        android:id="@+id/layout_confirm"
         android:layout_width="50dp"
         android:layout_height="1px"
         android:background="@color/line"

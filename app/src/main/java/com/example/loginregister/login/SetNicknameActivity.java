@@ -1,10 +1,15 @@
 package com.example.loginregister.login;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -33,18 +38,20 @@ public class SetNicknameActivity extends AppCompatActivity {
     private String user_nick;
     private EditText et_nickname;
     private TextView tv_confirm;
+    private View layout_confirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_nickname);
-
         et_nickname = (EditText)findViewById(R.id.et_setNickName);
         tv_confirm = (TextView)findViewById(R.id.tv_confirm);
-
+        layout_confirm = (View)findViewById(R.id.layout_confirm);
         et_nickname.setVisibility(View.INVISIBLE);
         tv_confirm.setVisibility(View.INVISIBLE);
+        layout_confirm.setVisibility(View.INVISIBLE);
 
+        Log.e(TAG,"닉네임설정입장 " );
         if(mAuth!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
             Log.e("frag1", String.valueOf(mAuth));
             mStore.collection("user").document(mAuth.getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
@@ -55,12 +62,13 @@ public class SetNicknameActivity extends AppCompatActivity {
                             if(task.getResult()!=null){
                                 user_nick = task.getResult().getString("nickname");
                                 if(user_nick!=null&&user_nick.length()!=0) {
-                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick+ user_nick.length());
+                                    Log.e(TAG, "닉네임오기성공 - " + user_nick.length());
                                     Intent intent = new Intent(SetNicknameActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish(); // 현재 액티비티 파괴
                                 }
                                 else{
+                                    layout_confirm.setVisibility(View.VISIBLE);
                                     et_nickname.setVisibility(View.VISIBLE);
                                     tv_confirm.setVisibility(View.VISIBLE);
 
@@ -71,9 +79,9 @@ public class SetNicknameActivity extends AppCompatActivity {
                                             if(curNick!=null||curNick.length()==0){
                                                 Log.e(TAG, "닉네임없음");
                                                 Map<String,String> map = new HashMap<String,String>();
-                                                map.put("nickname",et_nickname.getText().toString());
+                                                map.put("nickname",curNick);
                                                 Log.e("Setnickname", String.valueOf(map));
-                                                mStore.collection("user").document(mAuth.getUid()).update("nickname", et_nickname.getText().toString());
+                                                mStore.collection("user").document(mAuth.getUid()).update("nickname", curNick);
                                                 Intent intent = new Intent(SetNicknameActivity.this, MainActivity.class);
                                                 startActivity(intent);
                                                 finish();
@@ -87,6 +95,13 @@ public class SetNicknameActivity extends AppCompatActivity {
                             }
                         }
                     });
+        }
+        else {
+            Log.e(TAG,"계정정보없음 " );
+            SavedSharedPreferences.setUserName(getApplicationContext(),null);
+            Intent intent = new Intent(SetNicknameActivity.this, KeepLoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
