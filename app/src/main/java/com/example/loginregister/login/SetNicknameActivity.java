@@ -23,6 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.loginregister.FirebaseID.nickname;
+import static com.example.loginregister.FirebaseID.user;
+
 public class SetNicknameActivity extends AppCompatActivity {
     private final static String TAG = "setNIckName_Activity";
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
@@ -30,6 +33,7 @@ public class SetNicknameActivity extends AppCompatActivity {
     private String user_nick;
     private EditText et_nickname;
     private TextView tv_confirm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +54,8 @@ public class SetNicknameActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.getResult()!=null){
                                 user_nick = task.getResult().getString("nickname");
-                                if(user_nick!=null) {
-                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
+                                if(user_nick!=null&&user_nick.length()!=0) {
+                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick+ user_nick.length());
                                     Intent intent = new Intent(SetNicknameActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish(); // 현재 액티비티 파괴
@@ -63,12 +67,13 @@ public class SetNicknameActivity extends AppCompatActivity {
                                     tv_confirm.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if(et_nickname.getText().toString()!=null){
+                                            String curNick=et_nickname.getText().toString();
+                                            if(curNick!=null||curNick.length()==0){
                                                 Log.e(TAG, "닉네임없음");
-                                                HashMap<String,String> map = new HashMap<String,String>();
+                                                Map<String,String> map = new HashMap<String,String>();
                                                 map.put("nickname",et_nickname.getText().toString());
                                                 Log.e("Setnickname", String.valueOf(map));
-                                                mStore.collection("user").document(mAuth.getUid()).set(map);
+                                                mStore.collection("user").document(mAuth.getUid()).update("nickname", et_nickname.getText().toString());
                                                 Intent intent = new Intent(SetNicknameActivity.this, MainActivity.class);
                                                 startActivity(intent);
                                                 finish();

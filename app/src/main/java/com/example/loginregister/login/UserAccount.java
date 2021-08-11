@@ -5,6 +5,7 @@ public class UserAccount {
     private String idToken; // Firebase Uid (고유 토큰 정보)
     private String emailId; // 이메일 아이디
     private String password; // 비밀번호
+    private String nickname;
 
     public UserAccount() { }
 

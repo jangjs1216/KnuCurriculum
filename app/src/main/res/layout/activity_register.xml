@@ -14,7 +14,6 @@
         android:ems="10"
         android:hint="이메일을 입력하세요"
         android:inputType="textEmailAddress"
-        android:textColorHint="#0E0B0B"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
