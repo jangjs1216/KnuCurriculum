@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginregister.FirebaseID;
@@ -40,6 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -48,7 +50,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private EditText mEtEmail, mEtPwd; // 회원가입 입력필드
 
     SignInButton Google_Login; // 구글 로그인 버튼
-
     private static final int RC_SIGN_IN = 1000; // 구글 로그인 결과 코드
     private FirebaseAuth mAuth; // 파이어베이스 인증 객체
     private GoogleApiClient mGoogleApiClient; // 구글 API 클라이언트 객체
@@ -63,8 +64,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         SharedPreferences sharedPref;
         mFirebaseAuth=FirebaseAuth.getInstance();
-        mDatabaseRef= FirebaseDatabase.getInstance().getReference("LoginRegister");
-
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
         Google_Login=findViewById(R.id.Google_Login);
@@ -83,44 +82,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        // 로그인 성공
-                        SavedSharedPreferences.setUserName(LoginActivity.this, mEtEmail.getText().toString());
-                        // 닉네임 설정...해야되는데 들어가지질 않누ㅜㅜㅜ
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        DocumentReference docRef = db.collection("user").document(user.getUid());
-
-                        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.get("nickname").toString() == null) {
-                                        mEtEmail.setVisibility(View.INVISIBLE);
-                                        mEtPwd.setVisibility(View.INVISIBLE);
-                                        Google_Login.setVisibility(View.INVISIBLE);
-                                        btn_login.setVisibility(View.INVISIBLE);
-                                        btn_register.setVisibility(View.INVISIBLE);
-                                        layout_nickname.setVisibility(View.VISIBLE);
-
-                                        EditText et_nickname = findViewById(R.id.et_nickname);
-                                        Button btn_nickname = findViewById(R.id.btn_nickname);
-                                        btn_nickname.setOnClickListener(view -> {
-                                            Map<String, Object> userMap = new HashMap<>();
-                                            userMap.put(FirebaseID.nickname, et_nickname);
-                                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                            startActivity(intent);
-                                            finish(); // 현재 액티비티 파괴
-                                        });
-                                    } else {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish(); // 현재 액티비티 파괴
-                                    }
-                                }
-                            }
-                        });
+                        Intent intent = new Intent(LoginActivity.this, SetNicknameActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                     else {
                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
@@ -173,9 +137,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // 로그인 성공했을 경우
-                            Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                            SavedSharedPreferences.setUserName(LoginActivity.this,mEtEmail.getText().toString());
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, SetNicknameActivity.class);
+                            startActivity(intent);
+                            finish();
                             // 여기서 구글계정 정보 받아올 수 있음
                             startActivity(intent);
                         } else { // 로그인 실패했을 경우
@@ -188,6 +152,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
     }
+
+
 }

@@ -99,7 +99,7 @@ public class Fragment1 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag1,menu);
-        Log.e(TAG,"sex");
+       // Log.e(TAG,"sex");
     }
 
     @Override
@@ -124,8 +124,13 @@ public class Fragment1 extends Fragment {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.getResult()!=null){
                                user_nick = task.getResult().getString("nickname");
-                                Log.e("frag1",user_nick);
-                                tv_username.setText(user_nick);
+                               if(user_nick!=null) {
+                                   Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
+                                   tv_username.setText(user_nick);
+                               }
+                               else{
+                                   Log.e(TAG,"닉네임없음");
+                               }
                             }
                         }
                     });

@@ -70,7 +70,7 @@ public class Setting_Container_Fragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_settings,menu);
-        Log.e(TAG,"sex");
+      //  Log.e(TAG,"sex");
     }
 
 
