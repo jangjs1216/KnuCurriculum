@@ -25,7 +25,7 @@ public class KeepLoginActivity extends AppCompatActivity {
             this.finish();
         }
         else {
-            intent=new Intent(KeepLoginActivity.this, SetNicknameActivity.class);
+            intent=new Intent(KeepLoginActivity.this, MainActivity.class);
             intent.putExtra("1",SavedSharedPreferences.getUserName(this));
             startActivity(intent);
             this.finish();

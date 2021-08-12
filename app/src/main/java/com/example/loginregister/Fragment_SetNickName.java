@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.example.loginregister.login.KeepLoginActivity;
 import com.example.loginregister.login.SavedSharedPreferences;
-import com.example.loginregister.login.SetNicknameActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -82,9 +81,9 @@ public class Fragment_SetNickName extends Fragment {
                                         @Override
                                         public void onClick(View v) {
                                             String curNick=et_nickname.getText().toString();
-
-                                            if(curNick==null||curNick.length()==0){
-                                                Log.e(TAG, "닉네임없음");
+                                            Log.e("###",curNick);
+                                            if(curNick!=null&&curNick.length()!=0){
+                                                Log.e(TAG, "닉네임입력완료");
                                                 Map<String,String> map = new HashMap<String,String>();
                                                 map.put("nickname",curNick);
                                                 Log.e("Setnickname", String.valueOf(map));

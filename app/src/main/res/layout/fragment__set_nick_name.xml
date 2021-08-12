@@ -54,7 +54,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tb_frag1"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tb_setNickname"></LinearLayout>
     <!--툴바끝-->
 
     <EditText

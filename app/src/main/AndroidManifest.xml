@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginRegister">
-        <activity android:name=".login.SetNicknameActivity"></activity>
         <activity android:name=".login.KeepLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
