@@ -2,6 +2,7 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,8 +11,14 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.loginregister.login.KeepLoginActivity;
+import com.example.loginregister.login.SavedSharedPreferences;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,7 +27,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
 
-
+    private final static String TAG = "main";
     /*
     [ 2021-08-06 장준승 Fragment 추가 ]
      */
@@ -29,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
 
+    //닉네임 검사
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private String user_nick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
+        bottomNavigationView.setVisibility(View.INVISIBLE);
+
+        check_nickname();
+
+
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -95,6 +112,37 @@ public class MainActivity extends AppCompatActivity {
         }
         reader.close();
     }
-
+    public void check_nickname(){
+        if(mAuth.getCurrentUser()!=null){
+            Log.e(TAG, "계정정보있음");
+            mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.getResult()!=null){
+                                user_nick = task.getResult().getString("nickname");
+                                if(user_nick!=null&&user_nick.length()!=0) {
+                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
+                                    bottomNavigationView.setVisibility(View.VISIBLE);
+                                    getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
+                                }
+                                else{
+                                    Log.e(TAG,"닉네임없음");
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new Fragment_SetNickName()).commit();
+                                }
+                            }
+                            else Log.e(TAG,"계정정보받아오기좆버그");
+                        }
+                    });
+        }
+        else {
+            Log.e(TAG,"계정정보없음 " );
+            SavedSharedPreferences.setUserName(getApplicationContext(),null);//폰에있는 자동로그인정보 초기화
+            Intent intent = new Intent(MainActivity.this, KeepLoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
 }

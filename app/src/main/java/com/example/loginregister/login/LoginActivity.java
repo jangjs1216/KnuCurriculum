@@ -74,16 +74,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // 로그인 요청
             String strEmail = mEtEmail.getText().toString();
             String strPwd = mEtPwd.getText().toString();
-
+            Log.e("Login","로그인요청");
             mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        Log.e("Login","로그인성공");
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
                     else {
+                        Log.e("Login","로그인실패");
                         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -134,12 +136,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) { // 로그인 성공했을 경우
+                            Log.e("Login","로그인성공");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
                             // 여기서 구글계정 정보 받아올 수 있음
                             startActivity(intent);
                         } else { // 로그인 실패했을 경우
+                            Log.e("Login","로그인실패");
                             Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                         }
                     }

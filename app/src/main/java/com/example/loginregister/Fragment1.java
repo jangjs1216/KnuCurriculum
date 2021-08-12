@@ -129,7 +129,6 @@ public class Fragment1 extends Fragment {
                                    tv_username.setText(user_nick);
                                }
                                else{
-                                   ft.replace(R.id.main_frame,new Fragment_SetNickName()).commit();
                                    Log.e(TAG,"닉네임없음");
                                }
                             }
