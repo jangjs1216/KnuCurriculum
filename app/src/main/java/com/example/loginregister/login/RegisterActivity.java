@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +28,6 @@ import java.util.Map;
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
-    private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
     private EditText mEtEmail, mEtPwd; // 회원가입 입력필드
     private Button mBtnRegister; // 회원가입 버튼
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
@@ -38,8 +38,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mFirebaseAuth=FirebaseAuth.getInstance();
-        mDatabaseRef= FirebaseDatabase.getInstance().getReference("LoginRegister");
-
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
         mBtnRegister=findViewById(R.id.btn_register);
@@ -50,7 +48,6 @@ public class RegisterActivity extends AppCompatActivity {
                 //회원가입 처리 시작
                 String strEmail=mEtEmail.getText().toString();
                 String strPwd=mEtPwd.getText().toString();
-
                 //Firebase Auth 진행
                 mFirebaseAuth.createUserWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -63,7 +60,6 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put(FirebaseID.email, strEmail);
                             userMap.put(FirebaseID.password, strPwd);
                             userMap.put(FirebaseID.nickname, null);
-
                             mStore.collection(FirebaseID.user).document(user.getUid()).set(userMap, SetOptions.merge());
                             //mStore.collection("UserInfo")//users라는 테이블에 데이터를 넣는것
                             finish();
