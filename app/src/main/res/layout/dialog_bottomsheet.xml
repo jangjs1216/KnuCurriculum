@@ -7,11 +7,13 @@
     <LinearLayout
         android:id="@+id/LL1"
         android:layout_width="match_parent"
-        android:layout_height="30sp">
+        android:layout_height="40sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="23sp"
             android:text="노드 추가"/>
 
     </LinearLayout>
@@ -19,11 +21,13 @@
     <LinearLayout
         android:id="@+id/LL2"
         android:layout_width="match_parent"
-        android:layout_height="30sp">
+        android:layout_height="40sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="23sp"
             android:text="노드 삭제"/>
 
     </LinearLayout>
@@ -31,11 +35,13 @@
     <LinearLayout
         android:id="@+id/LL3"
         android:layout_width="match_parent"
-        android:layout_height="30sp">
+        android:layout_height="40sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="23sp"
             android:text="과목 정보 보기"/>
 
     </LinearLayout>

@@ -1,6 +1,8 @@
 package com.example.loginregister;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -20,12 +22,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
 import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.blox.treeview.BaseTreeAdapter;
 import de.blox.treeview.TreeNode;
@@ -38,9 +42,15 @@ public class Fragment2 extends Fragment {
     private final static String TAG ="Frag2";
     TreeNode rootNode;
     int nodeCount = 0;
-    ArrayList<TreeNode> treeNodeList;
+
+    TreeNode[] treeNodeList;
+    String[] subjectName;
     ZoomLayout zoomLayout;
     BottomSheetDialog bottomSheetDialog;
+
+    //과목 이름 매핑
+    HashMap<String, Integer> m;
+    boolean adj[][] = new boolean[4][4];
 
     /*
     [20210807] 장준승 Fragment2 시각화 구현
@@ -103,22 +113,33 @@ public class Fragment2 extends Fragment {
         };
         treeView.setAdapter(adapter);
 
-        treeNodeList = new ArrayList<>();
-
-        rootNode = new TreeNode(getNodeText());
-        treeNodeList.add(rootNode);
+        treeNodeList = new TreeNode[10];
 
         /* 최정인 DB 인접리스트를 통한 트리 표현 */
-        boolean adj[][] = new boolean[4][4];
+        subjectName = new String[4];
+        m = new HashMap<String, Integer>();
+
+        subjectName[0] = "C프로그래밍";
+        subjectName[1] = "C++프로그래밍";
+        subjectName[2] = "JAVA프로그래밍";
+        subjectName[3] = "PYTHON프로그래밍";
+
+        for(int i=0; i<4; i++)
+            m.put(subjectName[i], m.size());
+
+        rootNode = new TreeNode(subjectName[0]);
+        treeNodeList[0] = rootNode;
+
         for(int i=0;i<4;i++){
             for(int j=0;j<4;j++){
                 adj[i][j] = false;
             }
         }
-        adj[0][1] = adj[0][2] = adj[2][3] = true;
+
+        //DB에서 받아와서 트리 구현
 
         /* rootNode랑 인접리스트(fromDB) 넣어주면 트리 시각화 */
-        makeTreeFromDB(rootNode, adj);
+//        makeTreeFromDB(rootNode, adj);
 
         adapter.setRootNode(rootNode);
 
@@ -136,25 +157,42 @@ public class Fragment2 extends Fragment {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.LL1:
-                    for(TreeNode tn : treeNodeList)
-                    {
-                        if(curData == tn.getData().toString())
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+                    //Log.e("###", "alertDialog 접근");
+                    builder.setTitle("과목을 선택해주세요");
+
+                    builder.setItems(subjectName, new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int pos)
                         {
-                            final TreeNode newChild = new TreeNode(getNodeText());
-                            treeNodeList.add(newChild);
-                            tn.addChild(newChild);
-                            break;
+                            Toast.makeText(v.getContext(),subjectName[pos],Toast.LENGTH_LONG).show();
+                            for(TreeNode tn : treeNodeList)
+                            {
+                                if(tn != null && curData == tn.getData().toString())
+                                {
+                                    int mappingPos = m.get(subjectName[pos]);
+                                    //Log.e("###", "현재 노드는 "+subjectName[pos]+ "이고, 매핑된 번호는 "+mappingPos);
+                                    final TreeNode newChild = new TreeNode(subjectName[pos]);
+
+                                    adj[m.get(curData)][mappingPos] = true;
+                                    //Log.e("###", m.get(curData) + "와" + mappingPos + "연결");
+                                    treeNodeList[mappingPos] = newChild;
+                                    tn.addChild(newChild);
+                                    break;
+                                }
+                            }
                         }
-                    }
-                    if("Node 0" == curData)
-                    {
-                        final TreeNode newChild = new TreeNode(getNodeText());
-                        treeNodeList.add(newChild);
-                        rootNode.addChild(newChild);
-                    }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
                     bottomSheetDialog.dismiss();
                     break;
                 case R.id.LL2:
+                    deleteTreeFromDB(curData);
+                    bottomSheetDialog.dismiss();
                     break;
                 case R.id.LL3:
                     break;
@@ -163,17 +201,33 @@ public class Fragment2 extends Fragment {
     };
 
     /* [최정인] DB로 얻은 인접리스트로 트리 시각화 */
-    public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
-        int currNodeIndex = Integer.parseInt(currNode.getData().toString().substring(5));
+//    public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
+//        int currNodeIndex = Integer.parseInt(currNode.getData().toString().substring(5));
+//
+//        for(int i = 0; i < adj.length; i++){
+//            if(adj[currNodeIndex][i] == true){
+//                final TreeNode newChild = new TreeNode(getNodeText());
+//                treeNodeList[i] = newChild;
+//                currNode.addChild(newChild);
+//                makeTreeFromDB(newChild, adj);
+//            }
+//        }
+//    }
 
-        for(int i = 0; i < adj.length; i++){
+    /* [장준승] DB 바탕으로 트리 노드 삭제 */
+    public void deleteTreeFromDB(String currNode){
+        int currNodeIndex = m.get(currNode);
+
+        //Log.e("###", currNodeIndex + "삭제요청");
+        for(int i = 0; i < 4; i++){
             if(adj[currNodeIndex][i] == true){
-                final TreeNode newChild = new TreeNode(getNodeText());
-                treeNodeList.add(newChild);
-                currNode.addChild(newChild);
-                makeTreeFromDB(newChild, adj);
+                //Log.e("###", currNodeIndex + "와" + i + "접근");
+                String nextNode = subjectName[i];
+                deleteTreeFromDB(nextNode);
+                adj[currNodeIndex][i] = false;
             }
         }
+        treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
     }
 
     private String getNodeText() {
