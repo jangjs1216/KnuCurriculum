@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.loginregister.adapters.SubjectAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
 import com.otaliastudios.zoom.ZoomLayout;
@@ -46,7 +47,9 @@ public class Fragment2 extends Fragment {
     TreeNode[] treeNodeList;
     String[] subjectName;
     ZoomLayout zoomLayout;
-    BottomSheetDialog bottomSheetDialog;
+    BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
+    RecyclerView recyclerView;
+    SubjectAdapter subjectAdapter;
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
@@ -68,6 +71,22 @@ public class Fragment2 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         //툴바끝
+
+        //SubjectChoiceBottomSheet의 RecyclerView
+        /*subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+
+        ArrayList<String> list = new ArrayList<>();
+        list.add("아이템 1");
+        list.add("아이템 2");
+        list.add("아이템 3");
+        list.add("아이템 4");
+        list.add("아이템 5");
+        list.add("아이템 6");
+        subjectAdapter = new SubjectAdapter(list);
+        recyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(subjectAdapter);*/
 
         zoomLayout = v.findViewById(R.id.layout_zoom);
         TreeView treeView = new TreeView(container.getContext()){
@@ -97,16 +116,16 @@ public class Fragment2 extends Fragment {
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         curData = viewHolder.mTextView.getText().toString();
 
-                        bottomSheetDialog = new BottomSheetDialog(getActivity());
-                        bottomSheetDialog.setContentView(R.layout.dialog_bottomsheet);
-                        bottomSheetDialog.show();
+                        nodeChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+                        nodeChoiceBottomSheetDialog.setContentView(R.layout.dialog_nodechoicebottomsheet);
+                        nodeChoiceBottomSheetDialog.show();
 
-                        LinearLayout LL1 = bottomSheetDialog.findViewById(R.id.LL1);
-                        LinearLayout LL2 = bottomSheetDialog.findViewById(R.id.LL2);
-                        LinearLayout LL3 = bottomSheetDialog.findViewById(R.id.LL3);
-                        LL1.setOnClickListener(bottomSheetOnClickListener);
-                        LL2.setOnClickListener(bottomSheetOnClickListener);
-                        LL3.setOnClickListener(bottomSheetOnClickListener);
+                        LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
+                        LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
+                        LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
+                        LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
+                        LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
+                        LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
             }
@@ -152,15 +171,13 @@ public class Fragment2 extends Fragment {
     }
 
     /* [최정인] 노드 선택시 나오는 BottomSheetDialog 클릭 리스너 */
-    View.OnClickListener bottomSheetOnClickListener = new View.OnClickListener() {
+    View.OnClickListener nodeChoiceBottomSheetOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.LL1:
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
-                    //Log.e("###", "alertDialog 접근");
                     builder.setTitle("과목을 선택해주세요");
 
                     builder.setItems(subjectName, new DialogInterface.OnClickListener(){
@@ -188,13 +205,31 @@ public class Fragment2 extends Fragment {
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
 
-                    bottomSheetDialog.dismiss();
+                    nodeChoiceBottomSheetDialog.dismiss();
                     break;
                 case R.id.LL2:
                     deleteTreeFromDB(curData);
-                    bottomSheetDialog.dismiss();
+                    nodeChoiceBottomSheetDialog.dismiss();
                     break;
                 case R.id.LL3:
+                    nodeChoiceBottomSheetDialog.dismiss();
+                    Log.e("###", "LL3");
+                    subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+                    subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+                    subjectChoiceBottomSheetDialog.show();
+                    ArrayList<Subject> list = new ArrayList<>();
+                    Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
+                    Subject subject2 = new Subject("회로이론", "ELEC111111", "0", "0", "0", false, "0", "0");
+                    Subject subject3 = new Subject("확률과정", "ELEC222222", "0", "0", "0", false, "0", "0");
+                    Subject subject4 = new Subject("머신러닝", "ELEC333333", "0", "0", "0", false, "0", "0");
+                    list.add(subject1);
+                    list.add(subject2);
+                    list.add(subject3);
+                    list.add(subject4);
+                    subjectAdapter = new SubjectAdapter(list);
+                    recyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerView.setAdapter(subjectAdapter);
                     break;
             }
         }
