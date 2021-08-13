@@ -47,8 +47,9 @@ public class Fragment2 extends Fragment {
     TreeNode[] treeNodeList;
     String[] subjectName;
     ZoomLayout zoomLayout;
+    ArrayList<Subject> subjectList;
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
-    RecyclerView recyclerView;
+    RecyclerView subjectRecyclerView;
     SubjectAdapter subjectAdapter;
 
     //과목 이름 매핑
@@ -72,21 +73,24 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         //툴바끝
 
-        //SubjectChoiceBottomSheet의 RecyclerView
-        /*subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
-        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
-
-        ArrayList<String> list = new ArrayList<>();
-        list.add("아이템 1");
-        list.add("아이템 2");
-        list.add("아이템 3");
-        list.add("아이템 4");
-        list.add("아이템 5");
-        list.add("아이템 6");
-        subjectAdapter = new SubjectAdapter(list);
-        recyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(subjectAdapter);*/
+        //서버에서 받아 올 과목 정보
+        subjectList = new ArrayList<>();
+        Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
+        Subject subject2 = new Subject("회로이론", "ELEC111111", "0", "0", "0", false, "0", "0");
+        Subject subject3 = new Subject("확률과정", "ELEC222222", "0", "0", "0", false, "0", "0");
+        Subject subject4 = new Subject("머신러닝", "ELEC333333", "0", "0", "0", false, "0", "0");
+        Subject subject5 = new Subject("A", "1", "0", "0", "0", false, "0", "0");
+        Subject subject6 = new Subject("B", "2", "0", "0", "0", false, "0", "0");
+        Subject subject7 = new Subject("C", "3", "0", "0", "0", false, "0", "0");
+        Subject subject8 = new Subject("D", "4", "0", "0", "0", false, "0", "0");
+        subjectList.add(subject1);
+        subjectList.add(subject2);
+        subjectList.add(subject3);
+        subjectList.add(subject4);
+        subjectList.add(subject5);
+        subjectList.add(subject6);
+        subjectList.add(subject7);
+        subjectList.add(subject8);
 
         zoomLayout = v.findViewById(R.id.layout_zoom);
         TreeView treeView = new TreeView(container.getContext()){
@@ -123,9 +127,11 @@ public class Fragment2 extends Fragment {
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
                         LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
+                        LinearLayout LL4 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL4);
                         LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
+                        LL4.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
             }
@@ -134,7 +140,7 @@ public class Fragment2 extends Fragment {
 
         treeNodeList = new TreeNode[10];
 
-        /* 최정인 DB 인접리스트를 통한 트리 표현 */
+        /* DB에서 받아온 과목들 매핑 */
         subjectName = new String[4];
         m = new HashMap<String, Integer>();
 
@@ -143,10 +149,14 @@ public class Fragment2 extends Fragment {
         subjectName[2] = "JAVA프로그래밍";
         subjectName[3] = "PYTHON프로그래밍";
 
-        for(int i=0; i<4; i++)
-            m.put(subjectName[i], m.size());
+        for(int i=0; i<4; i++){
+            //m.put(subjectName[i], m.size());
+            m.put(subjectList.get(i).getName(), m.size());
+        }
 
-        rootNode = new TreeNode(subjectName[0]);
+
+        //rootNode = new TreeNode(subjectName[0]);
+        rootNode = new TreeNode(subjectList.get(0).getName());
         treeNodeList[0] = rootNode;
 
         for(int i=0;i<4;i++){
@@ -207,29 +217,39 @@ public class Fragment2 extends Fragment {
 
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
+
                 case R.id.LL2:
                     deleteTreeFromDB(curData);
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
+
                 case R.id.LL3:
+
+                    break;
+
+                case R.id.LL4:
                     nodeChoiceBottomSheetDialog.dismiss();
-                    Log.e("###", "LL3");
+                    
+                    //과목 리스트 볼 수 있는 BottomSheetDialog
                     subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
                     subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
                     subjectChoiceBottomSheetDialog.show();
-                    ArrayList<Subject> list = new ArrayList<>();
-                    Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
-                    Subject subject2 = new Subject("회로이론", "ELEC111111", "0", "0", "0", false, "0", "0");
-                    Subject subject3 = new Subject("확률과정", "ELEC222222", "0", "0", "0", false, "0", "0");
-                    Subject subject4 = new Subject("머신러닝", "ELEC333333", "0", "0", "0", false, "0", "0");
-                    list.add(subject1);
-                    list.add(subject2);
-                    list.add(subject3);
-                    list.add(subject4);
-                    subjectAdapter = new SubjectAdapter(list);
-                    recyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerView.setAdapter(subjectAdapter);
+                    
+                    subjectAdapter = new SubjectAdapter(subjectList);
+                    subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+                    subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    subjectRecyclerView.setAdapter(subjectAdapter);
+
+                    //RecyclerView에서 선택된 아이템에 접근
+                    subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int pos) {
+                            Log.e("###", subjectList.get(pos).getCode());
+                            
+                            subjectChoiceBottomSheetDialog.dismiss();
+                        }
+                    });
+
                     break;
             }
         }
