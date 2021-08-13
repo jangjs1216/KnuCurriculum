@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.example.loginregister.curiList.Recycler_Adapter;
+import com.example.loginregister.curiList.Recycler_Data;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,7 +64,7 @@ public class Fragment1 extends Fragment {
         recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_recyclerview);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        arrayList = new ArrayList<>();
+        arrayList = ((MainActivity)getActivity()).getArrayList_curiList();
         recycler_adapter = new Recycler_Adapter(arrayList);
         recyclerView.setAdapter(recycler_adapter);
 
@@ -70,9 +72,11 @@ public class Fragment1 extends Fragment {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Recycler_Data recycler_data = new Recycler_Data("헤헤","된당");
+                Recycler_Data recycler_data = new Recycler_Data("헤헤");
                 arrayList.add(recycler_data);
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
+                Log.e("###", String.valueOf(recycler_adapter.getItemCount()));
             }
         });
         //

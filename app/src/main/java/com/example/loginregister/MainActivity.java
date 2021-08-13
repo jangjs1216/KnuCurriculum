@@ -11,6 +11,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.loginregister.curiList.Recycler_Adapter;
+import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.KeepLoginActivity;
 import com.example.loginregister.login.SavedSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,10 +24,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
-
 
     private final static String TAG = "main";
     /*
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private String user_nick;
 
+    //리싸이클러뷰
+    private ArrayList<Recycler_Data> arrayList_curiList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         check_nickname();
 
-
-
+        arrayList_curiList = new ArrayList<>();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -144,5 +147,13 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+    public ArrayList<Recycler_Data> getArrayList_curiList() {
+        return arrayList_curiList;
+    }
+
+    public void setArrayList_curiList(ArrayList<Recycler_Data> arrayList_curiList) {
+        this.arrayList_curiList = arrayList_curiList;
+    }
+
 
 }

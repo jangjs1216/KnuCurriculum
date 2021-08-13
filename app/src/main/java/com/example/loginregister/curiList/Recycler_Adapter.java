@@ -1,4 +1,4 @@
-package com.example.loginregister;
+package com.example.loginregister.curiList;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.loginregister.R;
 
 import java.util.ArrayList;
 
@@ -22,7 +24,7 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
     @NonNull
     @Override
     public Recycler_Adapter.CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frag1_holder_recycler_view,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.curi_list_recycler,parent,false);
         CustomViewHolder holder = new CustomViewHolder(view);
         return holder;
     }
@@ -30,7 +32,6 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
     @Override
     public void onBindViewHolder(@NonNull Recycler_Adapter.CustomViewHolder holder, int position) {
         holder.tv_title.setText(arrayList.get(position).getTv_title());
-        holder.tv_content.setText(arrayList.get(position).getTv_content());
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,11 +66,9 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView tv_title;
-        protected TextView tv_content;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.tv_title = (TextView)itemView.findViewById(R.id.tv_curri_title);
-            this.tv_content = (TextView)itemView.findViewById(R.id.tv_curri_content);
+            this.tv_title = (TextView)itemView.findViewById(R.id.tv_curri_name);
         }
     }
 }
