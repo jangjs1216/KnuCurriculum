@@ -54,7 +54,7 @@ public class Fragment2 extends Fragment {
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
-    boolean adj[][] = new boolean[4][4];
+    boolean adj[][];
 
     /*
     [20210807] 장준승 Fragment2 시각화 구현
@@ -73,7 +73,7 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         //툴바끝
 
-        //서버에서 받아 올 과목 정보
+        /* 서버에서 받아 올 과목 정보 */
         subjectList = new ArrayList<>();
         Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
         Subject subject2 = new Subject("회로이론", "ELEC111111", "0", "0", "0", false, "0", "0");
@@ -116,10 +116,10 @@ public class Fragment2 extends Fragment {
                 viewHolder.mTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //노드 클릭시 추가 구현
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         curData = viewHolder.mTextView.getText().toString();
 
+                        //노드선택 BottomSheetDialog 띄우기
                         nodeChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
                         nodeChoiceBottomSheetDialog.setContentView(R.layout.dialog_nodechoicebottomsheet);
                         nodeChoiceBottomSheetDialog.show();
@@ -127,11 +127,9 @@ public class Fragment2 extends Fragment {
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
                         LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
-                        LinearLayout LL4 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL4);
                         LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
-                        LL4.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
             }
@@ -141,26 +139,19 @@ public class Fragment2 extends Fragment {
         treeNodeList = new TreeNode[10];
 
         /* DB에서 받아온 과목들 매핑 */
-        subjectName = new String[4];
         m = new HashMap<String, Integer>();
-
-        subjectName[0] = "C프로그래밍";
-        subjectName[1] = "C++프로그래밍";
-        subjectName[2] = "JAVA프로그래밍";
-        subjectName[3] = "PYTHON프로그래밍";
-
-        for(int i=0; i<4; i++){
-            //m.put(subjectName[i], m.size());
+        adj = new boolean[subjectList.size()][subjectList.size()];
+        for(int i=0; i<subjectList.size(); i++){
             m.put(subjectList.get(i).getName(), m.size());
         }
-
-
-        //rootNode = new TreeNode(subjectName[0]);
+        
+        //rootNode 설정
         rootNode = new TreeNode(subjectList.get(0).getName());
         treeNodeList[0] = rootNode;
 
-        for(int i=0;i<4;i++){
-            for(int j=0;j<4;j++){
+        //adj 초기화
+        for(int i=0;i<subjectList.size();i++){
+            for(int j=0;j<subjectList.size();j++){
                 adj[i][j] = false;
             }
         }
@@ -186,55 +177,13 @@ public class Fragment2 extends Fragment {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.LL1:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-                    builder.setTitle("과목을 선택해주세요");
-
-                    builder.setItems(subjectName, new DialogInterface.OnClickListener(){
-                        @Override
-                        public void onClick(DialogInterface dialog, int pos)
-                        {
-                            Toast.makeText(v.getContext(),subjectName[pos],Toast.LENGTH_LONG).show();
-                            for(TreeNode tn : treeNodeList)
-                            {
-                                if(tn != null && curData == tn.getData().toString())
-                                {
-                                    int mappingPos = m.get(subjectName[pos]);
-                                    //Log.e("###", "현재 노드는 "+subjectName[pos]+ "이고, 매핑된 번호는 "+mappingPos);
-                                    final TreeNode newChild = new TreeNode(subjectName[pos]);
-
-                                    adj[m.get(curData)][mappingPos] = true;
-                                    //Log.e("###", m.get(curData) + "와" + mappingPos + "연결");
-                                    treeNodeList[mappingPos] = newChild;
-                                    tn.addChild(newChild);
-                                    break;
-                                }
-                            }
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-
                     nodeChoiceBottomSheetDialog.dismiss();
-                    break;
 
-                case R.id.LL2:
-                    deleteTreeFromDB(curData);
-                    nodeChoiceBottomSheetDialog.dismiss();
-                    break;
-
-                case R.id.LL3:
-
-                    break;
-
-                case R.id.LL4:
-                    nodeChoiceBottomSheetDialog.dismiss();
-                    
                     //과목 리스트 볼 수 있는 BottomSheetDialog
                     subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
                     subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
                     subjectChoiceBottomSheetDialog.show();
-                    
+
                     subjectAdapter = new SubjectAdapter(subjectList);
                     subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
                     subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -244,11 +193,35 @@ public class Fragment2 extends Fragment {
                     subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(View v, int pos) {
-                            Log.e("###", subjectList.get(pos).getCode());
-                            
+                            String choosedSubjectName = subjectList.get(pos).getName();
+                            Log.e("###", choosedSubjectName + " 선택 됨");
+
+                            Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                            for(TreeNode tn : treeNodeList)
+                            {
+                                if(tn != null && curData == tn.getData().toString())
+                                {
+                                    int mappingPos = m.get(choosedSubjectName);
+                                    final TreeNode newChild = new TreeNode(choosedSubjectName);
+
+                                    adj[m.get(curData)][mappingPos] = true;
+                                    treeNodeList[mappingPos] = newChild;
+                                    tn.addChild(newChild);
+                                    break;
+                                }
+                            }
+
                             subjectChoiceBottomSheetDialog.dismiss();
                         }
                     });
+                    break;
+
+                case R.id.LL2:
+                    deleteTreeFromDB(curData);
+                    nodeChoiceBottomSheetDialog.dismiss();
+                    break;
+
+                case R.id.LL3:
 
                     break;
             }

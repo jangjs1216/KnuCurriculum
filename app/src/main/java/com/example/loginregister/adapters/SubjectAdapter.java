@@ -63,7 +63,6 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
                 public void onClick(View v) {
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
-                        Log.e("###", list.get(pos).getName());
                         if(mListener != null){
                             mListener.onItemClick(v, pos);
                         }
