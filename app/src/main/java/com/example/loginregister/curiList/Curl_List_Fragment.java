@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.R;
+import com.example.loginregister.Setting_Container_Fragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,10 +80,15 @@ public class Curl_List_Fragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_add:
-                Recycler_Data recycler_data = new Recycler_Data("Curi_List");
+                Recycler_Data recycler_data = new Recycler_Data("헤헤");
                 arrayList.add(recycler_data);
-                mmainActivity.setArrayList_curiList(arrayList);
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
+                Log.e("###", String.valueOf(recycler_adapter.getItemCount()));
+            case android.R.id.home:
+                getActivity().getSupportFragmentManager().beginTransaction().remove(Curl_List_Fragment.this).commit();
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
