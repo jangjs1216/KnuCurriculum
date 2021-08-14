@@ -45,7 +45,6 @@ public class Fragment2 extends Fragment {
     int nodeCount = 0;
 
     TreeNode[] treeNodeList;
-    String[] subjectName;
     ZoomLayout zoomLayout;
     ArrayList<Subject> subjectList;
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
@@ -247,10 +246,10 @@ public class Fragment2 extends Fragment {
         int currNodeIndex = m.get(currNode);
 
         //Log.e("###", currNodeIndex + "삭제요청");
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < subjectList.size(); i++){
             if(adj[currNodeIndex][i] == true){
                 //Log.e("###", currNodeIndex + "와" + i + "접근");
-                String nextNode = subjectName[i];
+                String nextNode = subjectList.get(i).getName();
                 deleteTreeFromDB(nextNode);
                 adj[currNodeIndex][i] = false;
             }
