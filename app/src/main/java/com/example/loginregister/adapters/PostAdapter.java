@@ -32,7 +32,6 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     }
 
 
-
     public PostAdapter(Context mcontext, List<Post> datas) {//어댑터에 대한 생성자
         this.datas = datas;
         this.mcontext=mcontext;
@@ -92,12 +91,9 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
                 }
             }
         });
-
-
         //예를들면 첫째줄에 데이터에 위치를 각각 0번째 1번째...으로 받아서 그 위치마다 0번째 데이터위치에
         //0번째 제목, 0번째 내용 이런식으로 묶어서 리스트로 만들기 위해서 모델객체를 선언, holder가 그런 것을 지정해줌
     }
-
 
 
     @Override
@@ -121,10 +117,6 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             p_nickname=itemView.findViewById(R.id.post_writer);
             post_photo=itemView.findViewById(R.id.post_imageView);
             post_like_text = itemView.findViewById(R.id.post_liketext);
-
-
         }
-
-
     }
 }

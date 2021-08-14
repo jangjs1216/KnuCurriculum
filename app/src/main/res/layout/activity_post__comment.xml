@@ -168,7 +168,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:editable="true"
-            android:hint="Write Comment" />
+            android:hint="댓글 작성하기" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/comment_button"
