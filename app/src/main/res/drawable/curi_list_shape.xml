@@ -8,5 +8,5 @@
         android:topRightRadius="20sp"/>
     <stroke
         android:width="2sp"
-        android:color="@color/btn_theme" />
+        android:color="@color/line" />
 </shape>

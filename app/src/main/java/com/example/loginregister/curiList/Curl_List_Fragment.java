@@ -35,7 +35,6 @@ public class Curl_List_Fragment extends Fragment {
     private  RecyclerView recyclerView;
     private ArrayList<Recycler_Data> arrayList;
     private Recycler_Adapter recycler_adapter;
-    private MainActivity mmainActivity;
     private Toolbar toolbar;
 
 
@@ -57,11 +56,11 @@ public class Curl_List_Fragment extends Fragment {
 
 
         //      리싸이클러뷰
-        mmainActivity = new MainActivity();
         recyclerView = (RecyclerView)view.findViewById(R.id.Recycler_View_Curi_List);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        arrayList =mmainActivity.getArrayList_curiList();
+
+        arrayList = ((MainActivity)getActivity()).getArrayList_curiList();
         recycler_adapter = new Recycler_Adapter(arrayList);
         recyclerView.setAdapter(recycler_adapter);
         //      리싸이클러뷰 끝
@@ -85,6 +84,8 @@ public class Curl_List_Fragment extends Fragment {
                 ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
                 Log.e("###", String.valueOf(recycler_adapter.getItemCount()));
+                break;
+
             case android.R.id.home:
                 getActivity().getSupportFragmentManager().beginTransaction().remove(Curl_List_Fragment.this).commit();
                 getActivity().getSupportFragmentManager().popBackStack();
