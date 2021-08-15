@@ -144,3 +144,15 @@ public class Fragment_Edit_User_Info extends Fragment {
 }
 
 
+// tv_logout.setOnClickListener(new View.OnClickListener() {
+//@Override
+//public void onClick(View v) {
+//        Log.e(TAG,"펑");
+//        mFirebaseAuth= FirebaseAuth.getInstance();
+//        mFirebaseAuth.signOut();
+//        Intent intent = new Intent(getActivity(), LoginActivity.class);
+//        startActivity(intent);
+//        }
+//        });
+
+

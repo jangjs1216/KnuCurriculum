@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
+import com.example.loginregister.curiList.User_Info_Data;
 import com.example.loginregister.login.KeepLoginActivity;
 import com.example.loginregister.login.SavedSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
 
     //리싸이클러뷰
     private ArrayList<Recycler_Data> arrayList_curiList;
+    private ArrayList<User_Info_Data> arrayList_userInfoData;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         check_nickname();
 
         arrayList_curiList = new ArrayList<>();
+        arrayList_userInfoData = new ArrayList<>();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -146,6 +151,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    public ArrayList<User_Info_Data> getArrayList_userInfoData() {
+        return arrayList_userInfoData;
+    }
+
+    public void setArrayList_userInfoData(ArrayList<User_Info_Data> arrayList_userInfoData) {
+        this.arrayList_userInfoData = arrayList_userInfoData;
     }
     public ArrayList<Recycler_Data> getArrayList_curiList() {
         return arrayList_curiList;

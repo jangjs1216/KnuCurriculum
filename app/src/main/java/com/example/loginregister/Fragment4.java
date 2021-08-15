@@ -50,7 +50,7 @@ public class Fragment4 extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_setting:
-                ft.replace(R.id.main_frame, new Setting_Container_Fragment());
+                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.addToBackStack(null);
                 ft.commit();
                 break;

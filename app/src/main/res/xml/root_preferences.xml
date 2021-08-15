@@ -2,7 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <!--설정창 xml파일-->
 
-    <PreferenceCategory app:title="알람">
+    <PreferenceCategory
+        android:title="알람"
+        android:layout="@layout/custom_preference_alarm_text"
+        >
 
         <SwitchPreferenceCompat
             app:key="sync"
