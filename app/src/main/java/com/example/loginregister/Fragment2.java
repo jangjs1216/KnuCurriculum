@@ -1,8 +1,6 @@
 package com.example.loginregister;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -221,7 +219,10 @@ public class Fragment2 extends Fragment {
                     break;
 
                 case R.id.LL3:
-
+                    Intent intent=new Intent(getActivity(),SubjectInfoActivity.class);
+                    intent.putExtra("subjectName", curData);
+                    startActivity(intent);
+                    nodeChoiceBottomSheetDialog.dismiss();
                     break;
             }
         }
@@ -264,7 +265,6 @@ public class Fragment2 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag2,menu);
-        Log.e(TAG,"sex");
     }
 //툴바 기능설정
     @Override

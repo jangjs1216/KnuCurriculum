@@ -13,6 +13,10 @@
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment__set_nick_name.xml" value="0.1296875" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/item_post.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/item_subject.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/7758/StudioProjects/KnuCurriculum/app/src/main/res/layout/activity_subjectinfo.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/7758/StudioProjects/KnuCurriculum/app/src/main/res/layout/fragment_1.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/7758/StudioProjects/KnuCurriculum/app/src/main/res/layout/fragment_2.xml" value="0.35733695652173914" />
+        <entry key="..\:/Users/7758/StudioProjects/KnuCurriculum/app/src/main/res/layout/fragment_subjectinfo.xml" value="0.35733695652173914" />
         <entry key="..\:/Users/82105/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_post__comment.xml" value="0.1" />
         <entry key="..\:/Users/82105/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_post__update.xml" value="0.1" />
         <entry key="..\:/Users/82105/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_post_write.xml" value="0.1" />
@@ -24,7 +28,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="16" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

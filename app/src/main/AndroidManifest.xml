@@ -23,6 +23,7 @@
         <activity android:name=".NoticeBoardActivity" />
         <activity android:name=".Post_Comment" />
         <activity android:name=".Post_Update" />
+        <activity android:name=".SubjectInfoActivity" />
     </application>
 
 </manifest>
