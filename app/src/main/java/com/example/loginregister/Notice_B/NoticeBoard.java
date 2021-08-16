@@ -103,15 +103,18 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
                                         String post_photo = String.valueOf(shot.get(FirebaseID.post_photo));
                                         String like= String.valueOf(shot.get(FirebaseID.like));
                                         //int like = FirebaseID.like;
-
                                         String post_id= String.valueOf(shot.get(FirebaseID.post_id));
                                         String writer_id= String.valueOf(shot.get(FirebaseID.writer_id));
                                         Post data = new Post(documentId, title, contents, p_nickname, p_photo, post_n,post_photo,post_id,writer_id,like);
                                         mDatas.add(data);//여기까지가 게시글에 해당하는 데이터 적용
+                                        mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
+                                        mPostRecyclerView.setAdapter(mAdapter);
                                     }
                                 }
-                            mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
-                            mPostRecyclerView.setAdapter(mAdapter);
+                                else {
+                                    mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
+                                    mPostRecyclerView.setAdapter(mAdapter);
+                                }
                             }
                         });
     }
