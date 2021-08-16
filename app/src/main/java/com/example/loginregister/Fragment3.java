@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.example.loginregister.Notice_B.NoticeBoard;
 import com.google.firebase.database.annotations.NotNull;
 
 
@@ -46,7 +47,7 @@ public class Fragment3 extends Fragment {
         forum1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),NoticeBoardActivity.class);
+                Intent intent=new Intent(getActivity(), NoticeBoard.class);
                 startActivity(intent);
             }
         });

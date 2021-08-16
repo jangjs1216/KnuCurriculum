@@ -2,11 +2,14 @@ package com.example.loginregister;
 
 import java.util.ArrayList;
 
-public class Subejct_ {
+public class Subject_ {
     String name;
     String code;
+    String score;
     String grade;
     String semester;
+    String recoPre;
+    String recoPost;
     Boolean open;
     ArrayList<SubjectComment> comments;
 
@@ -26,6 +29,14 @@ public class Subejct_ {
         this.code = code;
     }
 
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
     public String getGrade() {
         return grade;
     }
@@ -40,6 +51,22 @@ public class Subejct_ {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public String getRecoPre() {
+        return recoPre;
+    }
+
+    public void setRecoPre(String recoPre) {
+        this.recoPre = recoPre;
+    }
+
+    public String getRecoPost() {
+        return recoPost;
+    }
+
+    public void setRecoPost(String recoPost) {
+        this.recoPost = recoPost;
     }
 
     public Boolean getOpen() {
@@ -58,21 +85,28 @@ public class Subejct_ {
         this.comments = comments;
     }
 
-    public Subejct_(){
+    public Subject_() {
         this.name = "";
         this.code = "";
+        this.score = "";
         this.grade = "";
         this.semester = "";
-        this.open = true;
+        this.recoPre = "";
+        this.recoPost = "";
+        this.open = false;
         this.comments = new ArrayList<>();
     }
 
-    public Subejct_(String name, String code, String grade, String semester, Boolean open, ArrayList<SubjectComment> comments) {
+    public Subject_(String name, String code, String score, String grade, String semester, String recoPre, String recoPost, Boolean open, ArrayList<SubjectComment> comments) {
         this.name = name;
         this.code = code;
+        this.score = score;
         this.grade = grade;
         this.semester = semester;
+        this.recoPre = recoPre;
+        this.recoPost = recoPost;
         this.open = open;
         this.comments = comments;
     }
+
 }

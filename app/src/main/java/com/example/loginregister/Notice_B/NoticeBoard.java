@@ -1,4 +1,4 @@
-package com.example.loginregister;
+package com.example.loginregister.Notice_B;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.loginregister.Notice_B.Post;
+import com.example.loginregister.FirebaseID;
+import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class NoticeBoardActivity extends AppCompatActivity implements View.OnClickListener, PostAdapter.EventListener {
+public class NoticeBoard extends AppCompatActivity implements View.OnClickListener, PostAdapter.EventListener {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
@@ -37,7 +38,7 @@ public class NoticeBoardActivity extends AppCompatActivity implements View.OnCli
 
     private PostAdapter mAdapter;
     private List<Post> mDatas;
-    private Button s_btn;
+    private Button btn_like;
     private String edit_s;//검색어 저장용도
     private EditText search_edit;//검색어 에딧
     private String post_n;
@@ -109,7 +110,7 @@ public class NoticeBoardActivity extends AppCompatActivity implements View.OnCli
                                         mDatas.add(data);//여기까지가 게시글에 해당하는 데이터 적용
 
                                     }
-                                    mAdapter = new PostAdapter(NoticeBoardActivity.this, mDatas);//mDatas라는 생성자를 넣어줌
+                                    mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
                                     mPostRecyclerView.setAdapter(mAdapter);
                                 }
                             }
@@ -121,7 +122,7 @@ public class NoticeBoardActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.edit_button:
-                Intent intent2=new Intent(this,Post_write.class);
+                Intent intent2=new Intent(this, Post_write.class);
                 //post_n=intent2.getStringExtra("post");
                 intent2.putExtra("post",post_n);
                 Log.d("확인","여기는 게시글:"+post_n);
@@ -134,9 +135,11 @@ public class NoticeBoardActivity extends AppCompatActivity implements View.OnCli
               //  startActivity(intent);
                // Log.d("확인","여기는 포스트 코멘트:"+search_edit.getText().toString());
              //   break;
-
+            case R.id.btn_like:
+                Intent intent3=new Intent(this,Like_NoticeBoard.class);
+                startActivity(intent3);
+                break;
         }
-
     }
 
     @Override

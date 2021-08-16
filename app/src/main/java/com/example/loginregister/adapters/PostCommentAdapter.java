@@ -2,32 +2,26 @@ package com.example.loginregister.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.FirebaseID;
-import com.example.loginregister.MainActivity;
 import com.example.loginregister.Notice_B.C_Comment;
 import com.example.loginregister.Notice_B.Comment;
-import com.example.loginregister.Post_Comment;
+import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
-import com.example.loginregister.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;

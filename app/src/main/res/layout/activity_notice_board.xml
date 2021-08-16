@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-    tools:context=".NoticeBoardActivity">
+    tools:context=".Notice_B.NoticeBoard">
 
 
     tools:context=".nav">
@@ -41,33 +41,40 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".NoticeBoardActivity">
+            tools:context=".Notice_B.NoticeBoard">
 
             <LinearLayout
                 android:id="@+id/layout1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/edit_search"
-                    android:textSize="15sp"
-                    android:textStyle="normal"
-                    android:hint="Please enter a search term"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
-                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="search"
+                    android:hint="Please enter a search term"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+                <Button
                     android:id="@+id/search_btn"
-                    android:layout_gravity="center"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_gravity="center"
+                    android:text="search" />
+
+                <Button
+                    android:id="@+id/btn_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:textSize="10dp"
+                    android:text="좋아요순 보기" />
             </LinearLayout>
-                       <LinearLayout
+
+            <LinearLayout
                 android:id="@+id/lay2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,10 +93,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="16dp"
-                android:src="@drawable/board_pen"
-                android:layout_alignParentRight="true" />
+                android:src="@drawable/board_pen" />
 
         </RelativeLayout>
     </LinearLayout>

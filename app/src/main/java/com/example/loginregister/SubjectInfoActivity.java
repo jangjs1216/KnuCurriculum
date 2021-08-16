@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,17 +45,17 @@ public class SubjectInfoActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Subejct_ subejct_ = documentSnapshot.toObject(Subejct_.class);
+                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
 
-                nameTV.setText("과목명 : " + subejct_.getName());
-                codeTV.setText("과목 코드 : " + subejct_.getCode());
-                semesterTV.setText("학기 : " + subejct_.getSemester());
-                gradeTV.setText("학년 : " + subejct_.getGrade());
-                if(subejct_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
+                nameTV.setText("과목명 : " + subject_.getName());
+                codeTV.setText("과목 코드 : " + subject_.getCode());
+                semesterTV.setText("학기 : " + subject_.getSemester());
+                gradeTV.setText("학년 : " + subject_.getGrade());
+                if(subject_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
                 else openTV.setText("이번 학기 개설 여부 : NO");
 
 
-                ArrayList<SubjectComment> subjectComments = subejct_.getComments();
+                ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
                 subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -67,6 +66,32 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
 
 
+        //새로운 수강평 추가
+        /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Subject").document("논리회로");
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
+
+                ArrayList<SubjectComment> subjectComments = subject_.getComments();
+
+                SubjectComment subjectComment1 = new SubjectComment("경무 병신", user.getUid(), "1");
+                SubjectComment subjectComment2 = new SubjectComment("종하 병신", user.getUid(), "2");
+                SubjectComment subjectComment3 = new SubjectComment("승재 병신", user.getUid(), "3");
+                SubjectComment subjectComment4 = new SubjectComment("ㅔㅐㅑㅕ", user.getUid(), "2");
+                SubjectComment subjectComment5 = new SubjectComment("ㅣㅏㅓㅗ", user.getUid(), "1");
+                subjectComments.add(subjectComment1);
+                subjectComments.add(subjectComment2);
+                subjectComments.add(subjectComment3);
+                subjectComments.add(subjectComment4);
+                subjectComments.add(subjectComment5);
+
+                db.collection("Subject").document("논리회로").set(subject_);
+
+            }
+        });*/
 
 
 

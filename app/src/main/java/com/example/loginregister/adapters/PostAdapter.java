@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.Notice_B.Post;
-import com.example.loginregister.Post_Comment;
+import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
 import com.squareup.picasso.Picasso;
 

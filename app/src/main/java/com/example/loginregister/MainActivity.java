@@ -3,29 +3,32 @@ package com.example.loginregister;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.loginregister.curiList.Recycler_Adapter;
+import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.curiList.User_Info_Data;
 import com.example.loginregister.login.KeepLoginActivity;
 import com.example.loginregister.login.SavedSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         bottomNavigationView = findViewById(R.id.bottomNavi);
 
@@ -90,12 +95,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         //과목코드 받아오기 함수시작
-        try {
-            readFromAssets("subjectCode.txt");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+//        try {
+//            readFromAssets("subjectCode.txt");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -109,11 +113,19 @@ public class MainActivity extends AppCompatActivity {
         int counti=0;
 
         while(line != null) {
-
+            Subject_ subject_;
             String[] Sarray = line.split("\t");
             String Scode = Sarray[0];
-            String[] Sname = {Sarray[1],Sarray[2]};
-            subjectCode.put(Sarray[0],Sname);
+            String Sname = Sarray[1];
+            String score = Sarray[2].substring(0, 1);
+
+
+            //String name, String code, String score, String grade, String semester, Boolean open, ArrayList<SubjectComment> comments
+            subject_ = new Subject_(Sname, Scode, score, "1", "1", "없음", "없음", false, new ArrayList<>());
+
+            mStore.collection("Subject").document(subject_.getName()).set(subject_);
+
+
 
             ++counti;
             line = reader.readLine();

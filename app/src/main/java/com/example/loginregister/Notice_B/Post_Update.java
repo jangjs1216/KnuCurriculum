@@ -1,4 +1,4 @@
-package com.example.loginregister;
+package com.example.loginregister.Notice_B;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.loginregister.FirebaseID;
+import com.example.loginregister.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

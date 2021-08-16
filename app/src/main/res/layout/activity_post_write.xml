@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="12"
-    tools:context=".Post_write">
+    tools:context=".Notice_B.Post_write">
 
     <LinearLayout
         android:layout_width="wrap_content"
