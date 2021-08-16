@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -53,6 +54,10 @@ public class Fragment2 extends Fragment {
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     SubjectAdapter subjectAdapter;
+    TreeView treeView;
+
+    //크기 유동적 변화 구현
+    private int displaySize = 500;
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
@@ -77,6 +82,9 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         //툴바끝
 
+        fm=getActivity().getSupportFragmentManager();
+        ft=fm.beginTransaction();
+
         /* 서버에서 받아 올 과목 정보 */
         subjectList = new ArrayList<>();
         Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
@@ -96,8 +104,11 @@ public class Fragment2 extends Fragment {
         subjectList.add(subject7);
         subjectList.add(subject8);
 
+        /*
+        TreeView 선언
+         */
         zoomLayout = v.findViewById(R.id.layout_zoom);
-        TreeView treeView = new TreeView(container.getContext()){
+        treeView = new TreeView(container.getContext()){
             @Override
             public boolean onScroll(MotionEvent downEvent, MotionEvent event, float distanceX, float distanceY) {
                 return false;
@@ -107,6 +118,9 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
+        /*
+            BottomSheetDialog 선언
+         */
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -167,11 +181,13 @@ public class Fragment2 extends Fragment {
 
         adapter.setRootNode(rootNode);
 
-        treeView.setMinimumWidth(3000);
-        treeView.setMinimumHeight(3000);
-
         zoomLayout.addView(treeView);
         // Inflate the layout for this fragment
+
+        treeView.setMinimumWidth(displaySize);
+        treeView.setMinimumHeight(displaySize);
+        Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
+
         return v;
     }
 
@@ -208,6 +224,10 @@ public class Fragment2 extends Fragment {
                                     int mappingPos = m.get(choosedSubjectName);
                                     final TreeNode newChild = new TreeNode(choosedSubjectName);
 
+                                    //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                                    updateDisplaySize();
+                                    Log.e("###", "Current displaySize : "+displaySize);
+
                                     adj[m.get(curData)][mappingPos] = true;
                                     treeNodeList[mappingPos] = newChild;
                                     tn.addChild(newChild);
@@ -222,11 +242,12 @@ public class Fragment2 extends Fragment {
 
                 case R.id.LL2:
                     deleteTreeFromDB(curData);
+                    updateDisplaySize();
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
 
                 case R.id.LL3:
-                    Intent intent=new Intent(getActivity(),SubjectInfoActivity.class);
+                    Intent intent=new Intent(getActivity(), SubjectInfoActivity.class);
                     intent.putExtra("subjectName", curData);
                     startActivity(intent);
                     nodeChoiceBottomSheetDialog.dismiss();
@@ -276,13 +297,25 @@ public class Fragment2 extends Fragment {
 //툴바 기능설정
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_btn_add:
                 ft.replace(R.id.main_frame, new Curl_List_Fragment());
                 ft.addToBackStack(null);
                 ft.commit();
                 break;
         }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateDisplaySize()
+    {
+        int displaySize = rootNode.getNodeCount() * 300 + 500;
+        treeView.setMinimumWidth(displaySize);
+        treeView.setMinimumHeight(displaySize);
+        zoomLayout.moveTo((float)1.0, 0, 0, false);
+        zoomLayout.zoomBy((float)1.0, false);
+
+        return;
     }
 }
