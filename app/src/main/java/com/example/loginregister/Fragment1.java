@@ -52,7 +52,6 @@ public class Fragment1 extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private Recycler_Adapter recycler_adapter;
     private TextView tv_username;
-    private String user_nick;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -119,25 +118,6 @@ public class Fragment1 extends Fragment {
     }
 
     public void setProfile(View view){
-        if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
-            Log.e("frag1", String.valueOf(mAuth.getCurrentUser()));
-            mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.getResult()!=null){
-                               user_nick = task.getResult().getString("nickname");
-                               if(user_nick!=null&&user_nick.length()!=0) {
-                                   Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
-                                   tv_username.setText(user_nick);
-                               }
-                               else{
-                                   Log.e(TAG,"닉네임없음");
-                               }
-                            }
-                        }
-                    });
-        }
+       tv_username.setText(((MainActivity)getActivity()).getUser_nick());
     }
 }

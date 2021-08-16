@@ -65,6 +65,7 @@ public class Fragment_Edit_User_Info extends Fragment {
         fm2 = getChildFragmentManager();
         ft2=fm.beginTransaction();
         et_userName = view.findViewById(R.id.et_userName);
+        et_userName.setText(((MainActivity)getActivity()).getUser_nick());
         et_userUniv = view.findViewById(R.id.et_userUniv);
         et_userMajor = view.findViewById(R.id.et_userMajor);
 
@@ -129,6 +130,7 @@ public class Fragment_Edit_User_Info extends Fragment {
                     map.put(FirebaseID.major,curMajor);
                     Log.e("Edit_User_Info", String.valueOf(map));
                     mStore.collection("user").document(mAuth.getUid()).set(map, SetOptions.merge());
+                    ((MainActivity)getActivity()).setUser_nick(curName);
                     Toast.makeText(getContext(),"회원정보가 저장되었습니다.",Toast.LENGTH_LONG).show();
 
                 }

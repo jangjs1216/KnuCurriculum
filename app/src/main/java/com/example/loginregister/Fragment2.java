@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.loginregister.adapters.SubjectAdapter;
+import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
 import com.otaliastudios.zoom.ZoomLayout;
@@ -41,6 +44,8 @@ public class Fragment2 extends Fragment {
     private final static String TAG ="Frag2";
     TreeNode rootNode;
     int nodeCount = 0;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
     TreeNode[] treeNodeList;
     ZoomLayout zoomLayout;
@@ -61,6 +66,8 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_2, container, false);
+        fm=getActivity().getSupportFragmentManager();
+        ft=fm.beginTransaction();
         //툴바 시작
         toolbar = (androidx.appcompat.widget.Toolbar)v.findViewById(R.id.tb_frag3);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
@@ -271,10 +278,9 @@ public class Fragment2 extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_add:
-                //추가 일단넣어둠
-                break;
-            case R.id.action_btn_modify:
-                //수정할때;
+                ft.replace(R.id.main_frame, new Curl_List_Fragment());
+                ft.addToBackStack(null);
+                ft.commit();
                 break;
         }
         return super.onOptionsItemSelected(item);
