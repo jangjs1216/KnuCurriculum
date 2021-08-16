@@ -82,34 +82,6 @@ public class SubjectInfoActivity extends AppCompatActivity {
         commentDialog.setContentView(R.layout.dialog_subjectcomment);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Subject").document(subjectName);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
-
-                nameTV.setText("과목명 : " + subject_.getName());
-                codeTV.setText("과목 코드 : " + subject_.getCode());
-                semesterTV.setText("학기 : " + subject_.getSemester());
-                gradeTV.setText("학년 : " + subject_.getGrade());
-                if(subject_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
-                else openTV.setText("이번 학기 개설 여부 : NO");
-
-
-                ArrayList<SubjectComment> subjectComments = subject_.getComments();
-
-                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
-                subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
-            }
-        });
-    }
-
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -123,25 +95,15 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
     // dialog01을 디자인하는 함수
     public void showDialog() {
-        commentDialog.show(); // 다이얼로그 띄우기
+        commentDialog.show();
 
-        /* 이 함수 안에 원하는 디자인과 기능을 구현하면 된다. */
-
-        // 위젯 연결 방식은 각자 취향대로~
-        // '아래 아니오 버튼'처럼 일반적인 방법대로 연결하면 재사용에 용이하고,
-        // '아래 네 버튼'처럼 바로 연결하면 일회성으로 사용하기 편함.
-        // *주의할 점: findViewById()를 쓸 때는 -> 앞에 반드시 다이얼로그 이름을 붙여야 한다.
-
-        // 아니오 버튼
         Button noBtn = commentDialog.findViewById(R.id.noBtn);
         noBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 원하는 기능 구현
-                commentDialog.dismiss(); // 다이얼로그 닫기
+                commentDialog.dismiss();
             }
         });
-        // 네 버튼
         commentDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
