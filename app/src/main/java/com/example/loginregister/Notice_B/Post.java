@@ -4,7 +4,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
-public class Post {
+public class Post implements Comparable<Post> {
     private String documentId;//게시글 올린 사람
     private String title;//게시글 제목
     private String contents;//게시글 내용
@@ -148,4 +148,8 @@ public class Post {
                 '}';
     }
 
+    @Override
+    public int compareTo(Post o) {
+        return Integer.parseInt(o.getLike()) - Integer.parseInt(getLike());
+    }
 }

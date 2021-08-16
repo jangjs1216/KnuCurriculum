@@ -51,7 +51,7 @@
 
                 <EditText
                     android:id="@+id/edit_search"
-                    android:layout_width="wrap_content"
+                    android:layout_width="159dp"
                     android:layout_height="wrap_content"
                     android:hint="Please enter a search term"
                     android:textSize="15sp"
@@ -65,13 +65,13 @@
                     android:layout_gravity="center"
                     android:text="search" />
 
-                <Button
-                    android:id="@+id/btn_like"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/sort_spinner"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:textSize="10dp"
-                    android:text="좋아요순 보기" />
+                    android:layout_weight="1"
+                    />
+
             </LinearLayout>
 
             <LinearLayout

@@ -9,4 +9,9 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="sort_spinner_array">
+        <item>최신순</item>
+        <item>좋아요순</item>
+    </string-array>
 </resources>

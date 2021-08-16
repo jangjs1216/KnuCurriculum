@@ -167,22 +167,24 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 if (likeButton.isChecked()) {
-                    Log.d("토글", "켜짐");
+                    Log.e("###", "켜짐");
                     like++;
                     mStore.collection("Post").document(post_id)
                             .update("like", Integer.toString(like));
-                    Log.d("토글", "켜짐" + like);
+                    Log.e("###", "켜짐" + like);
                     likeText.setText(Integer.toString(like));
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("tgpref", true); // value to store
                     editor.commit();
                 } else {
-                    Log.d("토글", "꺼짐");
+                    Log.e("###", "꺼짐");
                     like--;
                     mStore.collection("Post").document(post_id)
                             .update("like", Integer.toString(like));
-                    Log.d("토글", "꺼짐" + like);
+                    Log.e("###", "꺼짐" + like);
                     likeText.setText(Integer.toString(like));
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("tgpref", false); // value to store
