@@ -34,13 +34,33 @@
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/tv1"
+        android:id="@+id/nameTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/tv2"
+        android:id="@+id/codeTV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/semesterTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/gradeTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/openTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subjectCommentRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>
