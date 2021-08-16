@@ -17,9 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.loginregister.FirebaseID;
+import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostAdapter;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -30,7 +31,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,10 +43,8 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
 
     private PostAdapter mAdapter;
     private List<Post> mDatas;
-    private Button btn_like;
     private String edit_s;//검색어 저장용도
     private EditText search_edit;//검색어 에딧
-    private String post_n;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,16 +85,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
             }
         });
         getSupportActionBar().setTitle("Board");
-
-        Log.d("확인", "여기는 노티스:" + post_n);
     }
-
-    //@Override
-    // public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    //     getMenuInflater().inflate(R.menu.search, menu);
-    //     return true;
-    // }
 
     @Override
     public boolean onOptionItemSelected(MenuItem item) {
@@ -107,57 +96,10 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    protected void onStart() {
-        Intent intent = getIntent();
-        post_n = intent.getStringExtra("post");
-        super.onStart();
-        mDatas = new ArrayList<>();//
-        mStore.collection("Post")//리사이클러뷰에 띄울 파이어베이스 테이블 경로
-                .whereEqualTo("post_num", post_n)
-                .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
-                .addSnapshotListener(
-                        new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                if (queryDocumentSnapshots != null) {
-                                    mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
-                                    for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
-                                        Map<String, Object> shot = snap.getData();
-                                        String documentId = String.valueOf(shot.get(FirebaseID.documentId));
-                                        String title = String.valueOf(shot.get(FirebaseID.title));
-                                        String contents = String.valueOf(shot.get(FirebaseID.contents));
-                                        String p_nickname = String.valueOf(shot.get(FirebaseID.nickname));
-                                        String p_photo = String.valueOf(shot.get(FirebaseID.p_photo));
-                                        String post_photo = String.valueOf(shot.get(FirebaseID.post_photo));
-                                        String like = String.valueOf(shot.get(FirebaseID.like));
-                                        //int like = FirebaseID.like;
-                                        String post_id = String.valueOf(shot.get(FirebaseID.post_id));
-                                        String writer_id = String.valueOf(shot.get(FirebaseID.writer_id));
-                                        Log.e("###", snap.getId());
-                                        Post data = new Post(documentId, title, contents, p_nickname, p_photo, post_n, post_photo, post_id, writer_id, like);
-                                        mDatas.add(data);//여기까지가 게시글에 해당하는 데이터 적용
-                                        //mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
-                                        //mPostRecyclerView.setAdapter(mAdapter);
-                                    }
-                                } else {
-                                    //mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
-                                    // mPostRecyclerView.setAdapter(mAdapter);
-                                }
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
-                                mPostRecyclerView.setAdapter(mAdapter);
-                            }
-                        });
-    }
-
 
     public void updateDatas() {
-        Intent intent = getIntent();
-        post_n = intent.getStringExtra("post");
-        super.onStart();
         mDatas = new ArrayList<>();//
         mStore.collection("Post")//리사이클러뷰에 띄울 파이어베이스 테이블 경로
-                .whereEqualTo("post_num", post_n)
                 .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
                 .addSnapshotListener(
                         new EventListener<QuerySnapshot>() {
@@ -166,20 +108,8 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
                                 if (queryDocumentSnapshots != null) {
                                     mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
                                     for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
-                                        Map<String, Object> shot = snap.getData();
-                                        String documentId = String.valueOf(shot.get(FirebaseID.documentId));
-                                        String title = String.valueOf(shot.get(FirebaseID.title));
-                                        String contents = String.valueOf(shot.get(FirebaseID.contents));
-                                        String p_nickname = String.valueOf(shot.get(FirebaseID.nickname));
-                                        String p_photo = String.valueOf(shot.get(FirebaseID.p_photo));
-                                        String post_photo = String.valueOf(shot.get(FirebaseID.post_photo));
-                                        String like = String.valueOf(shot.get(FirebaseID.like));
-                                        //int like = FirebaseID.like;
-                                        String post_id = String.valueOf(shot.get(FirebaseID.post_id));
-                                        String writer_id = String.valueOf(shot.get(FirebaseID.writer_id));
-                                        Log.e("###", snap.getId());
-                                        Post data = new Post(documentId, title, contents, p_nickname, p_photo, post_n, post_photo, post_id, writer_id, like);
-                                        mDatas.add(data);//여기까지가 게시글에 해당하는 데이터 적용
+                                        Post post = snap.toObject(Post.class);
+                                        mDatas.add(post);//여기까지가 게시글에 해당하는 데이터 적용
                                     }
                                 } else {
                                 }
@@ -190,12 +120,8 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
     }
 
     public void sortDatas() {
-        Intent intent = getIntent();
-        post_n = intent.getStringExtra("post");
-        super.onStart();
         mDatas = new ArrayList<>();//
         mStore.collection("Post")//리사이클러뷰에 띄울 파이어베이스 테이블 경로
-                .whereEqualTo("post_num", post_n)
                 .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
                 .addSnapshotListener(
                         new EventListener<QuerySnapshot>() {
@@ -204,21 +130,11 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
                                 if (queryDocumentSnapshots != null) {
                                     mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
                                     for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
-                                        Map<String, Object> shot = snap.getData();
-                                        String documentId = String.valueOf(shot.get(FirebaseID.documentId));
-                                        String title = String.valueOf(shot.get(FirebaseID.title));
-                                        String contents = String.valueOf(shot.get(FirebaseID.contents));
-                                        String p_nickname = String.valueOf(shot.get(FirebaseID.nickname));
-                                        String p_photo = String.valueOf(shot.get(FirebaseID.p_photo));
-                                        String post_photo = String.valueOf(shot.get(FirebaseID.post_photo));
-                                        String like = String.valueOf(shot.get(FirebaseID.like));
-                                        //int like = FirebaseID.like;
-                                        String post_id = String.valueOf(shot.get(FirebaseID.post_id));
-                                        String writer_id = String.valueOf(shot.get(FirebaseID.writer_id));
-                                        Log.e("###", snap.getId());
-                                        Post data = new Post(documentId, title, contents, p_nickname, p_photo, post_n, post_photo, post_id, writer_id, like);
-                                        mDatas.add(data);//여기까지가 게시글에 해당하는 데이터 적용
+                                        Post post = snap.toObject(Post.class);
 
+                                        if(Integer.parseInt(post.getLike()) > 1) {
+                                            mDatas.add(post);
+                                        }
                                     }
                                 } else {
                                 }
@@ -235,9 +151,6 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()){
             case R.id.edit_button:
                 Intent intent2=new Intent(this, Post_write.class);
-                //post_n=intent2.getStringExtra("post");
-                intent2.putExtra("post",post_n);
-                Log.d("확인","여기는 게시글:"+post_n);
                 startActivity(intent2);
                 break;
           //  case R.id.search_btn:

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,14 +22,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.loginregister.FirebaseID;
+import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostCommentAdapter;
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
@@ -46,6 +49,7 @@ import java.util.Map;
 public class Post_Comment extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences.Editor prefEditor;
     SharedPreferences prefs;
+    FirebaseUser user;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private TextView com_title;
@@ -61,7 +65,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     String sub_pos;//코멘트에 들어가있는 게시글의 위치
     int com_pos = 0;//게시글의 등록된 위치
     int like = 0;
-    private ToggleButton likeButton; //좋아요 버튼
+    private Button likeButton; //좋아요 버튼
     private TextView likeText; //좋아요 갯수보여주는 텍스트
     String P_comment_id;
 
@@ -84,7 +88,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_edit = (EditText) findViewById(R.id.Edit_comment);//댓글 작성 내용 입력창
         com_photo = (ImageView) findViewById(R.id.Comment_photo); //작성자 프로필 이미지
         com_photo2 = (ImageView) findViewById(R.id.Comment_photo2); //작성자가 올린 이미지
-        likeButton = (ToggleButton) findViewById(R.id.like_button); //좋아요 버튼
+        likeButton = (Button) findViewById(R.id.like_button); //좋아요 버튼
         likeText = (TextView) findViewById(R.id.like_text); // 좋아요 개수 보여주는 텍스트
         mCommentRecyclerView = findViewById(R.id.comment_recycler);//코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
@@ -100,48 +104,27 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         post_id = intent.getStringExtra("post_id");
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
+
+        DocumentReference docRef = mStore.collection("Post").document(post_id);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Post post = documentSnapshot.toObject(Post.class);
+            }
+        });
+
+
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean tgpref = preferences.getBoolean("tgpref", false);  //default is true
 
-        likeButton.setChecked(tgpref);
-        //사진 불러오기
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
+        //로그인 유저 정보 받아오기
+        user = mAuth.getCurrentUser();
 
-            if (user.getPhotoUrl() == null) {
-                Log.d("사진", "포토유알엘이 비어있어요.");
-
-            }
-            if (user.getPhotoUrl() != null) {
-                photoUrl = user.getPhotoUrl().toString();
-            }
-        }
-
-        if (!intent.getExtras().getString("p_photo").isEmpty()) {
-            Log.d("피포토", intent.getExtras().getString("p_photo"));
-            Picasso.get()
-                    .load(intent.getStringExtra("p_photo"))
-                    .into(com_photo);
-        } else {
-            Picasso.get()
-                    .load(R.drawable.ic_baseline_home_24)
-                    .into(com_photo);
-        }
-        String spost_photo = intent.getExtras().getString("post_photo");
-        Log.d("String spost값", spost_photo);
-        if (!spost_photo.equals("null")) {
-            Log.d("피포토사진있음", intent.getExtras().getString("post_photo"));
-            Picasso.get()
-                    .load(intent.getStringExtra("post_photo"))
-                    .into(com_photo2);
-        } else {
-            Log.d("사진빔", "사진이 비어있어요");
-            com_photo2.getLayoutParams().height = 0;
-            com_photo2.setVisibility(View.GONE);
-        }
 
 
         post_t = intent.getStringExtra("title");//게시글의 위치
@@ -167,29 +150,50 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DocumentReference docRef1 = mStore.collection("user").document(mAuth.getUid());
+                docRef1.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                        ArrayList<String> liked_Post = userAccount.getLiked_Post();
 
 
-                if (likeButton.isChecked()) {
-                    Log.e("###", "켜짐");
-                    like++;
-                    mStore.collection("Post").document(post_id)
-                            .update("like", Integer.toString(like));
-                    Log.e("###", "켜짐" + like);
-                    likeText.setText(Integer.toString(like));
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean("tgpref", true); // value to store
-                    editor.commit();
-                } else {
-                    Log.e("###", "꺼짐");
-                    like--;
-                    mStore.collection("Post").document(post_id)
-                            .update("like", Integer.toString(like));
-                    Log.e("###", "꺼짐" + like);
-                    likeText.setText(Integer.toString(like));
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putBoolean("tgpref", false); // value to store
-                    editor.commit();
-                }
+                        DocumentReference docRef2 = mStore.collection("Post").document(post_id);
+                        docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                Post post = documentSnapshot.toObject(Post.class);
+
+                                int findIndex = -1;
+                                for(int i = 0; i < liked_Post.size(); i++){
+                                    if(post_id.equals(post_id)){
+                                        findIndex = i;
+                                    }
+                                }
+                                if(findIndex != -1){
+                                    int curLike = Integer.parseInt(post.getLike());
+                                    curLike--;
+                                    post.setLike(Integer.toString(curLike));
+                                    liked_Post.remove(findIndex);
+                                }
+                                else{
+                                    int curLike = Integer.parseInt(post.getLike());
+                                    curLike++;
+                                    post.setLike(Integer.toString(curLike));
+                                    liked_Post.add(post_id);
+                                }
+                                likeText.setText(post.getLike());
+
+                                //String documentId, String title, String contents, String p_nickname, String p_photo, String post_num, String post_photo, String post_id, String writer_id, String like
+                                //Post temp = new Post(post.getDocumentId(), post.getTitle(), post.getContents(), post.getP_nickname(), post.getP_photo(), post.getPost_num(), post.getPost_photo(), post.getPost_id(), post.getWriter_id(), )
+                                mStore.collection("Post").document(post_id).set(post);
+                                mStore.collection("user").document(user.getUid()).set(userAccount);
+                            }
+                        });
+
+
+                    }
+                });
             }
         });
     }
@@ -236,7 +240,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        //if(Integer.toString(com_pos)==comment_p) {//게시글의 위치와 댓글의 위치가 같은거를 보여줌
         mcontent = new ArrayList<>();//리사이클러뷰에 표시할 댓글 목록
         mStore.collection("Comment")
                 .whereEqualTo("title", post_t)//리사이클러뷰에 띄울 파이어베이스 테이블 경로

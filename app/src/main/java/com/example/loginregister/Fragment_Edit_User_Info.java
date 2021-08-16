@@ -23,15 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginregister.curiList.Adapter_User_Info;
-import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.User_Info_Data;
+import com.example.loginregister.login.FirebaseID;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.firestore.auth.User;
 
-import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

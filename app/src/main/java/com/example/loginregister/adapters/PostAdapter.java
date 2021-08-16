@@ -52,41 +52,20 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
         holder.contents.setText(datas.get(position).getContents());//리스트로 만들어 주기 위해서
         holder.post_like_text.setText(datas.get(position).getLike());
 
-        if ( !datas.get(position).getPost_photo().isEmpty()) {
-            Picasso.get()
-                    .load(datas.get(position).getPost_photo())
-                    .into(holder.post_photo);
-        }
-        else
-        {
-            Picasso.get()
-                    .load(R.drawable.ic_baseline_home_24)
-                    .into(holder.post_photo);
-        }
-
         final int posi=holder.getAdapterPosition();
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Context context=v.getContext();
                 if(posi!= RecyclerView.NO_POSITION){
                     Intent intent=new Intent(v.getContext(), Post_Comment.class);
                     intent.putExtra("title",datas.get(posi).getTitle());
                     intent.putExtra("content",datas.get(posi).getContents());
                     intent.putExtra("nickname",datas.get(posi).getP_nickname());
-                    intent.putExtra("p_photo",datas.get(posi).getP_photo());
-                    intent.putExtra("post_photo",datas.get(posi).getPost_photo());
-                    intent.putExtra("uid",datas.get(posi).getDocumentId());//게시글 작성자의 uid를 넘겨줌
                     intent.putExtra("post_id",datas.get(posi).getPost_id());
-                    intent.putExtra("number",datas.get(posi).getPost_num());//게시글의 넘버를 넘겨줌
                     intent.putExtra("position",posi);//게시글의 위치를 넘겨줌
-                    //intent.putExtra("like",String.valueOf(datas.get(position).getLike()));
                     intent.putExtra("like",datas.get(posi).getLike());
                     intent.putExtra("writer_id",datas.get(posi).getWriter_id());//사용자의 uid
-                    intent.putExtra("time",datas.get(posi).getDate());
-                    //intent.putExtra("title",datas.get(pos).title);
                     mcontext.startActivity(intent);
                 }
             }
@@ -106,7 +85,6 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
         private TextView title;
         private TextView contents;
         private TextView p_nickname;
-        private ImageView post_photo;
         private TextView post_like_text;
 
 
@@ -115,7 +93,6 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             title=itemView.findViewById(R.id.post_title);
             contents=itemView.findViewById(R.id.post_contents);
             p_nickname=itemView.findViewById(R.id.post_writer);
-            post_photo=itemView.findViewById(R.id.post_imageView);
             post_like_text = itemView.findViewById(R.id.post_liketext);
         }
     }

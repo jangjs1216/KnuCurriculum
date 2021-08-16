@@ -12,11 +12,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.loginregister.FirebaseID;
 import com.example.loginregister.Notice_B.C_Comment;
 import com.example.loginregister.Notice_B.Comment;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
+import com.example.loginregister.login.FirebaseID;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;

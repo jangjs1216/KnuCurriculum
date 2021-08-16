@@ -1,4 +1,4 @@
-package com.example.loginregister;
+package com.example.loginregister.login;
 
 public class FirebaseID {
     public static String user = "user";

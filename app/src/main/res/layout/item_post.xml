@@ -79,13 +79,5 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/post_imageView"
-        android:layout_width="60sp"
-        android:layout_height="60sp"
-        android:layout_gravity="center"
-        android:layout_marginRight="20sp"
-        app:srcCompat="?attr/colorBackgroundFloating" />
-
 </LinearLayout>
 
