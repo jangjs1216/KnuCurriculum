@@ -4,44 +4,25 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.Date;
 
-public class Comment {
+public class Comment implements Comparable<Comment> {
     private String c_nickname;//댓글 단사람 닉네임
-    private String c_photo; //댓글 단사람 사진
-    private String comment;//댓글
+    private String comment;//댓글내용
     private String documentId;//댓글 단사람 고유식별번호
-    private String post_position;
-    private String post_title;
-    private String comment_id;
-    private Date comment_date;
-    private String comment_post;
+    private String comment_id;//댓글 고유값 정렬할 숫자
+    private int Ccoment_Num; //댓글이 가진 대댓글 갯수
 
 
-
-    public Comment(String doucumentId, String c_nickname, String comment, String post_position, String post_title, String comment_post, String comment_id) {
+    public Comment(String doucumentId, String c_nickname, String comment,   String comment_id, int Ccmment_Num) {
         this.c_nickname = c_nickname;
         this.comment = comment;
         this.documentId=doucumentId;
-        this.post_position=post_position;
-        this.post_title=post_title;
-        this.comment_post=comment_post;
         this.comment_id=comment_id;
+        this.Ccoment_Num=Ccmment_Num;
     }
 
-    public String getPost_title() {
-        return post_title;
-    }
+    public void setCcoment_Num(int ccoment_num){this.Ccoment_Num=ccoment_num;}
 
-    public void setPost_title(String post_title) {
-        this.post_title = post_title;
-    }
-
-    public String getPost_position() {
-        return post_position;
-    }
-
-    public void setPost_position(String post_position) {
-        this.post_position = post_position;
-    }
+    public int getCcoment_Num(){return Ccoment_Num;}
 
     public void setComment_id(String comment_id) {this.comment_id=comment_id; }
 
@@ -49,13 +30,6 @@ public class Comment {
         return comment_id;
     }
 
-    public Date getComment_date() {
-        return comment_date;
-    }
-
-    public void setComment_date(Date comment_date) {
-        this.comment_date = comment_date;
-    }
 
     public String getDocumentId() {
         return documentId;
@@ -65,6 +39,7 @@ public class Comment {
         this.documentId = documentId;
     }
 
+
     public String getC_nickname() {
         return c_nickname;
     }
@@ -73,13 +48,6 @@ public class Comment {
         this.c_nickname = c_nickname;
     }
 
-    public String getC_photo() {
-        return c_photo;
-    }
-
-    public void setC_photo(String c_photo) {
-        this.c_photo = c_photo;
-    }
 
     public String getComment() {
         return comment;
@@ -89,30 +57,18 @@ public class Comment {
         this.comment = comment;
     }
 
-    public String getComment_post() {
-        return comment_post;
-    }
-
-    public void setComment_post(String comment_post) {
-        this.comment_post = comment_post;
-    }
 
     public Comment() {//빈생성자
-
+        this.c_nickname = "";
+        this.comment = "";
+        this.documentId="";
+        this.comment_id="";
+        this.Ccoment_Num=0;
     }
 
 
     @Override
-    public String toString() {
-        return "Content{" +
-                "c_nickname='" + c_nickname + '\'' +
-                ", c_photo='" + c_photo + '\'' +
-                ", comment='" + comment + '\'' +
-                ", documentId='" + documentId + '\'' +
-                ", post_position='" + post_position + '\'' +
-                ", post_title='" + post_title + '\'' +
-                ", comment_date=" + comment_date +
-                ", comment_post='" + comment_post + '\'' +
-                '}';
+    public int compareTo(Comment comment) {
+        return this.comment_id.compareTo(comment.comment_id);
     }
 }

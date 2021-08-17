@@ -3,7 +3,7 @@ package com.example.loginregister.Notice_B;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.ServerTimestamp;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 public class Post implements Comparable<Post> {
     private String writer_id;
@@ -14,6 +14,16 @@ public class Post implements Comparable<Post> {
     @ServerTimestamp
     private Timestamp timestamp;
     private String post_id;
+    private ArrayList<Comment> comments; //댓글 리스트들
+    private int coment_Num;
+
+    public void setcoment_Num(int coment_num){this.coment_Num=coment_num;}
+
+    public int getcoment_Num(){return coment_Num;}
+
+    public ArrayList<Comment> getComments() {return  comments;}
+
+    public void setComments(ArrayList<Comment> comments){this.comments = comments;}
 
     public String getWriter_id() {
         return writer_id;
@@ -71,7 +81,8 @@ public class Post implements Comparable<Post> {
         this.post_id = post_id;
     }
 
-    public Post() {//빈생성자 생성
+    public Post() {
+       //빈생성자 생성
         this.writer_id = "";
         this.title = "";
         this.contents = "";
@@ -79,9 +90,11 @@ public class Post implements Comparable<Post> {
         this.like = "";
         this.timestamp = null;
         this.post_id = "";
+        this.comments = new ArrayList<>();
+        this.coment_Num=0;
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments,int coment_Num) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -89,6 +102,8 @@ public class Post implements Comparable<Post> {
         this.like = like;
         this.timestamp = timestamp;
         this.post_id = post_id;
+        this.comments = comments;
+        this.coment_Num=coment_Num;
     }
 
     @Override

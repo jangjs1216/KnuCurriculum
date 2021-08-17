@@ -2,11 +2,14 @@ package com.example.loginregister.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,14 +32,14 @@ import java.util.Map;
 
 public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.PostCommentViewHolder> {
 
-    private List<Comment> mcontent_data;
+    ArrayList<Comment> mcontent_data = new ArrayList<Comment>();
     private SparseBooleanArray selectedItems = new SparseBooleanArray();
     private int prePosition=-1;
     Activity activity;
-    List<C_Comment> c_mcontent;
+
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
-    public PostCommentAdapter(List<Comment> mcontent_data, Activity mactivity){
+    public PostCommentAdapter(ArrayList<Comment> mcontent_data, Activity mactivity){
         this.mcontent_data=mcontent_data;
         activity=mactivity;
     }
@@ -49,15 +52,14 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull PostCommentViewHolder holder, int position) {
-        holder.onBind(mcontent_data.get(position),position,selectedItems);
+        holder.onBind(position,selectedItems);
     }
 
 
-    public void sibal ()
-    {}
 
     @Override
     public int getItemCount() {
+        if(mcontent_data == null) return 0;
         return mcontent_data.size();
     }
 
@@ -67,49 +69,14 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         private TextView comment;
         private ImageView c_photo;
         OnViewHolderItemClickListener onViewHolderItemClickListener;
+        private LinearLayout comment_layout;
 
         public PostCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             c_nickname=itemView.findViewById(R.id.comment_item_nickname);
             comment=itemView.findViewById(R.id.comment_contents);
-            c_photo=itemView.findViewById(R.id.comment_item_photo);
-            RecyclerView recyclerView = itemView.findViewById(R.id.comment_recycler);
+            comment_layout=itemView.findViewById(R.id.comment_layout);
 
-            c_mcontent = new ArrayList<>();//리사이클러뷰에 표시할 댓글 목록
-            int i=-1;
-            for( Comment sexy : mcontent_data){
-                int i1 = ++i;
-                String comment_id = sexy.getComment_id();
-
-                mStore.collection("Comment").document(comment_id).collection(comment_id)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    c_mcontent.clear();
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> shot = document.getData();
-
-                                        String documentId = String.valueOf(shot.get(FirebaseID.documentId));
-                                        String comment = String.valueOf(shot.get(FirebaseID.comment));
-                                        String c_nickname = String.valueOf(shot.get(FirebaseID.nickname));
-                                        String num_comment = String.valueOf(shot.get(FirebaseID.comment_post));
-
-                                        C_Comment data = new C_Comment(documentId, c_nickname, comment, Integer.toString(i1), comment_id);
-                                        c_mcontent.add(data);//여기까지가 게시글에 해당하는 데이터 적용
-                                    }
-
-                                    PostC_CommentAdapter c_contentAdapter = new PostC_CommentAdapter(c_mcontent);//mDatas라는 생성자를 넣어줌
-                                    recyclerView.setAdapter(c_contentAdapter);
-                                } else {
-
-                                }
-
-                            }
-                        });
-
-            }
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,10 +106,29 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 }
             });
         }
-        public void onBind(Comment data, int position, SparseBooleanArray selectedItems) {
-            data=mcontent_data.get(position);
+        public void onBind( int position, SparseBooleanArray selectedItems) {
+
             c_nickname.setText(mcontent_data.get(position).getC_nickname());
             comment.setText(mcontent_data.get(position).getComment());
+
+            int judge = Integer.parseInt(mcontent_data.get(position).getComment_id());
+            Log.e("%%%",Integer.toString(judge));
+            Log.e("%%%",Integer.toString(judge%100));
+
+            LinearLayout.LayoutParams params
+                    = (LinearLayout.LayoutParams)comment_layout.getLayoutParams();
+
+
+            if(judge%100 != 0) {
+
+                params.weight = 1;
+                comment_layout.setLayoutParams(params);
+            }
+            else{
+
+                params.weight = 0;
+                comment_layout.setLayoutParams(params);
+            }
         }
 
         public void setOnViewHolderItemClickListener(OnViewHolderItemClickListener onViewHolderItemClickListener) {

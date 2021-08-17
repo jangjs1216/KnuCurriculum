@@ -12,11 +12,13 @@
 
         <ImageView
             android:id="@+id/iv_point"
-            android:layout_width="59dp"
+            android:layout_weight="0"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/point" />
         <LinearLayout
             android:layout_width="344dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/comment_item_shape"
             android:orientation="horizontal">

@@ -42,6 +42,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,6 +69,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private Button likeButton; //좋아요 버튼
     private TextView likeText; //좋아요 갯수보여주는 텍스트
     String P_comment_id;
+    private ArrayList<Comment> Cdata;
 
 
     public static Context mcontext;
@@ -105,16 +107,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
 
-        DocumentReference docRef = mStore.collection("Post").document(post_id);
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Post post = documentSnapshot.toObject(Post.class);
-            }
-        });
-
-
-
+       
+        
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -240,6 +234,27 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+
+
+        Cdata=new ArrayList<Comment>();
+        DocumentReference docRef = mStore.collection("Post").document(post_id);
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Post post = documentSnapshot.toObject(Post.class);
+                Cdata.clear();
+
+                Cdata = post.getComments();
+
+
+
+                contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this);//mDatas라는 생성자를 넣어줌
+                mCommentRecyclerView.setAdapter(contentAdapter);
+
+            }
+        });
+
+        /*
         mcontent = new ArrayList<>();//리사이클러뷰에 표시할 댓글 목록
         mStore.collection("Comment")
                 .whereEqualTo("title", post_t)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
@@ -264,7 +279,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         mCommentRecyclerView.setAdapter(contentAdapter);
                     }
 
-                });
+                });*/
 
 
     }
@@ -280,60 +295,124 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (Compared_c) { // 댓글
-            if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
-                String commentID=mStore.collection("Comment").document().getId();
-                Map<String, Object> data = new HashMap<>();
-                data.put(FirebaseID.commentId,commentID);
-                data.put(FirebaseID.documentId, mAuth.getCurrentUser().getUid());//유저 고유번호
-                data.put(FirebaseID.comment, com_edit.getText().toString());//게시글 내용
-                data.put(FirebaseID.timestamp, FieldValue.serverTimestamp());//파이어베이스 시간을 저장 그래야 게시글 정렬이 시간순가능
-                data.put(FirebaseID.nickname, comment_p);
-                Intent intent = getIntent();//데이터 전달받기
-                data.put(FirebaseID.title, post_t);//게시글의 제목을 넣어준다 비교하기위해서
-                //Log.d("확인",po)
-                comment_post = intent.getStringExtra("post_id");
-                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                //Log.d("확인","위치"+com_pos);
-                data.put(FirebaseID.post_position, Integer.toString(com_pos));//작성된 게시판의 위치를 댓글에 저장
-                data.put(FirebaseID.comment_post, comment_post);
+            if (mAuth.getCurrentUser() != null) {
 
-                mStore.collection("Comment").document(commentID).set(data);
-                View view = this.getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    com_edit.setText("");
-                }
-                finish();
-                startActivity(intent);
+
+                DocumentReference docRef = mStore.collection("Post").document(post_id);
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Post post = documentSnapshot.toObject(Post.class);
+
+                        ArrayList<Comment> data = new ArrayList<>();
+
+                        if(post.getComments() !=null) {
+                            data = post.getComments();
+                        }
+
+                        Comment cur_comment = new Comment();
+
+                        int Csize = post.getcoment_Num();
+
+                        cur_comment.setComment(com_edit.getText().toString());
+                        cur_comment.setC_nickname(comment_p);
+                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                        cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
+
+
+                        data.add(cur_comment);
+                        Collections.sort(data);
+
+                        post.setcoment_Num(Csize+1);
+                        post.setComments(data);
+
+                        mStore.collection("Post").document(post_id).set(post);
+
+                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
+
+                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
+
+                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            com_edit.setText("");
+                        }
+
+                        Intent intent = getIntent();//데이터 전달받기
+
+                        comment_post = intent.getStringExtra("post_id");
+                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
+
+
             }
         } else if(P_comment_id != null) { // 대댓글
             if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
-                Map<String, Object> data = new HashMap<>();
-                data.put(FirebaseID.documentId, mAuth.getCurrentUser().getUid());//유저 고유번호
-                data.put(FirebaseID.comment, com_edit.getText().toString());//대댓글 내용
-                data.put(FirebaseID.timestamp, FieldValue.serverTimestamp());//파이어베이스 시간을 저장 그래야 게시글 정렬이 시간순가능
-                data.put(FirebaseID.nickname, comment_p);
-                Intent intent = getIntent();//데이터 전달받기
-                data.put(FirebaseID.title, post_t);//게시글의 제목을 넣어준다 비교하기위해서
-                //Log.d("확인",po)
-                comment_post = intent.getStringExtra("post_id");
-                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                //Log.d("확인","위치"+com_pos);
-                data.put(FirebaseID.post_position, Integer.toString(com_pos));//작성된 게시판의 위치를 댓글에 저장
-                data.put(FirebaseID.comment_post, comment_post);
-                mStore.collection("Comment").document(P_comment_id).collection(P_comment_id).add(data);
-                View view = this.getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                    com_edit.setText("");
-                }
-                finish();
-                startActivity(intent);
-                Compared_c=true;
+
+                DocumentReference docRef = mStore.collection("Post").document(post_id);
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Post post = documentSnapshot.toObject(Post.class);
+
+
+
+                        ArrayList<Comment> data = new ArrayList<>();
+                        int Csize = 1;
+
+                        if(post.getComments() !=null) {
+                            data = post.getComments();
+
+                            for(int i=0;i<data.size();++i){
+                                Log.e("&&&",data.get(i).getComment_id());
+                                if((data.get(i).getComment_id()).equals(P_comment_id)){
+                                    Csize=+1+data.get(i).getCcoment_Num();
+                                    Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
+                                }
+                                data.get(i).setCcoment_Num(Csize);
+                            }
+                        }
+
+                        Comment cur_comment = new Comment();
+
+
+                        cur_comment.setComment(com_edit.getText().toString());
+                        cur_comment.setC_nickname(comment_p);
+                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                        cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
+
+
+                        data.add(cur_comment);
+                        Collections.sort(data);
+
+                        post.setComments(data);
+
+                        mStore.collection("Post").document(post_id).set(post);
+
+                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
+
+                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
+
+                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            com_edit.setText("");
+                        }
+
+                        Intent intent = getIntent();//데이터 전달받기
+
+                        comment_post = intent.getStringExtra("post_id");
+                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+
 
             }
+            Compared_c=true;
         }
     }
 }

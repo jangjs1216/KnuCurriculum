@@ -114,7 +114,7 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
                     long datetime = System.currentTimeMillis();
                     Date date = new Date(datetime);
                     Timestamp timestamp = new Timestamp(date);
-                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID);
+                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID,new ArrayList<>(),0);
                     mStore.collection("Post").document(PostID).set(post[0]);
                 }
             });
