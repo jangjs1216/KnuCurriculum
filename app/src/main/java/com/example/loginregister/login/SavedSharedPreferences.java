@@ -29,7 +29,7 @@ public class SavedSharedPreferences {
         editor.putString(USER_TOKEN,userToken);
         editor.commit();
     }
-    public static List<String> getUserToken(Context ctx) {
+    public static String getUserToken(Context ctx) {
         return getSharedPreferences(ctx).getString(USER_TOKEN,"");
     }
 }

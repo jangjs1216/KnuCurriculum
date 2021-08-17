@@ -31,22 +31,22 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-<!--        푸쉬알림창 커스텀   -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_ic_notification" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-<!--        푸쉬알림 토큰 자동초기화 방지-->
-        <meta-data
-            android:name="firebase_messaging_auto_init_enabled"
-            android:value="false" />
-        <meta-data
-            android:name="firebase_analytics_collection_enabled"
-            android:value="false" />
+<!--&lt;!&ndash;        푸쉬알림창 커스텀   &ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="com.google.firebase.messaging.default_notification_icon"-->
+<!--            android:resource="@drawable/ic_stat_ic_notification" />-->
+<!--        &lt;!&ndash; Set color used with incoming notification messages. This is used when no color is set for the incoming-->
+<!--             notification message. See README(https://goo.gl/6BKBk7) for more. &ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="com.google.firebase.messaging.default_notification_color"-->
+<!--            android:resource="@color/colorAccent" />-->
+<!--&lt;!&ndash;        푸쉬알림 토큰 자동초기화 방지&ndash;&gt;-->
+<!--        <meta-data-->
+<!--            android:name="firebase_messaging_auto_init_enabled"-->
+<!--            android:value="false" />-->
+<!--        <meta-data-->
+<!--            android:name="firebase_analytics_collection_enabled"-->
+<!--            android:value="false" />-->
 
     </application>
 
