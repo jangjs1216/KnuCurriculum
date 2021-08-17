@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.loginregister" >
+    package="com.example.loginregister">
 
     <application
         android:allowBackup="true"
@@ -8,10 +8,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.LoginRegister" >
-        <activity android:name=".login.KeepLoginActivity" >
+        android:theme="@style/Theme.LoginRegister">
+        <service
+            android:name=".push_alram.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".login.KeepLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,31 +32,6 @@
         <activity android:name=".Notice_B.Post_Comment" />
         <activity android:name=".Notice_B.Post_Update" />
         <activity android:name=".SubjectInfoActivity" />
-<!--        푸쉬알림 기본설정       -->
-        <service
-            android:name=".push_alram.MyFirebaseMessagingService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-<!--&lt;!&ndash;        푸쉬알림창 커스텀   &ndash;&gt;-->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_icon"-->
-<!--            android:resource="@drawable/ic_stat_ic_notification" />-->
-<!--        &lt;!&ndash; Set color used with incoming notification messages. This is used when no color is set for the incoming-->
-<!--             notification message. See README(https://goo.gl/6BKBk7) for more. &ndash;&gt;-->
-<!--        <meta-data-->
-<!--            android:name="com.google.firebase.messaging.default_notification_color"-->
-<!--            android:resource="@color/colorAccent" />-->
-<!--&lt;!&ndash;        푸쉬알림 토큰 자동초기화 방지&ndash;&gt;-->
-<!--        <meta-data-->
-<!--            android:name="firebase_messaging_auto_init_enabled"-->
-<!--            android:value="false" />-->
-<!--        <meta-data-->
-<!--            android:name="firebase_analytics_collection_enabled"-->
-<!--            android:value="false" />-->
-
     </application>
 
 </manifest>
