@@ -70,13 +70,14 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         private ImageView c_photo;
         OnViewHolderItemClickListener onViewHolderItemClickListener;
         private LinearLayout comment_layout;
+        private ImageView iv_point;
 
         public PostCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             c_nickname=itemView.findViewById(R.id.comment_item_nickname);
             comment=itemView.findViewById(R.id.comment_contents);
             comment_layout=itemView.findViewById(R.id.comment_layout);
-
+            iv_point=itemView.findViewById(R.id.iv_point);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -123,11 +124,17 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
                 params.weight = 1;
                 comment_layout.setLayoutParams(params);
+                if(position>0) {
+                    if (Integer.parseInt(mcontent_data.get(position - 1).getComment_id()) % 100 == 0) {
+                        iv_point.setVisibility(View.VISIBLE);
+                    }
+                }
             }
             else{
 
                 params.weight = 0;
                 comment_layout.setLayoutParams(params);
+
             }
         }
 
