@@ -17,15 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.loginregister.Fragment2;
 import com.example.loginregister.R;
 import com.example.loginregister.Subject;
+import com.example.loginregister.Subject_;
 
 import java.util.ArrayList;
 
 public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectViewHolder> {
-    ArrayList<Subject> list;
+    ArrayList<Subject_> list;
     private OnItemClickListener mListener = null;
 
 
-    public SubjectAdapter(ArrayList<Subject> list){
+    public SubjectAdapter(ArrayList<Subject_> list){
         this.list = list;
     }
 
@@ -71,7 +72,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.SubjectV
             });
         }
 
-        void onBind(Subject subject) {
+        void onBind(Subject_ subject) {
             textView1.setText(subject.getName());
             textView2.setText(subject.getCode());
         }

@@ -27,8 +27,13 @@ import android.widget.Toast;
 
 import com.example.loginregister.adapters.SubjectAdapter;
 import com.example.loginregister.curiList.Curl_List_Fragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
@@ -39,6 +44,7 @@ import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
+    FirebaseFirestore db;
     String curData;
     private View v;
     private Toolbar toolbar;
@@ -50,7 +56,7 @@ public class Fragment2 extends Fragment {
 
     TreeNode[] treeNodeList;
     ZoomLayout zoomLayout;
-    ArrayList<Subject> subjectList;
+    ArrayList<Subject_> subjectList;
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     SubjectAdapter subjectAdapter;
@@ -85,24 +91,6 @@ public class Fragment2 extends Fragment {
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
 
-        /* 서버에서 받아 올 과목 정보 */
-        subjectList = new ArrayList<>();
-        Subject subject1 = new Subject("논리회로", "ELEC000000", "0", "0", "0", false, "0", "0");
-        Subject subject2 = new Subject("회로이론", "ELEC111111", "0", "0", "0", false, "0", "0");
-        Subject subject3 = new Subject("확률과정", "ELEC222222", "0", "0", "0", false, "0", "0");
-        Subject subject4 = new Subject("머신러닝", "ELEC333333", "0", "0", "0", false, "0", "0");
-        Subject subject5 = new Subject("A", "1", "0", "0", "0", false, "0", "0");
-        Subject subject6 = new Subject("B", "2", "0", "0", "0", false, "0", "0");
-        Subject subject7 = new Subject("C", "3", "0", "0", "0", false, "0", "0");
-        Subject subject8 = new Subject("D", "4", "0", "0", "0", false, "0", "0");
-        subjectList.add(subject1);
-        subjectList.add(subject2);
-        subjectList.add(subject3);
-        subjectList.add(subject4);
-        subjectList.add(subject5);
-        subjectList.add(subject6);
-        subjectList.add(subject7);
-        subjectList.add(subject8);
 
         /*
         TreeView 선언
@@ -121,6 +109,8 @@ public class Fragment2 extends Fragment {
         /*
             BottomSheetDialog 선언
          */
+
+
         BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -153,39 +143,56 @@ public class Fragment2 extends Fragment {
             }
         };
         treeView.setAdapter(adapter);
+        /* 서버에서 받아 올 과목 정보 */
+        db = FirebaseFirestore.getInstance();
+        subjectList = new ArrayList<>();
+        db.collection("Subject")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subjectList.add(document.toObject(Subject_.class));
+                            }
+                        } else {
+                        }
+                        treeNodeList = new TreeNode[subjectList.size()];
 
-        treeNodeList = new TreeNode[10];
+                        /* DB에서 받아온 과목들 매핑 */
+                        m = new HashMap<String, Integer>();
+                        adj = new boolean[subjectList.size()][subjectList.size()];
+                        for(int i=0; i<subjectList.size(); i++){
+                            m.put(subjectList.get(i).getName(), m.size());
+                        }
 
-        /* DB에서 받아온 과목들 매핑 */
-        m = new HashMap<String, Integer>();
-        adj = new boolean[subjectList.size()][subjectList.size()];
-        for(int i=0; i<subjectList.size(); i++){
-            m.put(subjectList.get(i).getName(), m.size());
-        }
-        
-        //rootNode 설정
-        rootNode = new TreeNode(subjectList.get(0).getName());
-        treeNodeList[0] = rootNode;
+                        //rootNode 설정
+                        rootNode = new TreeNode(subjectList.get(0).getName());
+                        treeNodeList[0] = rootNode;
 
-        //adj 초기화
-        for(int i=0;i<subjectList.size();i++){
-            for(int j=0;j<subjectList.size();j++){
-                adj[i][j] = false;
-            }
-        }
+                        //adj 초기화
+                        for(int i=0;i<subjectList.size();i++){
+                            for(int j=0;j<subjectList.size();j++){
+                                adj[i][j] = false;
+                            }
+                        }
 
-        //DB에서 받아와서 트리 구현
+                        //DB에서 받아와서 트리 구현
 
-        /* rootNode랑 인접리스트(fromDB) 넣어주면 트리 시각화 */
+                        /* rootNode랑 인접리스트(fromDB) 넣어주면 트리 시각화 */
 //        makeTreeFromDB(rootNode, adj);
 
-        adapter.setRootNode(rootNode);
+                        adapter.setRootNode(rootNode);
 
-        zoomLayout.addView(treeView);
-        // Inflate the layout for this fragment
+                        zoomLayout.addView(treeView);
+                        // Inflate the layout for this fragment
 
-        treeView.setMinimumWidth(displaySize);
-        treeView.setMinimumHeight(displaySize);
+                        treeView.setMinimumWidth(displaySize);
+                        treeView.setMinimumHeight(displaySize);
+                    }
+                });
+
+
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
 
         return v;
@@ -255,6 +262,22 @@ public class Fragment2 extends Fragment {
             }
         }
     };
+
+    public void updateSubjectlist(){
+        db.collection("Subject")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subjectList.add(document.toObject(Subject_.class));
+                            }
+                        } else {
+                        }
+                    }
+                });
+    }
 
     /* [최정인] DB로 얻은 인접리스트로 트리 시각화 */
 //    public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
