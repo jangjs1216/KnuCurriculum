@@ -18,14 +18,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.loginregister.login.KeepLoginActivity;
-import com.example.loginregister.login.SavedSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.apache.log4j.chainsaw.Main;
 
 import java.util.HashMap;
 import java.util.Map;

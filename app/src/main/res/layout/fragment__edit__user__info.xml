@@ -60,6 +60,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="로그아웃" />
+
             <LinearLayout
 
                 android:layout_width="match_parent"
@@ -169,16 +175,6 @@
                 android:layout_height="match_parent"
                 android:nestedScrollingEnabled="false"/>
 
-            <TextView
-                android:id="@+id/btn_add_user_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:paddingHorizontal="15sp"
-                android:paddingVertical="10sp"
-                android:text="+ 추가하기" />
-
             <FrameLayout
                 android:id="@+id/fragment_setting_container"
                 android:layout_width="match_parent"
@@ -190,5 +186,19 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/btn_add_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:paddingHorizontal="15sp"
+        android:paddingVertical="10sp"
+        android:text="+ 추가하기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_edit_user_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

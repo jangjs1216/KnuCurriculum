@@ -19,7 +19,6 @@
         android:paddingRight="10sp"
         android:background="@drawable/custom_edittext"
         android:inputType="textEmailAddress"
-        android:text="cccc@cccc.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -37,7 +36,6 @@
         android:ems="10"
         android:hint="비밀번호를 입력하세요"
         android:inputType="textPassword"
-        android:text="cccccc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,6 +83,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_pwd"
         app:layout_constraintVertical_bias="0.209" />
+
+    <CheckBox
+        android:id="@+id/automatic_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="자동로그인"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,10 +3,15 @@ package com.example.loginregister.login;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +33,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 
+import org.apache.log4j.chainsaw.Main;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
@@ -45,15 +52,27 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
-        SharedPreferences sharedPref;
         mFirebaseAuth=FirebaseAuth.getInstance();
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
         Google_Login=findViewById(R.id.Google_Login);
         TextView btn_login = findViewById(R.id.btn_login);
         TextView btn_register = findViewById(R.id.btn_register);
+        CheckBox automatic_login=findViewById(R.id.automatic_login);
 
+        //자동로그인
+//        SharedPreferences account_info=getSharedPreferences("user_info",Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor=account_info.edit();
+//        String login_id=account_info.getString("id","");
+//        String login_pw=account_info.getString("pw","");
+
+        if(PreferencesManager.getAccount(LoginActivity.this).length()!=0)
+        {
+            Log.e("###","sibal");
+            Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
         btn_login.setOnClickListener(v -> {
             // 로그인 요청
@@ -64,10 +83,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        Log.e("###","로그인 정보 맞음");
+                        // 자동로그인 버튼을 눌렀을 때
+                        if(automatic_login.isChecked()) {
+                            Log.e("###","자동로그인 버튼 눌림");
+                            PreferencesManager.storeAccount(LoginActivity.this,strEmail);
+                        }
                         Log.e("Login","로그인성공");
+                        Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
-                        finish();
                     }
                     else {
                         Log.e("Login","로그인실패");

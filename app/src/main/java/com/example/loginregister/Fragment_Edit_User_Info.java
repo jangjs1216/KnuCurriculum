@@ -1,5 +1,9 @@
 package com.example.loginregister;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +30,9 @@ import android.widget.Toast;
 import com.example.loginregister.curiList.Adapter_User_Info;
 import com.example.loginregister.curiList.User_Info_Data;
 import com.example.loginregister.login.FirebaseID;
+import com.example.loginregister.login.LoginActivity;
+import com.example.loginregister.login.LogoutActivity;
+import com.example.loginregister.login.PreferencesManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -67,6 +75,7 @@ public class Fragment_Edit_User_Info extends Fragment {
         et_userUniv = view.findViewById(R.id.et_userUniv);
         et_userMajor = view.findViewById(R.id.et_userMajor);
 
+
         ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
          //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         toolbar = (Toolbar)view.findViewById(R.id.tb_edit_user_info);
@@ -79,6 +88,17 @@ public class Fragment_Edit_User_Info extends Fragment {
         actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         //툴바 끝
 
+        //로그아웃
+        Button btn_logout=(Button)view.findViewById(R.id.btn_logout);
+//        SharedPreferences account_info= getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor=account_info.edit();
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), LogoutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //      리싸이클러뷰
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_edit_user_info);
@@ -143,7 +163,7 @@ public class Fragment_Edit_User_Info extends Fragment {
     }
 }
 
-
+//
 // tv_logout.setOnClickListener(new View.OnClickListener() {
 //@Override
 //public void onClick(View v) {

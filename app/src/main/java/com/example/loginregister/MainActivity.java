@@ -1,6 +1,8 @@
 package com.example.loginregister;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,8 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.curiList.User_Info_Data;
-import com.example.loginregister.login.KeepLoginActivity;
-import com.example.loginregister.login.SavedSharedPreferences;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
+                           // Log.e(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
 
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        Log.e(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        //Log.e(TAG, msg);
+                       // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         }
         reader.close();
     }
+
     public void check_nickname(){
         if(mAuth.getCurrentUser()!=null){
             Log.e(TAG, "계정정보있음");
@@ -177,10 +178,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             Log.e(TAG,"계정정보없음 " );
-            SavedSharedPreferences.setUserName(getApplicationContext(),null);//폰에있는 자동로그인정보 초기화
-            Intent intent = new Intent(MainActivity.this, KeepLoginActivity.class);
-            startActivity(intent);
-            finish();
         }
     }
 
