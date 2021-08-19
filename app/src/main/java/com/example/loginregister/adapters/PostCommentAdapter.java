@@ -7,6 +7,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -71,6 +72,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         OnViewHolderItemClickListener onViewHolderItemClickListener;
         private LinearLayout comment_layout;
         private ImageView iv_point;
+        private Button ccbtn;
 
         public PostCommentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -78,8 +80,9 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             comment=itemView.findViewById(R.id.comment_contents);
             comment_layout=itemView.findViewById(R.id.comment_layout);
             iv_point=itemView.findViewById(R.id.iv_point);
+            ccbtn = itemView.findViewById(R.id.btn_c_comment);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            ccbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder msgBuilder = new AlertDialog.Builder(activity)
@@ -124,9 +127,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
                 params.weight = 1;
                 comment_layout.setLayoutParams(params);
+                ccbtn.setVisibility(View.INVISIBLE);
                 if(position>0) {
                     if (Integer.parseInt(mcontent_data.get(position - 1).getComment_id()) % 100 == 0) {
                         iv_point.setVisibility(View.VISIBLE);
+
                     }
                 }
             }
