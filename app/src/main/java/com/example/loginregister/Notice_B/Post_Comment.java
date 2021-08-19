@@ -71,7 +71,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     int com_pos = 0;//게시글의 등록된 위치
     int like = 0;
     private Button likeButton; //좋아요 버튼
-    private TextView likeText; //좋아요 갯수보여주는 텍스트
+    private TextView likeText; //좋아요 갯수보여주는 텍스트 갱신
     String P_comment_id;
     private ArrayList<Comment> Cdata;
     SwipeRefreshLayout swipeRefreshLayout;
