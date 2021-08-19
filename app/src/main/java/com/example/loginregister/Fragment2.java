@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginregister.adapters.SubjectAdapter;
@@ -46,6 +47,7 @@ import de.blox.treeview.TreeView;
 public class Fragment2 extends Fragment {
     FirebaseFirestore db;
     String curData;
+    ViewHolder curViewHolder;
     private View v;
     private Toolbar toolbar;
     private final static String TAG ="Frag2";
@@ -59,8 +61,10 @@ public class Fragment2 extends Fragment {
     ArrayList<Subject_> subjectList;
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
+
     SubjectAdapter subjectAdapter;
     TreeView treeView;
+    BaseTreeAdapter adapter;
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
@@ -110,8 +114,7 @@ public class Fragment2 extends Fragment {
             BottomSheetDialog 선언
          */
 
-
-        BaseTreeAdapter adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
+        adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
             public ViewHolder onCreateViewHolder(View view) {
@@ -120,10 +123,41 @@ public class Fragment2 extends Fragment {
 
             @Override
             public void onBindViewHolder(ViewHolder viewHolder, Object data, int position) {
-                viewHolder.mTextView.setText(data.toString());
+                /*
+                [장준승] treenode에 정보를 업데이트 할 때, 오픈소스의 특성상 textview의
+                        값 자체를 변환하기 어려우므로, String 값 자체에 모든 정보를 일괄적으로 넘겨주어 처리합니다.
+
+                        Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.)
+                 */
+                Log.e("###", "현재 데이터 : "+data.toString());
+                String[] nodeData = data.toString().split("\\.");
+                Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
+                viewHolder.mTextView.setText(nodeData[0]);
+
+                if(nodeData[2].equals("1") && nodeData[2] != null)
+                {
+                    viewHolder.setViewHolderSelected();
+                }
+                else{
+                    viewHolder.setViewHoldernotSelected();
+                }
+
+                if(nodeData[1] != null)
+                {
+                    viewHolder.semesterTv.setText(nodeData[1]);
+                }else{
+                    viewHolder.semesterTv.setText("인식 오류");
+                }
+                viewHolder.setSemesterColored();
+
+
+
+
                 viewHolder.mTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        curViewHolder = viewHolder;
+
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         curData = viewHolder.mTextView.getText().toString();
 
@@ -135,11 +169,15 @@ public class Fragment2 extends Fragment {
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
                         LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
+                        LinearLayout LL4 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL4);
                         LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
+                        LL4.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
+
+
             }
         };
         treeView.setAdapter(adapter);
@@ -167,7 +205,7 @@ public class Fragment2 extends Fragment {
                         }
 
                         //rootNode 설정
-                        rootNode = new TreeNode(subjectList.get(0).getName());
+                        rootNode = new TreeNode(subjectList.get(0).getName()+".1학년 1학기.1");
                         treeNodeList[0] = rootNode;
 
                         //adj 초기화
@@ -176,6 +214,7 @@ public class Fragment2 extends Fragment {
                                 adj[i][j] = false;
                             }
                         }
+
 
                         //DB에서 받아와서 트리 구현
 
@@ -226,10 +265,13 @@ public class Fragment2 extends Fragment {
                             Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
                             for(TreeNode tn : treeNodeList)
                             {
-                                if(tn != null && curData == tn.getData().toString())
+                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                                 {
                                     int mappingPos = m.get(choosedSubjectName);
-                                    final TreeNode newChild = new TreeNode(choosedSubjectName);
+
+                                    //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                                    String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                                    final TreeNode newChild = new TreeNode(convertedSubjectName);
 
                                     //[장준승] 화면 사이즈 node 개수에 비례하여 변화
                                     updateDisplaySize();
@@ -259,10 +301,40 @@ public class Fragment2 extends Fragment {
                     startActivity(intent);
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
+
+                case R.id.LL4:
+                    SubjectDetailDialog sDialog = new SubjectDetailDialog(v.getContext(), curData);
+                    sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
+                        @Override
+                        public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
+                            Log.e("###", "수강정보 : " + isTakenClass + ", 수강학기 : " + TakenSemester);
+                            Log.e("###", "현재 Viewholder값 : " + curViewHolder.mTextView.getText());
+                            Log.e("###", "수정 이전 내부 값 : " + curViewHolder.semesterTv.getText());
+
+                            String currSubjectName = (String) curViewHolder.mTextView.getText();
+
+                            for(TreeNode tn : treeNodeList)
+                            {
+                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                                {
+                                    Log.e("###", "선택되었음!!"+curData);
+                                    if(isTakenClass)
+                                    {
+                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
+                                    }else{
+                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    sDialog.setCancelable(false);
+                    sDialog.show();
+
+                    break;
             }
         }
     };
-
     public void updateSubjectlist(){
         db.collection("Subject")
                 .get()

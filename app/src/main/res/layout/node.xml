@@ -6,11 +6,12 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="5dp"
-    android:background="#ffffff"
+    android:background="#000000"
     card_view:cardElevation="16dp"
     card_view:contentPadding="10dp">
 
     <LinearLayout
+        android:id="@+id/treenode_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -20,9 +21,17 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="23sp"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tv_semester_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_gravity="right"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

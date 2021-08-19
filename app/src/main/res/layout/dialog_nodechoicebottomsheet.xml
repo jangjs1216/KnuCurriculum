@@ -46,4 +46,18 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/LL4"
+        android:layout_width="match_parent"
+        android:layout_height="40sp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:text="과목 상세 정보"/>
+
+    </LinearLayout>
+
 </LinearLayout>
