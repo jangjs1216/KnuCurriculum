@@ -94,7 +94,7 @@ public class Fragment1 extends Fragment {
         // 프로필 설정
         tv_username = view.findViewById(R.id.tv_userName);
         setProfile(view);
-        //
+
         return view;
     }
 

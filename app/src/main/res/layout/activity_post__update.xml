@@ -29,7 +29,7 @@
         android:id="@+id/Post_write_contents"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"
+        android:layout_weight="10"
         android:background="@null"
         android:hint="Contents"
         android:selectAllOnFocus="false"
@@ -37,12 +37,7 @@
         android:textColor="@android:color/black"
         android:textSize="15sp" />
 
-    <ImageView
-        android:id="@+id/post_imageview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
+
 
     <LinearLayout
         android:layout_width="fill_parent"

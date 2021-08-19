@@ -63,12 +63,14 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         mTitle=findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents=findViewById(R.id.Post_write_contents);
         findViewById(R.id.Post_save).setOnClickListener(this);
-        post_imageView = findViewById(R.id.post_imageview);
-        post_imageView.setVisibility(View.INVISIBLE);
+
+        Intent intent=getIntent();
+        post_id=intent.getStringExtra("Postid");
+        Log.d("확인","여기는 게시글 작성위:"+post_num);
 
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
 
-            DocumentReference docRef2 = mStore.collection("Post").document(mAuth.getCurrentUser().getUid());
+            DocumentReference docRef2 = mStore.collection("Post").document(post_id);
             docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                    @Override
                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -79,36 +81,14 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        timestamp = post.getTimestamp();
                                                       comments = post.getComments();
                                                        commnet_num=post.getcoment_Num();
-                                                       post_id=post.getPost_id();
                                                    }
                                                });
 
-//            mStore.collection("user").document(mAuth.getCurrentUser().getUid())//
-//                    .get()
-//                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                            if(task.getResult()!=null){
-//                                //DocumentSnapshot post = task.getResult();
-//                                Post post = task.toObject(Post.class);
-//
-//                                p_nickname=(String)task.getResult().getData().get(FirebaseID.nickname);//
-//                                writer_id=(String)task.getResult().getData().get(FirebaseID.documentId);
-//                                Log.d("확인","현재 사용자 uid입니다:"+writer_id);
-//                            }
-//                        }
-//                    });
         }
 
 
 
-
-        Intent intent=getIntent();
-        post_num=intent.getStringExtra("post");
-        Log.d("확인","여기는 게시글 작성위:"+post_num);
     }
-
-
 
 
 
@@ -116,29 +96,9 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-//            String PostID=mStore.collection("Post").document().getId();//제목이 같아도 게시글이 겹치지않게
-//            Intent intent=getIntent();
-//            post_num=intent.getStringExtra("number");
-//            post_id=intent.getStringExtra("Postid");
-//            Log.d("확인","여기는 게시글 작성:"+post_num);
-//            Map<String, Object> data=new HashMap<>();
-//            data.put(FirebaseID.title,mTitle.getText().toString());//게시글제목
-//            data.put(FirebaseID.contents,mContents.getText().toString());//게시글 내용
-//            data.put(FirebaseID.timestamp, FieldValue.serverTimestamp());//파이어베이스 시간을 저장 그래야 게시글 정렬이 시간순가능
-//            data.put(FirebaseID.nickname,p_nickname);
-//            data.put(FirebaseID.post_num,post_num);
-//            data.put(FirebaseID.post_id,intent.getStringExtra("Postid"));//게시글 ID번호
-//            data.put(FirebaseID.writer_id,writer_id);
-//
-//            mStore.collection("Post").document(post_id).update(data).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    Toast.makeText(getApplicationContext(),"Update complite", Toast.LENGTH_SHORT).show();
-//                }
-//            });//Post라는 테이블에 데이터를 입력하는것/ 문서 이름을 PostID로 등록
 
 
-            Post post = new Post(post_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num);
             mStore.collection("Post").document(post_id).set(post);
 
 

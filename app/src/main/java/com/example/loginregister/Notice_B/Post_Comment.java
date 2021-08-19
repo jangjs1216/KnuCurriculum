@@ -107,7 +107,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
 
-        Toast.makeText(this, writer_id_post+ ' '+mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
+
         
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -217,7 +217,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                 }
                             });
                 } else {
-                    Toast.makeText(this, writer_id_post+ ' '+current_user, Toast.LENGTH_SHORT).show();
+
 
                 }
                 break;
@@ -258,32 +258,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        /*
-        mcontent = new ArrayList<>();//리사이클러뷰에 표시할 댓글 목록
-        mStore.collection("Comment")
-                .whereEqualTo("title", post_t)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
-                .orderBy(FirebaseID.timestamp, Query.Direction.ASCENDING)//시간정렬순으로 이건 처음에 작성한게 제일 위로 올라감 게시글과 반대
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null) {
-                            mcontent.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
-                            for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
-                                Map<String, Object> shot = snap.getData();
-                                String documentId = String.valueOf(shot.get(FirebaseID.documentId));
-                                String comment = String.valueOf(shot.get(FirebaseID.comment));
-                                String c_nickname = String.valueOf(shot.get(FirebaseID.nickname));
-                                String num_comment = String.valueOf(shot.get(FirebaseID.comment_post));
-                                String comment_id = String.valueOf(shot.get(FirebaseID.commentId));
-                                Comment data = new Comment(documentId, c_nickname, comment, Integer.toString(com_pos), post_t, num_comment, comment_id);
-                                mcontent.add(data);//여기까지가 게시글에 해당하는 데이터 적용
-                            }
-                        }
-                        contentAdapter = new PostCommentAdapter(mcontent, Post_Comment.this);//mDatas라는 생성자를 넣어줌
-                        mCommentRecyclerView.setAdapter(contentAdapter);
-                    }
 
-                });*/
 
 
     }

@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.RegisterActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"/>
         <activity android:name=".Notice_B.Post_write" />
         <activity android:name=".Notice_B.NoticeBoard" />
         <activity android:name=".Notice_B.Post_Comment" />
