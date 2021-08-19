@@ -180,7 +180,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                     int curLike = Integer.parseInt(post.getLike());
                                     curLike--;
                                     post.setLike(Integer.toString(curLike));
-                                    liked_Post.remove(findIndex);;
+                                    liked_Post.remove(findIndex);
                                 }
                                 else{
                                     int curLike = Integer.parseInt(post.getLike());
