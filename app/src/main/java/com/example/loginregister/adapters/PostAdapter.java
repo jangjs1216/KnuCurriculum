@@ -19,8 +19,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import kotlin.collections.UCollectionsKt;
+
 public class
 PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+    private String forum_sort;
     private List<Post> datas;//뒷부분 추가
     private Context mcontext;
 
@@ -32,7 +35,8 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     }
 
 
-    public PostAdapter(Context mcontext, List<Post> datas) {//어댑터에 대한 생성자
+    public PostAdapter(Context mcontext, List<Post> datas, String forum_sort) {//어댑터에 대한 생성자
+        this.forum_sort=forum_sort;
         this.datas = datas;
         this.mcontext=mcontext;
     }
@@ -59,6 +63,7 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             public void onClick(View v) {
                 if(posi!= RecyclerView.NO_POSITION){
                     Intent intent=new Intent(v.getContext(), Post_Comment.class);
+                    intent.putExtra("게시판", forum_sort);
                     intent.putExtra("title",datas.get(posi).getTitle());
                     intent.putExtra("content",datas.get(posi).getContents());
                     intent.putExtra("nickname",datas.get(posi).getP_nickname());

@@ -21,7 +21,7 @@ public class Post implements Comparable<Post> {
 
     public int getcoment_Num(){return coment_Num;}
 
-    public ArrayList<Comment> getComments() {return  comments;}
+    public ArrayList<Comment> getComments() {return comments;}
 
     public void setComments(ArrayList<Comment> comments){this.comments = comments;}
 

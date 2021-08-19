@@ -62,6 +62,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private TextView com_nick;
     private ImageView com_photo;
     private ImageView com_photo2;
+    private String forum_sort;
     private PostCommentAdapter contentAdapter;
     private RecyclerView mCommentRecyclerView;
     private List<Comment> mcontent;
@@ -102,6 +103,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_nick.setText(intent.getStringExtra("nickname"));
         com_text.setText(intent.getStringExtra("content"));
         com_title.setText(intent.getStringExtra("title"));
+        forum_sort=getIntent().getExtras().getString("게시판");
 
         //likeText.setText(intent.getStringExtra("like").toString());
         like = Integer.parseInt(intent.getStringExtra("like"));
@@ -164,7 +166,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         ArrayList<String> liked_Post = userAccount.getLiked_Post();
 
 
-                        DocumentReference docRef2 = mStore.collection("Post").document(post_id);
+                        DocumentReference docRef2 = mStore.collection(forum_sort).document(post_id);
                         docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -192,7 +194,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                                 //String documentId, String title, String contents, String p_nickname, String p_photo, String post_num, String post_photo, String post_id, String writer_id, String like
                                 //Post temp = new Post(post.getDocumentId(), post.getTitle(), post.getContents(), post.getP_nickname(), post.getP_photo(), post.getPost_num(), post.getPost_photo(), post.getPost_id(), post.getWriter_id(), )
-                                mStore.collection("Post").document(post_id).set(post);
+                                mStore.collection(forum_sort).document(post_id).set(post);
                                 mStore.collection("user").document(user.getUid()).set(userAccount);
                             }
                         });
@@ -218,7 +220,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             case R.id.first:
                 if (mAuth.getCurrentUser().getUid().equals(writer_id_post)) {
 
-                    mStore.collection("Post").document(post_id)
+                    mStore.collection(forum_sort).document(post_id)
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -234,6 +236,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             case R.id.second:
                 if (writer_id_post.equals(mAuth.getCurrentUser().getUid())) {
                     Intent intent = new Intent(this, Post_Update.class);
+                    intent.putExtra("게시판",forum_sort);
                     intent.putExtra("Postid", post_id);
                     intent.putExtra("number", post_num);
                     startActivity(intent);//게시글 수정
@@ -249,7 +252,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         super.onStart();
 
         Cdata=new ArrayList<Comment>();
-        DocumentReference docRef = mStore.collection("Post").document(post_id);
+        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -276,7 +279,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             if (mAuth.getCurrentUser() != null) {
 
 
-                DocumentReference docRef = mStore.collection("Post").document(post_id);
+                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
                 docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -309,7 +312,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         post.setcoment_Num(Csize+1);
                         post.setComments(data);
 
-                        mStore.collection("Post").document(post_id).set(post);
+                        mStore.collection(forum_sort).document(post_id).set(post);
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
 
@@ -335,7 +338,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         } else if(P_comment_id != null) { // 대댓글
             if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
 
-                DocumentReference docRef = mStore.collection("Post").document(post_id);
+                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
                 docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -378,7 +381,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         post.setComments(data);
 
-                        mStore.collection("Post").document(post_id).set(post);
+                        mStore.collection(forum_sort).document(post_id).set(post);
 
 
 

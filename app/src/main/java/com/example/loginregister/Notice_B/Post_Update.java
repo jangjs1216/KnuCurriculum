@@ -51,6 +51,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private String post_num,post_id,writer_id,comment_post,like;
     private Timestamp timestamp;
     private ImageView post_imageView;
+    private String forum_sort;
     private static final int CHOOSE_IMAGE = 101;
     ArrayList<Comment> comments = new ArrayList<>();
     int commnet_num;
@@ -66,11 +67,12 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
 
         Intent intent=getIntent();
         post_id=intent.getStringExtra("Postid");
+        forum_sort=intent.getExtras().getString("게시판");
         Log.d("확인","여기는 게시글 작성위:"+post_num);
 
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
 
-            DocumentReference docRef2 = mStore.collection("Post").document(post_id);
+            DocumentReference docRef2 = mStore.collection(forum_sort).document(post_id);
             docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                    @Override
                                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -79,7 +81,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        p_nickname = post.getP_nickname();
                                                        like = post.getLike();
                                                        timestamp = post.getTimestamp();
-                                                      comments = post.getComments();
+                                                       comments = post.getComments();
                                                        commnet_num=post.getcoment_Num();
                                                    }
                                                });
@@ -99,7 +101,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
 
 
             Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num);
-            mStore.collection("Post").document(post_id).set(post);
+            mStore.collection(forum_sort).document(post_id).set(post);
 
 
             startActivity(new Intent(this,NoticeBoard.class));

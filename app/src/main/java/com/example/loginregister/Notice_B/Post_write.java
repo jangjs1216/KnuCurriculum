@@ -54,7 +54,7 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
     private Uri uriProfileImage;
     private ImageView post_imageView;
     private static final int CHOOSE_IMAGE = 101;
-
+    private String forum_sort;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +67,10 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
         post_imageView = findViewById(R.id.post_imageview);
         post_imageView.setVisibility(View.INVISIBLE);
         post_progressBar = findViewById(R.id.post_progressbar);
+
+        Intent intent=getIntent();
+        forum_sort=intent.getExtras().getString("게시판");
+
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
             mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                     //우리 파이어베이스의 user 컬렉션의 정보를 가져올 수 있어. email, password, Uid(주민번호같은 거), nickname
@@ -101,7 +105,7 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-            String PostID=mStore.collection("Post").document().getId();//제목이 같아도 게시글이 겹치지않게
+            String PostID=mStore.collection(forum_sort).document().getId();//제목이 같아도 게시글이 겹치지않게
             Intent intent=getIntent();
             final Post[] post = new Post[1];
 
@@ -115,7 +119,7 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
                     Date date = new Date(datetime);
                     Timestamp timestamp = new Timestamp(date);
                     post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID,new ArrayList<>(),0);
-                    mStore.collection("Post").document(PostID).set(post[0]);
+                    mStore.collection(forum_sort).document(PostID).set(post[0]);
                 }
             });
             finish();

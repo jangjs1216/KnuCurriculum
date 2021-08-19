@@ -46,6 +46,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
     private List<Post> mDatas;
     private String edit_s;//검색어 저장용도
     private EditText search_edit;//검색어 에딧
+    private String forum_sort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,11 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
         findViewById(R.id.edit_button).setOnClickListener(this);
         findViewById(R.id.search_btn).setOnClickListener(this);
         swipeRefreshLayout=findViewById(R.id.refresh_board);
+
+        // 게시판 컬렉션 지정
+        Intent intent=getIntent();
+        int forum_num=intent.getExtras().getInt("게시판");
+        forum_sort="Post"+forum_num;
 
         String[] items = getResources().getStringArray(R.array.sort_spinner_array);
 
@@ -111,7 +117,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
 
     public void updateDatas() {
         mDatas = new ArrayList<>();//
-        mStore.collection("Post")//리사이클러뷰에 띄울 파이어베이스 테이블 경로
+        mStore.collection(forum_sort)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
                 .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
                 .addSnapshotListener(
                         new EventListener<QuerySnapshot>() {
@@ -125,7 +131,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
                                     }
                                 } else {
                                 }
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);
                                 mPostRecyclerView.setAdapter(mAdapter);
                             }
                         });
@@ -133,7 +139,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
 
     public void sortDatas() {
         mDatas = new ArrayList<>();//
-        mStore.collection("Post")//리사이클러뷰에 띄울 파이어베이스 테이블 경로
+        mStore.collection(forum_sort)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
                 .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
                 .addSnapshotListener(
                         new EventListener<QuerySnapshot>() {
@@ -151,7 +157,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
                                 } else {
                                 }
                                 Collections.sort(mDatas);
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);//mDatas라는 생성자를 넣어줌
                                 mPostRecyclerView.setAdapter(mAdapter);
                             }
                         });
@@ -162,8 +168,9 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.edit_button:
-                Intent intent2=new Intent(this, Post_write.class);
-                startActivity(intent2);
+                Intent intent=new Intent(this, Post_write.class);
+                intent.putExtra("게시판",forum_sort);
+                startActivity(intent);
                 break;
           //  case R.id.search_btn:
               //  Intent intent=new Intent(this,Search_Post_Activity.class);

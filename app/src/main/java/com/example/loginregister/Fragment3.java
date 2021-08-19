@@ -35,7 +35,6 @@ public class Fragment3 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
 
-
         Button forum1=view.findViewById(R.id.forum1);
         Button forum2=view.findViewById(R.id.forum2);
         Button forum3=view.findViewById(R.id.forum3);
@@ -44,13 +43,43 @@ public class Fragment3 extends Fragment {
         Button forum6=view.findViewById(R.id.forum6);
         Button forum7=view.findViewById(R.id.forum7);
 
-        forum1.setOnClickListener(new View.OnClickListener() {
+        Button.OnClickListener onClickListener=new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), NoticeBoard.class);
+                Intent intent=new Intent(getActivity(),NoticeBoard.class);
+                switch(v.getId()){
+                    case R.id.forum1:
+                        intent.putExtra("게시판",1);
+                        break;
+                    case R.id.forum2:
+                        intent.putExtra("게시판",2);
+                        break;
+                    case R.id.forum3:
+                        intent.putExtra("게시판",3);
+                        break;
+                    case R.id.forum4:
+                        intent.putExtra("게시판",4);
+                        break;
+                    case R.id.forum5:
+                        intent.putExtra("게시판",5);
+                        break;
+                    case R.id.forum6:
+                        intent.putExtra("게시판",6);
+                        break;
+                    case R.id.forum7:
+                        intent.putExtra("게시판",7);
+                        break;
+                }
                 startActivity(intent);
             }
-        });
+        };
+        forum1.setOnClickListener(onClickListener);
+        forum2.setOnClickListener(onClickListener);
+        forum3.setOnClickListener(onClickListener);
+        forum4.setOnClickListener(onClickListener);
+        forum5.setOnClickListener(onClickListener);
+        forum6.setOnClickListener(onClickListener);
+        forum7.setOnClickListener(onClickListener);
 
         return view;
     }
