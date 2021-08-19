@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
@@ -71,7 +72,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private TextView likeText; //좋아요 갯수보여주는 텍스트
     String P_comment_id;
     private ArrayList<Comment> Cdata;
-
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public static Context mcontext;
     public boolean Compared_c = true;
@@ -108,7 +109,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
 
-
+        swipeRefreshLayout=findViewById(R.id.refresh_commnet);
         
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -120,13 +121,21 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         //로그인 유저 정보 받아오기
         user = mAuth.getCurrentUser();
 
-
-
         post_t = intent.getStringExtra("title");//게시글의 위치
         //time=(String)intent.getSerializableExtra("time");//해당 게시글의 등록 시간
 
-
         findViewById(R.id.comment_button).setOnClickListener(this);//댓글 입력 버튼
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+               onStart();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
+
 
         if (mAuth.getCurrentUser() != null) {//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
             mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서

@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
@@ -40,7 +41,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
     private RecyclerView mPostRecyclerView;
-
+    SwipeRefreshLayout swipeRefreshLayout;
     private PostAdapter mAdapter;
     private List<Post> mDatas;
     private String edit_s;//검색어 저장용도
@@ -59,6 +60,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
         mPostRecyclerView = findViewById(R.id.recyclerview);
         findViewById(R.id.edit_button).setOnClickListener(this);
         findViewById(R.id.search_btn).setOnClickListener(this);
+        swipeRefreshLayout=findViewById(R.id.refresh_board);
 
         String[] items = getResources().getStringArray(R.array.sort_spinner_array);
 
@@ -85,6 +87,16 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
             }
         });
         getSupportActionBar().setTitle("Board");
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                updateDatas();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
     }
 
     @Override
