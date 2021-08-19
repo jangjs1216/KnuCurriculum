@@ -107,7 +107,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
 
-       
+        Toast.makeText(this, writer_id_post+ ' '+mAuth.getCurrentUser().getUid(), Toast.LENGTH_SHORT).show();
         
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -201,24 +201,28 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {//게시글 작성자와 현재 사용자와의 uid가 같으면 기능 수행가능하게
+
         switch (item.getItemId()) {
             case R.id.first:
-                if (writer_id_post.equals(current_user)) {
+                if (mAuth.getCurrentUser().getUid().equals(writer_id_post)) {
+
                     mStore.collection("Post").document(post_id)
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("확인", "삭제되었습니다.");
+
                                     finish();
                                 }
                             });
                 } else {
-                    Toast.makeText(this, "작성자가 아닙니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, writer_id_post+ ' '+current_user, Toast.LENGTH_SHORT).show();
+
                 }
                 break;
             case R.id.second:
-                if (writer_id_post.equals(current_user)) {
+                if (writer_id_post.equals(mAuth.getCurrentUser().getUid())) {
                     Intent intent = new Intent(this, Post_Update.class);
                     intent.putExtra("Postid", post_id);
                     intent.putExtra("number", post_num);
@@ -319,6 +323,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
                         cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
 
+                        if(Csize+1 >=100)
+                        {
+                            Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                            return;
+                        }
 
                         data.add(cur_comment);
                         Collections.sort(data);
@@ -376,6 +385,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         }
 
+                        if(Csize >=100)
+                        {
+                            Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         Comment cur_comment = new Comment();
 
 

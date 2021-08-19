@@ -69,6 +69,9 @@ public class Comment implements Comparable<Comment> {
 
     @Override
     public int compareTo(Comment comment) {
-        return this.comment_id.compareTo(comment.comment_id);
+
+        Integer c1=Integer.parseInt(this.comment_id);
+        Integer c2 = Integer.parseInt(comment.comment_id);
+        return c1.compareTo(c2);
     }
 }
