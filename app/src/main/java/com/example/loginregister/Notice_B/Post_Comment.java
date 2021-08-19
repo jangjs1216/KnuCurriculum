@@ -41,6 +41,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -170,7 +172,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                                 int findIndex = -1;
                                 for(int i = 0; i < liked_Post.size(); i++){
-                                    if(post_id.equals(post_id)){
+                                    if(post_id.equals(liked_Post.get(i))){
                                         findIndex = i;
                                     }
                                 }
@@ -222,12 +224,10 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("확인", "삭제되었습니다.");
-
                                     finish();
                                 }
                             });
                 } else {
-
 
                 }
                 break;
@@ -244,11 +244,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
-
     @Override
     protected void onStart() {
         super.onStart();
-
 
         Cdata=new ArrayList<Comment>();
         DocumentReference docRef = mStore.collection("Post").document(post_id);
@@ -257,20 +255,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Post post = documentSnapshot.toObject(Post.class);
                 Cdata.clear();
-
                 Cdata = post.getComments();
-
-
 
                 contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this);//mDatas라는 생성자를 넣어줌
                 mCommentRecyclerView.setAdapter(contentAdapter);
-
             }
         });
-
-
-
-
     }
 
     public void compared(String comment_id) {
@@ -278,7 +268,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_edit.setHint("대댓글 작성하기");
 
         P_comment_id = comment_id;
-
     }
 
     @Override
@@ -390,6 +379,18 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         post.setComments(data);
 
                         mStore.collection("Post").document(post_id).set(post);
+
+
+
+                        FirebaseMessaging.getInstance().subscribeToTopic(post_id)
+                                .addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        Log.e("댓글 생성"," 구독성공");
+                                    }
+                                    else{
+                                        Log.e("댓글 생성"," 구독실패");
+                                    }
+                                });
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
 

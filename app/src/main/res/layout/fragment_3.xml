@@ -48,43 +48,43 @@
             android:id="@+id/forum1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum1" />
 
         <Button
             android:id="@+id/forum2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum2" />
 
         <Button
             android:id="@+id/forum3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum3" />
 
         <Button
             android:id="@+id/forum4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum4" />
 
         <Button
             android:id="@+id/forum5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum5" />
 
         <Button
             android:id="@+id/forum6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum6" />
 
         <Button
             android:id="@+id/forum7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Forum7" />
     </LinearLayout>
 
 
