@@ -37,7 +37,7 @@ public class ViewHolder {
 
     public void setSemesterColored()
     {
-        Log.e("###","현재 semester값 : "+semesterTv.getText());
+        //Log.e("###","현재 semester값 : "+semesterTv.getText());
         if(semesterTv.getText().equals("1학년 1학기"))
         {
             tn_layout.setBackgroundColor(Color.parseColor("#EEAFAF"));

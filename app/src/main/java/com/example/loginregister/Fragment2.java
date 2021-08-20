@@ -29,9 +29,12 @@ import android.widget.Toast;
 import com.example.loginregister.adapters.SubjectAdapter;
 import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,13 +42,15 @@ import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.blox.treeview.BaseTreeAdapter;
 import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
-    FirebaseFirestore db;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference docRef;
     String curData;
     ViewHolder curViewHolder;
     private View v;
@@ -58,13 +63,16 @@ public class Fragment2 extends Fragment {
 
     TreeNode[] treeNodeList;
     ZoomLayout zoomLayout;
-    ArrayList<Subject_> subjectList;
+    ArrayList<Subject_> subjectList = new ArrayList<>();
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
     BaseTreeAdapter adapter;
+
+    //서버에 올리는 Table
+    Table userTableInfo, currTechTable;
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
@@ -110,6 +118,9 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
+        /* 서버로부터 과목리스트, 테이블 받아와서 트리 보여주기 */
+        getSubjectListFromFB();
+
         /*
             BottomSheetDialog 선언
          */
@@ -129,9 +140,9 @@ public class Fragment2 extends Fragment {
 
                         Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.)
                  */
-                Log.e("###", "현재 데이터 : "+data.toString());
+                //Log.e("###", "현재 데이터 : "+data.toString());
                 String[] nodeData = data.toString().split("\\.");
-                Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
+                //Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
                 viewHolder.mTextView.setText(nodeData[0]);
 
                 if(nodeData[2].equals("1") && nodeData[2] != null)
@@ -181,56 +192,6 @@ public class Fragment2 extends Fragment {
             }
         };
         treeView.setAdapter(adapter);
-        /* 서버에서 받아 올 과목 정보 */
-        db = FirebaseFirestore.getInstance();
-        subjectList = new ArrayList<>();
-        db.collection("Subject")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                subjectList.add(document.toObject(Subject_.class));
-                            }
-                        } else {
-                        }
-                        treeNodeList = new TreeNode[subjectList.size()];
-
-                        /* DB에서 받아온 과목들 매핑 */
-                        m = new HashMap<String, Integer>();
-                        adj = new boolean[subjectList.size()][subjectList.size()];
-                        for(int i=0; i<subjectList.size(); i++){
-                            m.put(subjectList.get(i).getName(), m.size());
-                        }
-
-                        //rootNode 설정
-                        rootNode = new TreeNode(subjectList.get(0).getName()+".1학년 1학기.1");
-                        treeNodeList[0] = rootNode;
-
-                        //adj 초기화
-                        for(int i=0;i<subjectList.size();i++){
-                            for(int j=0;j<subjectList.size();j++){
-                                adj[i][j] = false;
-                            }
-                        }
-
-
-                        //DB에서 받아와서 트리 구현
-
-                        /* rootNode랑 인접리스트(fromDB) 넣어주면 트리 시각화 */
-//        makeTreeFromDB(rootNode, adj);
-
-                        adapter.setRootNode(rootNode);
-
-                        zoomLayout.addView(treeView);
-                        // Inflate the layout for this fragment
-
-                        treeView.setMinimumWidth(displaySize);
-                        treeView.setMinimumHeight(displaySize);
-                    }
-                });
-
 
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
 
@@ -244,53 +205,16 @@ public class Fragment2 extends Fragment {
             switch (v.getId()){
                 case R.id.LL1:
                     nodeChoiceBottomSheetDialog.dismiss();
-
-                    //과목 리스트 볼 수 있는 BottomSheetDialog
-                    subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
-                    subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
                     subjectChoiceBottomSheetDialog.show();
-
-                    subjectAdapter = new SubjectAdapter(subjectList);
-                    subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
-                    subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    subjectRecyclerView.setAdapter(subjectAdapter);
-
-                    //RecyclerView에서 선택된 아이템에 접근
-                    subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(View v, int pos) {
-                            String choosedSubjectName = subjectList.get(pos).getName();
-                            Log.e("###", choosedSubjectName + " 선택 됨");
-
-                            Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-                            for(TreeNode tn : treeNodeList)
-                            {
-                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
-                                {
-                                    int mappingPos = m.get(choosedSubjectName);
-
-                                    //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                                    String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
-                                    final TreeNode newChild = new TreeNode(convertedSubjectName);
-
-                                    //[장준승] 화면 사이즈 node 개수에 비례하여 변화
-                                    updateDisplaySize();
-                                    Log.e("###", "Current displaySize : "+displaySize);
-
-                                    adj[m.get(curData)][mappingPos] = true;
-                                    treeNodeList[mappingPos] = newChild;
-                                    tn.addChild(newChild);
-                                    break;
-                                }
-                            }
-
-                            subjectChoiceBottomSheetDialog.dismiss();
-                        }
-                    });
                     break;
 
                 case R.id.LL2:
+                    TreeNode parent =  treeNodeList[m.get(curData)].getParent();
+                    String[] nodeData = parent.getData().toString().split("\\.");
+                    userTableInfo.getTable().get(nodeData[0]).put(curData, "0");
+                    db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
                     deleteTreeFromDB(curData);
+
                     updateDisplaySize();
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
@@ -335,55 +259,7 @@ public class Fragment2 extends Fragment {
             }
         }
     };
-    public void updateSubjectlist(){
-        db.collection("Subject")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                subjectList.add(document.toObject(Subject_.class));
-                            }
-                        } else {
-                        }
-                    }
-                });
-    }
 
-    /* [최정인] DB로 얻은 인접리스트로 트리 시각화 */
-//    public void makeTreeFromDB(TreeNode currNode, boolean adj[][]){
-//        int currNodeIndex = Integer.parseInt(currNode.getData().toString().substring(5));
-//
-//        for(int i = 0; i < adj.length; i++){
-//            if(adj[currNodeIndex][i] == true){
-//                final TreeNode newChild = new TreeNode(getNodeText());
-//                treeNodeList[i] = newChild;
-//                currNode.addChild(newChild);
-//                makeTreeFromDB(newChild, adj);
-//            }
-//        }
-//    }
-
-    /* [장준승] DB 바탕으로 트리 노드 삭제 */
-    public void deleteTreeFromDB(String currNode){
-        int currNodeIndex = m.get(currNode);
-
-        //Log.e("###", currNodeIndex + "삭제요청");
-        for(int i = 0; i < subjectList.size(); i++){
-            if(adj[currNodeIndex][i] == true){
-                //Log.e("###", currNodeIndex + "와" + i + "접근");
-                String nextNode = subjectList.get(i).getName();
-                deleteTreeFromDB(nextNode);
-                adj[currNodeIndex][i] = false;
-            }
-        }
-        treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
-    }
-
-    private String getNodeText() {
-        return "Node " + nodeCount++;
-    }
 //툴바 레이아웃설정
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -413,4 +289,178 @@ public class Fragment2 extends Fragment {
 
         return;
     }
+
+
+
+    /* [최정인] 기능 함수화 */
+
+    // 서버에서 Subject 받아오기
+    /* SubjectList 완성 -> 노드추가 리사이클러뷰 연결 -> SubjectList 매핑 -> FB로부터 테이블 받기 */ 
+    public void getSubjectListFromFB(){
+        db.collection("Subject")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subjectList.add(document.toObject(Subject_.class));
+                            }
+                        } else {
+                        }
+                        treeNodeList = new TreeNode[subjectList.size()];
+
+
+                        //adj 초기화
+                        adj = new boolean[subjectList.size()][subjectList.size()];
+                        for(int i=0;i<subjectList.size();i++){
+                            for(int j=0;j<subjectList.size();j++){
+                                adj[i][j] = false;
+                            }
+                        }
+
+                        mappingSubjectList();
+
+                        getTableFromFB();
+
+                        makeRVBySubjectList();
+                    }
+                });
+    }
+
+    // SubjectList로 리사이클러뷰 만들기
+    public void makeRVBySubjectList(){
+        //과목 리스트 볼 수 있는 BottomSheetDialog
+        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+        
+        subjectAdapter = new SubjectAdapter(subjectList);
+        subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        subjectRecyclerView.setAdapter(subjectAdapter);
+
+        //RecyclerView에서 선택된 아이템에 접근
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String choosedSubjectName = subjectList.get(pos).getName();
+                Log.e("###", choosedSubjectName + " 선택 됨");
+
+                Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                for(TreeNode tn : treeNodeList)
+                {
+                    if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                    {
+                        //서버 Table 업데이트
+                        userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
+                        db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+
+                        int mappingPos = m.get(choosedSubjectName);
+
+                        //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                        String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                        final TreeNode newChild = new TreeNode(convertedSubjectName);
+
+                        //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                        updateDisplaySize();
+                        Log.e("###", "Current displaySize : "+displaySize);
+
+                        adj[m.get(curData)][mappingPos] = true;
+                        treeNodeList[mappingPos] = newChild;
+                        tn.addChild(newChild);
+                        break;
+                    }
+                }
+                subjectChoiceBottomSheetDialog.dismiss();
+            }
+        });
+    }
+
+    //SubjectList 매핑
+    public void mappingSubjectList(){
+        /* DB에서 받아온 과목들 매핑 */
+        m = new HashMap<String, Integer>();
+        adj = new boolean[subjectList.size()][subjectList.size()];
+        for(int i=0; i<subjectList.size(); i++){
+            m.put(subjectList.get(i).getName(), m.size());
+        }
+    }
+
+    // 서버에서 Table 받아오기
+    /* 서버에서 Table 받아오면 -> 받아온 Table을 adj로 변환 -> adj기반으로 트리 만들기 */
+    public void getTableFromFB(){
+        docRef = db.collection("UsersTableInfo").document("Matrix");
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userTableInfo = documentSnapshot.toObject(Table.class);
+                changeToAdj(userTableInfo);
+            }
+        });
+    }
+    
+    // 서버에서 받아온 Table을 adj로 변환
+    public void changeToAdj(Table table){
+        for(String currSubject : table.getTable().keySet()){
+            Map<String, String> currRow =table.getTable().get(currSubject);
+
+            for(String nextSubject : currRow.keySet()){
+                if(currRow.get(nextSubject).equals("1")){
+                    int currMappingPos = m.get(currSubject);
+                    int nextMappingPos = m.get(nextSubject);
+
+                    adj[currMappingPos][nextMappingPos] = true;
+                }
+            }
+        }
+
+        //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
+        rootNode = new TreeNode(table.getRoot() + ".1학년 1학기.1");
+        treeNodeList[m.get(table.getRoot())] = rootNode;
+        makeTreeByAdj(rootNode);
+        adapter.setRootNode(rootNode);
+
+        zoomLayout.addView(treeView);
+
+        treeView.setMinimumWidth(displaySize);
+        treeView.setMinimumHeight(displaySize);
+    }
+
+    // adj로 트리 만들기
+    public void makeTreeByAdj(TreeNode currNode){
+        String[] nodeData = currNode.getData().toString().split("\\.");
+        String currSubjectName = nodeData[0];
+        int currMappingPos = m.get(currSubjectName);
+
+        for(int i = 0; i < adj.length; i++){
+            if(adj[currMappingPos][i] == true){
+                String nextSubjectName = subjectList.get(i).getName();
+
+                final TreeNode newChild = new TreeNode(nextSubjectName + ".1학년 1학기.1");
+                treeNodeList[i] = newChild;
+                currNode.addChild(newChild);
+                makeTreeByAdj(newChild);
+            }
+        }
+    }
+
+    // DB 바탕으로 트리 노드 삭제
+    public void deleteTreeFromDB(String currNode){
+        int currNodeIndex = m.get(currNode);
+
+        for(int i = 0; i < subjectList.size(); i++){
+            if(adj[currNodeIndex][i] == true){
+                String nextNode = subjectList.get(i).getName();
+                deleteTreeFromDB(nextNode);
+                adj[currNodeIndex][i] = false;
+
+                //서버 Table 업데이트
+                userTableInfo.getTable().get(currNode).put(nextNode, "0");
+                db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+            }
+        }
+        treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
+    }
+
+    
 }

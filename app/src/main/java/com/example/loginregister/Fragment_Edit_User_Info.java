@@ -32,7 +32,6 @@ import com.example.loginregister.curiList.User_Info_Data;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.login.LoginActivity;
 import com.example.loginregister.login.LogoutActivity;
-import com.example.loginregister.login.PreferencesManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
