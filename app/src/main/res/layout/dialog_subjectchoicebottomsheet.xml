@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/subjectChoiceRecyclerView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
-    android:background="@color/black">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="과목명"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/searchBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:text="검색"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subjectChoiceRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@color/black">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
+

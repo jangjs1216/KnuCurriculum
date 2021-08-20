@@ -22,6 +22,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +68,8 @@ public class Fragment2 extends Fragment {
     ArrayList<Subject_> subjectList = new ArrayList<>();
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
+    EditText searchET;
+    Button searchBtn;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -401,7 +405,11 @@ public class Fragment2 extends Fragment {
         subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
 
         subjectAdapter = new SubjectAdapter(subjectList);
-        subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        subjectRecyclerView = subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
+        searchBtn = subjectChoiceBottomSheetDialog.findViewById(R.id.searchBtn);
+        searchBtn.setOnClickListener(searchBtnOnClickListener);
+
         subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         subjectRecyclerView.setAdapter(subjectAdapter);
 
@@ -437,10 +445,60 @@ public class Fragment2 extends Fragment {
                         break;
                     }
                 }
+                //subjectAdapter = new SubjectAdapter(subjectList);
                 subjectChoiceBottomSheetDialog.dismiss();
             }
         });
     }
+
+    View.OnClickListener searchBtnOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+            for(Subject_ subject_ : subjectList){
+                if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+            }
+            subjectAdapter = new SubjectAdapter(searchSubjectList);
+            subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            subjectRecyclerView.setAdapter(subjectAdapter);
+
+            //RecyclerView에서 선택된 아이템에 접근
+            subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int pos) {
+                    String choosedSubjectName = searchSubjectList.get(pos).getName();
+                    Log.e("###", choosedSubjectName + " 선택 됨");
+
+                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                    for(TreeNode tn : treeNodeList)
+                    {
+                        if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                        {
+                            //서버 Table 업데이트
+                            userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
+                            db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+
+                            int mappingPos = m.get(choosedSubjectName);
+
+                            //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                            String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                            final TreeNode newChild = new TreeNode(convertedSubjectName);
+
+                            //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                            updateDisplaySize();
+                            Log.e("###", "Current displaySize : "+displaySize);
+
+                            adj[m.get(curData)][mappingPos] = true;
+                            treeNodeList[mappingPos] = newChild;
+                            tn.addChild(newChild);
+                            break;
+                        }
+                    }
+                    subjectChoiceBottomSheetDialog.dismiss();
+                }
+            });
+        }
+    };
 
     // DB 바탕으로 트리 노드 삭제
     public void deleteTreeFromDB(String currNode){
