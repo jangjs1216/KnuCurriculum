@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.loginregister.R;
+import com.example.loginregister.Table;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -54,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
                             ArrayList<String> liked_Post = new ArrayList<>();
-                            UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd, null, liked_Post);
+                            UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd, null, liked_Post, null);
                             mStore.collection("user").document(user.getUid()).set(userAccount);
                             finish();
 

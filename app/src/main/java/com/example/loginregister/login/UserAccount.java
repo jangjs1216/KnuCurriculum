@@ -1,5 +1,7 @@
 package com.example.loginregister.login;
 
+import com.example.loginregister.Table;
+
 import java.util.ArrayList;
 
 // 사용자 계정 정보 모델 클래스
@@ -9,15 +11,17 @@ public class UserAccount {
     private String password; // 비밀번호
     private String nickname;
     private ArrayList<String> Liked_Post; // 좋아요 누른 게시물의 Post_Id
+    private Table overallTable;
 
     public UserAccount() { }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, Table overallTable) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
         this.nickname = nickname;
         this.Liked_Post = liked_Post;
+        this.overallTable = overallTable;
     }
 
     public String getIdToken() {
@@ -58,5 +62,13 @@ public class UserAccount {
 
     public void setLiked_Post(ArrayList<String> liked_Post) {
         Liked_Post = liked_Post;
+    }
+
+    public Table getOverallTable() {
+        return overallTable;
+    }
+
+    public void setOverallTable(Table overallTable) {
+        this.overallTable = overallTable;
     }
 }

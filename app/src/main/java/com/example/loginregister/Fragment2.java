@@ -102,8 +102,6 @@ public class Fragment2 extends Fragment {
 
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
-
-
         /*
         TreeView 선언
          */
