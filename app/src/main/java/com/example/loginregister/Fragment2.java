@@ -328,54 +328,6 @@ public class Fragment2 extends Fragment {
                 });
     }
 
-    // SubjectList로 리사이클러뷰 만들기
-    public void makeRVBySubjectList(){
-        //과목 리스트 볼 수 있는 BottomSheetDialog
-        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
-        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
-        
-        subjectAdapter = new SubjectAdapter(subjectList);
-        subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
-        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        subjectRecyclerView.setAdapter(subjectAdapter);
-
-        //RecyclerView에서 선택된 아이템에 접근
-        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int pos) {
-                String choosedSubjectName = subjectList.get(pos).getName();
-                Log.e("###", choosedSubjectName + " 선택 됨");
-
-                Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-                for(TreeNode tn : treeNodeList)
-                {
-                    if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
-                    {
-                        //서버 Table 업데이트
-                        userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
-                        db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
-
-                        int mappingPos = m.get(choosedSubjectName);
-
-                        //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                        String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
-                        final TreeNode newChild = new TreeNode(convertedSubjectName);
-
-                        //[장준승] 화면 사이즈 node 개수에 비례하여 변화
-                        updateDisplaySize();
-                        Log.e("###", "Current displaySize : "+displaySize);
-
-                        adj[m.get(curData)][mappingPos] = true;
-                        treeNodeList[mappingPos] = newChild;
-                        tn.addChild(newChild);
-                        break;
-                    }
-                }
-                subjectChoiceBottomSheetDialog.dismiss();
-            }
-        });
-    }
-
     //SubjectList 매핑
     public void mappingSubjectList(){
         /* DB에서 받아온 과목들 매핑 */
@@ -442,6 +394,54 @@ public class Fragment2 extends Fragment {
                 makeTreeByAdj(newChild);
             }
         }
+    }
+
+    // SubjectList로 리사이클러뷰 만들기
+    public void makeRVBySubjectList(){
+        //과목 리스트 볼 수 있는 BottomSheetDialog
+        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+
+        subjectAdapter = new SubjectAdapter(subjectList);
+        subjectRecyclerView = (RecyclerView) subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        subjectRecyclerView.setAdapter(subjectAdapter);
+
+        //RecyclerView에서 선택된 아이템에 접근
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String choosedSubjectName = subjectList.get(pos).getName();
+                Log.e("###", choosedSubjectName + " 선택 됨");
+
+                Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                for(TreeNode tn : treeNodeList)
+                {
+                    if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                    {
+                        //서버 Table 업데이트
+                        userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
+                        db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+
+                        int mappingPos = m.get(choosedSubjectName);
+
+                        //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                        String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                        final TreeNode newChild = new TreeNode(convertedSubjectName);
+
+                        //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                        updateDisplaySize();
+                        Log.e("###", "Current displaySize : "+displaySize);
+
+                        adj[m.get(curData)][mappingPos] = true;
+                        treeNodeList[mappingPos] = newChild;
+                        tn.addChild(newChild);
+                        break;
+                    }
+                }
+                subjectChoiceBottomSheetDialog.dismiss();
+            }
+        });
     }
 
     // DB 바탕으로 트리 노드 삭제
