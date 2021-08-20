@@ -30,10 +30,12 @@ import android.widget.Toast;
 
 import com.example.loginregister.adapters.SubjectAdapter;
 import com.example.loginregister.curiList.Curl_List_Fragment;
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -51,6 +53,7 @@ import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
 public class Fragment2 extends Fragment {
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
     String curData;
@@ -69,14 +72,14 @@ public class Fragment2 extends Fragment {
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     EditText searchET;
-    Button searchBtn;
+    Button searchBtn, addTreeBtn;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
     BaseTreeAdapter adapter;
 
     //서버에 올리는 Table
-    Table userTableInfo, currTechTable;
+    Table userTableInfo;
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
@@ -119,14 +122,6 @@ public class Fragment2 extends Fragment {
         treeView.setLevelSeparation(50);
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
-
-        /* 서버로부터 과목리스트, 테이블 받아와서 트리 보여주기 */
-        getSubjectListFromFB();
-
-        /*
-            BottomSheetDialog 선언
-         */
-
         adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
             @Override
@@ -195,6 +190,12 @@ public class Fragment2 extends Fragment {
         };
         treeView.setAdapter(adapter);
 
+
+        addTreeBtn = v.findViewById(R.id.addTreeBtn);
+        addTreeBtn.setOnClickListener(addTreeBtnOnClickListener);
+        /* 서버로부터 과목리스트, 테이블 받아와서 트리 보여주기 */
+        getSubjectListFromFB();
+
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
 
         return v;
@@ -214,11 +215,22 @@ public class Fragment2 extends Fragment {
                     TreeNode parent =  treeNodeList[m.get(curData)].getParent();
                     String[] nodeData = parent.getData().toString().split("\\.");
                     userTableInfo.getTable().get(nodeData[0]).put(curData, "0");
-                    db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
-                    deleteTreeFromDB(curData);
 
-                    updateDisplaySize();
-                    nodeChoiceBottomSheetDialog.dismiss();
+                    //UserAccount 정보 업데이트
+                    docRef = db.collection("user").document(mAuth.getUid());
+                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+
+                            userAccount.setOverallTable(userTableInfo);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                            deleteTreeFromDB(curData);
+                            updateDisplaySize();
+                            nodeChoiceBottomSheetDialog.dismiss();
+                        }
+                    });
                     break;
 
                 case R.id.LL3:
@@ -343,12 +355,19 @@ public class Fragment2 extends Fragment {
     // 서버에서 Table 받아오기
     /* 서버에서 Table 받아오면 -> 받아온 Table을 adj로 변환 -> adj기반으로 트리 만들기 */
     public void getTableFromFB(){
-        docRef = db.collection("UsersTableInfo").document("Matrix");
+        docRef = db.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                userTableInfo = documentSnapshot.toObject(Table.class);
-                changeToAdj(userTableInfo);
+                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                userTableInfo = userAccount.getOverallTable();
+
+                if(userTableInfo == null){
+                    Toast.makeText(getContext(), "테이블 정보가 없습니다.", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    changeToAdj(userTableInfo);
+                }
             }
         });
     }
@@ -425,10 +444,18 @@ public class Fragment2 extends Fragment {
                 {
                     if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                     {
-                        //서버 Table 업데이트
+                        //UserAccount 정보 업데이트
                         userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
-                        db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+                        docRef = db.collection("user").document(mAuth.getUid());
+                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
 
+                                userAccount.setOverallTable(userTableInfo);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            }
+                        });
                         int mappingPos = m.get(choosedSubjectName);
 
                         //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
@@ -450,7 +477,8 @@ public class Fragment2 extends Fragment {
             }
         });
     }
-
+    
+    //노드추가에서 검색 버튼 클릭 리스너
     View.OnClickListener searchBtnOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -474,10 +502,18 @@ public class Fragment2 extends Fragment {
                     {
                         if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                         {
-                            //서버 Table 업데이트
+                            //UserAccount 정보 업데이트
                             userTableInfo.getTable().get(curData).put(choosedSubjectName, "1");
-                            db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+                            docRef = db.collection("user").document(mAuth.getUid());
+                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
 
+                                    userAccount.setOverallTable(userTableInfo);
+                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                }
+                            });
                             int mappingPos = m.get(choosedSubjectName);
 
                             //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
@@ -500,6 +536,64 @@ public class Fragment2 extends Fragment {
         }
     };
 
+    // 트리추가 버튼 클릭 리스너
+    View.OnClickListener addTreeBtnOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(userTableInfo != null){
+                Toast.makeText(getContext(), "이미 트리가 있습니다.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+
+            subjectChoiceBottomSheetDialog.show();
+            ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+            for(Subject_ subject_ : subjectList){
+                if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+            }
+            subjectAdapter = new SubjectAdapter(searchSubjectList);
+            subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            subjectRecyclerView.setAdapter(subjectAdapter);
+
+            //RecyclerView에서 선택된 아이템에 접근
+            subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int pos) {
+                    String choosedSubjectName = searchSubjectList.get(pos).getName();
+                    Log.e("###", choosedSubjectName + " 선택 됨");
+
+                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+
+                    Map<String, Map<String, String>> tb = new HashMap<>();
+                    for(Subject_ subject_ : subjectList){
+                        Map<String, String> line = new HashMap<>();
+                        for(Subject_ subject_1 : subjectList){
+                            line.put(subject_1.getName(), "0");
+                        }
+                        tb.put(subject_.getName(), line);
+                    }
+                    Table table = new Table(tb, choosedSubjectName);
+
+                    docRef = db.collection("user").document(mAuth.getUid());
+                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                            userTableInfo = userAccount.getOverallTable();
+
+                            userAccount.setOverallTable(table);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            subjectChoiceBottomSheetDialog.dismiss();
+                            
+                            //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                            getTableFromFB();
+                        }
+                    });
+                }
+            });
+        }
+    };
+
     // DB 바탕으로 트리 노드 삭제
     public void deleteTreeFromDB(String currNode){
         int currNodeIndex = m.get(currNode);
@@ -510,9 +604,18 @@ public class Fragment2 extends Fragment {
                 deleteTreeFromDB(nextNode);
                 adj[currNodeIndex][i] = false;
 
-                //서버 Table 업데이트
+                //UserAccount 정보 업데이트
                 userTableInfo.getTable().get(currNode).put(nextNode, "0");
-                db.collection("UsersTableInfo").document("Matrix").set(userTableInfo);
+                docRef = db.collection("user").document(mAuth.getUid());
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+
+                        userAccount.setOverallTable(userTableInfo);
+                        db.collection("user").document(mAuth.getUid()).set(userAccount);
+                    }
+                });
             }
         }
         treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
