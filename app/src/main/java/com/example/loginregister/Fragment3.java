@@ -2,6 +2,7 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +37,7 @@ public class Fragment3 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
 
+
         View forum1=view.findViewById(R.id.layout_forum1);
         View forum2=view.findViewById(R.id.layout_forum2);
         View forum3=view.findViewById(R.id.layout_forum3);
@@ -44,30 +46,32 @@ public class Fragment3 extends Fragment {
         View forum6=view.findViewById(R.id.layout_forum6);
         View forum7=view.findViewById(R.id.layout_forum7);
 
+        
         View.OnClickListener onClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(),NoticeBoard.class);
+                Log.e(TAG,"게시판클릭");
                 switch(v.getId()){
-                    case R.id.forum1:
+                    case R.id.layout_forum1:
                         intent.putExtra("게시판",1);
                         break;
-                    case R.id.forum2:
+                    case R.id.layout_forum2:
                         intent.putExtra("게시판",2);
                         break;
-                    case R.id.forum3:
+                    case R.id.layout_forum3:
                         intent.putExtra("게시판",3);
                         break;
-                    case R.id.forum4:
+                    case R.id.layout_forum4:
                         intent.putExtra("게시판",4);
                         break;
-                    case R.id.forum5:
+                    case R.id.layout_forum5:
                         intent.putExtra("게시판",5);
                         break;
-                    case R.id.forum6:
+                    case R.id.layout_forum6:
                         intent.putExtra("게시판",6);
                         break;
-                    case R.id.forum7:
+                    case R.id.layout_forum7:
                         intent.putExtra("게시판",7);
                         break;
                 }
