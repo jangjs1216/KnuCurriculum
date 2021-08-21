@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -120,6 +121,15 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
                     Timestamp timestamp = new Timestamp(date);
                     post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID,new ArrayList<>(),0);
                     mStore.collection(forum_sort).document(PostID).set(post[0]);
+                    FirebaseMessaging.getInstance().subscribeToTopic(PostID)
+                            .addOnCompleteListener(task -> {
+                                if(task.isSuccessful()){
+                                    Log.e("댓글 생성"," 구독성공");
+                                }
+                                else{
+                                    Log.e("댓글 생성"," 구독실패");
+                                }
+                            });
                 }
             });
             finish();
