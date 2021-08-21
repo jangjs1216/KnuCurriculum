@@ -225,6 +225,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
                                     Log.d("확인", "삭제되었습니다.");
                                     finish();
                                 }
@@ -311,7 +312,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         post.setcoment_Num(Csize+1);
                         post.setComments(data);
-
+                        post.setCur_comment(post.getCur_comment()+1);
                         mStore.collection(forum_sort).document(post_id).set(post);
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
@@ -376,12 +377,14 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
 
 
+
                         data.add(cur_comment);
                         Collections.sort(data);
 
                         post.setComments(data);
-
+                        post.setCur_comment(post.getCur_comment()+1);
                         mStore.collection(forum_sort).document(post_id).set(post);
+
 
 
 
