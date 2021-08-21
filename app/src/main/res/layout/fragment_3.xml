@@ -35,56 +35,166 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="500px"
+        android:layout_height="1px"
         android:background="@color/line"
         android:orientation="horizontal"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/btn_shape"
+        android:layout_marginHorizontal="3px"
+        >
 
-        <Button
-            android:id="@+id/forum1"
+        <LinearLayout
+            android:id="@+id/layout_forum1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum1" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum1" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/forum2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum2" />
 
-        <Button
-            android:id="@+id/forum3"
+        <LinearLayout
+            android:id="@+id/layout_forum2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum3" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum2" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/forum4"
+        <LinearLayout
+            android:id="@+id/layout_forum3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum4" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum3" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/forum5"
+        <LinearLayout
+            android:id="@+id/layout_forum4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum5" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum4" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/forum6"
+        <LinearLayout
+            android:id="@+id/layout_forum5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum6" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum5" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/forum7"
+        <LinearLayout
+            android:id="@+id/layout_forum6"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Forum7" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum6" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_forum7"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <TextView
+                android:id="@+id/forum7"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="Forum7" />
+        </LinearLayout>
+
     </LinearLayout>
 
 

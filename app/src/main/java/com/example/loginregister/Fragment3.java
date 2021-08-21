@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -35,15 +36,15 @@ public class Fragment3 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
 
-        Button forum1=view.findViewById(R.id.forum1);
-        Button forum2=view.findViewById(R.id.forum2);
-        Button forum3=view.findViewById(R.id.forum3);
-        Button forum4=view.findViewById(R.id.forum4);
-        Button forum5=view.findViewById(R.id.forum5);
-        Button forum6=view.findViewById(R.id.forum6);
-        Button forum7=view.findViewById(R.id.forum7);
+        View forum1=view.findViewById(R.id.layout_forum1);
+        View forum2=view.findViewById(R.id.layout_forum2);
+        View forum3=view.findViewById(R.id.layout_forum3);
+        View forum4=view.findViewById(R.id.layout_forum4);
+        View forum5=view.findViewById(R.id.layout_forum5);
+        View forum6=view.findViewById(R.id.layout_forum6);
+        View forum7=view.findViewById(R.id.layout_forum7);
 
-        Button.OnClickListener onClickListener=new Button.OnClickListener() {
+        View.OnClickListener onClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(),NoticeBoard.class);
@@ -86,7 +87,7 @@ public class Fragment3 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag3,menu);
-        Log.e(TAG,"sex");
+        Log.e(TAG,"이건뭐노?");
     }
 
     @Override
