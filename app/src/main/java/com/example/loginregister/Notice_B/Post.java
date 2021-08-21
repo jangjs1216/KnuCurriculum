@@ -16,6 +16,24 @@ public class Post implements Comparable<Post> {
     private String post_id;
     private ArrayList<Comment> comments; //댓글 리스트들
     private int coment_Num;
+    private int server;
+    private int cur_comment;
+
+    public int getServer() {
+        return server;
+    }
+
+    public void setServer(int server) {
+        this.server = server;
+    }
+
+    public int getCur_comment() {
+        return cur_comment;
+    }
+
+    public void setCur_comment(int cur_comment) {
+        this.cur_comment = cur_comment;
+    }
 
     public void setcoment_Num(int coment_num){this.coment_Num=coment_num;}
 
@@ -83,6 +101,8 @@ public class Post implements Comparable<Post> {
 
     public Post() {
        //빈생성자 생성
+        this.server =0;
+        this.cur_comment = 0;
         this.writer_id = "";
         this.title = "";
         this.contents = "";
@@ -94,7 +114,7 @@ public class Post implements Comparable<Post> {
         this.coment_Num=0;
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments,int coment_Num) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -103,7 +123,9 @@ public class Post implements Comparable<Post> {
         this.timestamp = timestamp;
         this.post_id = post_id;
         this.comments = comments;
-        this.coment_Num=coment_Num;
+        this.coment_Num = coment_Num;
+        this.server = server;
+        this.cur_comment = cur_comment;
     }
 
     @Override

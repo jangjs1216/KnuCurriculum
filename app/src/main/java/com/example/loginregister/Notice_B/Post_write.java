@@ -119,7 +119,7 @@ public class Post_write extends AppCompatActivity implements View.OnClickListene
                     long datetime = System.currentTimeMillis();
                     Date date = new Date(datetime);
                     Timestamp timestamp = new Timestamp(date);
-                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID,new ArrayList<>(),0);
+                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID,new ArrayList<>(),0,0,0);
                     mStore.collection(forum_sort).document(PostID).set(post[0]);
                     FirebaseMessaging.getInstance().subscribeToTopic(PostID)
                             .addOnCompleteListener(task -> {

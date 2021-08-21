@@ -52,6 +52,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private Timestamp timestamp;
     private ImageView post_imageView;
     private String forum_sort;
+    private int server;
+    private int cur_commnet;
     private static final int CHOOSE_IMAGE = 101;
     ArrayList<Comment> comments = new ArrayList<>();
     int commnet_num;
@@ -83,6 +85,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        timestamp = post.getTimestamp();
                                                        comments = post.getComments();
                                                        commnet_num=post.getcoment_Num();
+                                                       server = post.getServer();
+                                                       cur_commnet = post.getCur_comment();
                                                    }
                                                });
 
@@ -100,7 +104,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         if(mAuth.getCurrentUser()!=null){
 
 
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet);
             mStore.collection(forum_sort).document(post_id).set(post);
 
 
