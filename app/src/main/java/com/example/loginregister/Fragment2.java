@@ -158,9 +158,9 @@ public class Fragment2 extends Fragment {
                 }
                 viewHolder.setSemesterColored();
 
-
-
-
+                /*
+                각 노드 선택시 BottomSheetDialog 띄우는 작업 수행
+                 */
                 viewHolder.mTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -190,10 +190,10 @@ public class Fragment2 extends Fragment {
         };
         treeView.setAdapter(adapter);
 
-
         addTreeBtn = v.findViewById(R.id.addTreeBtn);
         addTreeBtn.setOnClickListener(addTreeBtnOnClickListener);
         /* 서버로부터 과목리스트, 테이블 받아와서 트리 보여주기 */
+
         getSubjectListFromFB();
 
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
@@ -245,9 +245,9 @@ public class Fragment2 extends Fragment {
                     sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
                         @Override
                         public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
-                            Log.e("###", "수강정보 : " + isTakenClass + ", 수강학기 : " + TakenSemester);
-                            Log.e("###", "현재 Viewholder값 : " + curViewHolder.mTextView.getText());
-                            Log.e("###", "수정 이전 내부 값 : " + curViewHolder.semesterTv.getText());
+//                            Log.e("###", "수강정보 : " + isTakenClass + ", 수강학기 : " + TakenSemester);
+//                            Log.e("###", "현재 Viewholder값 : " + curViewHolder.mTextView.getText());
+//                            Log.e("###", "수정 이전 내부 값 : " + curViewHolder.semesterTv.getText());
 
                             String currSubjectName = (String) curViewHolder.mTextView.getText();
 
@@ -255,7 +255,7 @@ public class Fragment2 extends Fragment {
                             {
                                 if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                                 {
-                                    Log.e("###", "선택되었음!!"+curData);
+//                                    Log.e("###", "선택되었음!!"+curData);
                                     if(isTakenClass)
                                     {
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
@@ -395,8 +395,7 @@ public class Fragment2 extends Fragment {
 
         zoomLayout.addView(treeView);
 
-        treeView.setMinimumWidth(displaySize);
-        treeView.setMinimumHeight(displaySize);
+        updateDisplaySize();
     }
 
     // adj로 트리 만들기
@@ -620,6 +619,4 @@ public class Fragment2 extends Fragment {
         }
         treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
     }
-
-    
 }
