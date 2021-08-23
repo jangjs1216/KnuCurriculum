@@ -6,12 +6,27 @@ public class Subject_ {
     String name;
     String code;
     String score;
+    //전체 별점 평균내기 위한 변수
+    int voteNum;
+    float TotalScore;
     String grade;
     String semester;
     String recoPre;
     String recoPost;
     Boolean open;
     ArrayList<SubjectComment> comments;
+
+    public int getVoteNum(){return voteNum;}
+
+    public void setVoteNum(int voteNum){this.voteNum=voteNum;}
+
+    public float getTotalScore() {
+        return TotalScore;
+    }
+
+    public void setTotalScore(float totalScore) {
+        TotalScore = totalScore;
+    }
 
     public String getName() {
         return name;
@@ -86,6 +101,7 @@ public class Subject_ {
     }
 
     public Subject_() {
+        this.voteNum=0;
         this.name = "";
         this.code = "";
         this.score = "";
@@ -95,9 +111,10 @@ public class Subject_ {
         this.recoPost = "";
         this.open = false;
         this.comments = new ArrayList<>();
+        this.TotalScore=0;
     }
 
-    public Subject_(String name, String code, String score, String grade, String semester, String recoPre, String recoPost, Boolean open, ArrayList<SubjectComment> comments) {
+    public Subject_(String name, String code, String score, String grade, String semester, String recoPre, String recoPost, Boolean open, ArrayList<SubjectComment> comments, int voteNum, float totalScore) {
         this.name = name;
         this.code = code;
         this.score = score;
@@ -107,6 +124,8 @@ public class Subject_ {
         this.recoPost = recoPost;
         this.open = open;
         this.comments = comments;
+        this.voteNum=voteNum;
+        this.TotalScore=totalScore;
     }
 
 }

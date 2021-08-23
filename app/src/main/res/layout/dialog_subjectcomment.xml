@@ -11,13 +11,14 @@
 
     <RatingBar
         android:id="@+id/commentRB"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/contentET"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_height="0dp"
         android:hint="수강평"/>
 
     <LinearLayout
@@ -29,14 +30,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="아니오" />
+            android:text="취소" />
 
         <Button
             android:id="@+id/yesBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="네" />
+            android:text="작성" />
     </LinearLayout>
 
 </LinearLayout>

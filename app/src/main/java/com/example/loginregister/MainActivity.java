@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             //String name, String code, String score, String grade, String semester, Boolean open, ArrayList<SubjectComment> comments
-            subject_ = new Subject_(Sname, Scode, score, "1", "1", "없음", "없음", false, new ArrayList<>());
+            subject_ = new Subject_(Sname, Scode, score, "1", "1", "없음", "없음", false, new ArrayList<>(),0,0);
 
             mStore.collection("Subject").document(subject_.getName()).set(subject_);
 
