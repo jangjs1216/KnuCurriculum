@@ -1,6 +1,7 @@
 package com.example.loginregister.curiList;
 
 
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,10 +20,24 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.R;
 import com.example.loginregister.Setting_Container_Fragment;
+import com.example.loginregister.SubjectComment;
+import com.example.loginregister.SubjectInfoActivity;
+import com.example.loginregister.Subject_;
+import com.example.loginregister.adapters.SubjectCommentAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +51,7 @@ public class Curl_List_Fragment extends Fragment {
     private ArrayList<Recycler_Data> arrayList;
     private Recycler_Adapter recycler_adapter;
     private Toolbar toolbar;
+    Dialog addTreeDialog;
 
 
     @Override
@@ -65,6 +81,11 @@ public class Curl_List_Fragment extends Fragment {
         recyclerView.setAdapter(recycler_adapter);
         //      리싸이클러뷰 끝
 
+        //트리 추가 버튼 다이얼로그
+        addTreeDialog = new Dialog(getContext());
+        addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        addTreeDialog.setContentView(R.layout.dialog_addtree);
+
         return view;
     }
 
@@ -72,18 +93,13 @@ public class Curl_List_Fragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_curi_list,menu);
-        // Log.e(TAG,"sex");
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_add:
-                Recycler_Data recycler_data = new Recycler_Data("헤헤");
-                arrayList.add(recycler_data);
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                Log.e("###", String.valueOf(recycler_adapter.getItemCount()));
+                showDialog();
                 break;
 
             case android.R.id.home:
@@ -94,4 +110,29 @@ public class Curl_List_Fragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public void showDialog() {
+        addTreeDialog.show();
+
+        Button noBtn = addTreeDialog.findViewById(R.id.noBtn);
+        noBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTreeDialog.dismiss();
+            }
+        });
+        addTreeDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText treeNameET = addTreeDialog.findViewById(R.id.treeNameET);
+                String treeName = treeNameET.getText().toString();
+                treeNameET.setText("");
+
+                Recycler_Data recycler_data = new Recycler_Data(treeName);
+                arrayList.add(recycler_data);
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                recycler_adapter.notifyDataSetChanged();
+                addTreeDialog.dismiss();
+            }
+        });
+    }
 }

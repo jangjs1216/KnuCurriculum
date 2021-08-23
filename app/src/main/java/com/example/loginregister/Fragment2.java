@@ -79,6 +79,8 @@ public class Fragment2 extends Fragment {
     BaseTreeAdapter adapter;
 
     //서버에 올리는 Table
+    String tableName;
+    Map<String, Table> userTableMap;
     Table userTableInfo;
 
     //크기 유동적 변화 구현
@@ -225,8 +227,7 @@ public class Fragment2 extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                            userAccount.setOverallTable(userTableInfo);
+                            userAccount.getTableMap().put(tableName, userTableInfo);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                             deleteTreeFromDB(curData);
@@ -273,8 +274,7 @@ public class Fragment2 extends Fragment {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                                            userAccount.setOverallTable(userTableInfo);
+                                            userAccount.getTableMap().put(tableName, userTableInfo);
                                             db.collection("user").document(mAuth.getUid()).set(userAccount);
                                         }
                                     });
@@ -377,12 +377,13 @@ public class Fragment2 extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                userTableInfo = userAccount.getOverallTable();
+                userTableMap = userAccount.getTableMap();
 
-                if(userTableInfo == null){
+                if(userTableMap == null){
                     Toast.makeText(getContext(), "테이블 정보가 없습니다.", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    userTableInfo = userTableMap.get(tableName);
                     changeToAdj(userTableInfo);
                 }
             }
@@ -467,8 +468,7 @@ public class Fragment2 extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                                userAccount.setOverallTable(userTableInfo);
+                                userAccount.getTableMap().put(tableName, userTableInfo);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
                             }
                         });
@@ -526,8 +526,7 @@ public class Fragment2 extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                                        userAccount.setOverallTable(userTableInfo);
+                                        userAccount.getTableMap().put(tableName, userTableInfo);
                                         db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     }
                                 });
@@ -569,7 +568,7 @@ public class Fragment2 extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                userAccount.setOverallTable(table);
+                                userAccount.getTableMap().put(tableName, userTableInfo);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
                                 subjectChoiceBottomSheetDialog.dismiss();
 
@@ -584,7 +583,7 @@ public class Fragment2 extends Fragment {
         }
     };
 
-    // 트리추가 버튼 클릭 리스너x
+    // 트리추가 버튼 클릭 리스너
     View.OnClickListener addTreeBtnOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -626,7 +625,7 @@ public class Fragment2 extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                            userAccount.setOverallTable(table);
+                            userAccount.getTableMap().put(tableName, table);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
                             subjectChoiceBottomSheetDialog.dismiss();
                             
@@ -656,8 +655,7 @@ public class Fragment2 extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                        userAccount.setOverallTable(userTableInfo);
+                        userAccount.getTableMap().put(tableName, userTableInfo);
                         db.collection("user").document(mAuth.getUid()).set(userAccount);
                     }
                 });

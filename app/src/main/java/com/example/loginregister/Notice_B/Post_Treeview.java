@@ -65,6 +65,8 @@ public class Post_Treeview extends AppCompatActivity{
 
     TreeNode rootNode;
 
+    String tableName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,7 +179,8 @@ public class Post_Treeview extends AppCompatActivity{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                userTableInfo = userAccount.getOverallTable();
+                userAccount.getTableMap().put(tableName, userTableInfo);
+                db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                 if(userTableInfo == null){
                     Toast.makeText(getApplicationContext(), "테이블 정보가 없습니다.", Toast.LENGTH_LONG).show();
