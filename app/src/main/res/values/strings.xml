@@ -27,8 +27,6 @@
         FCM registration token to logcat.</string>
     <string name="subscribe_to_weather">Subscribe To Weather</string>
     <string name="log_token">Log Token</string>
-    
-
 
 
 </resources>

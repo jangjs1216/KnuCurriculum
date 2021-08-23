@@ -71,6 +71,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     String sub_pos;//코멘트에 들어가있는 게시글의 위치
     int com_pos = 0;//게시글의 등록된 위치
     int like = 0;
+    private Button treeButton; //[ 장준승 ] 트리 보여주기 버튼
     private Button likeButton; //좋아요 버튼
     private TextView likeText; //좋아요 갯수보여주는 텍스트 이번엔 다르다
     String P_comment_id;
@@ -89,15 +90,16 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_post__comment);
         mcontext = this;
 
-        com_nick = (TextView) findViewById(R.id.Comment_nickname);//본문 작성자
-        com_title = (TextView) findViewById(R.id.Comment_title);//제목
-        com_text = (TextView) findViewById(R.id.Comment_text);//본문
-        com_edit = (EditText) findViewById(R.id.Edit_comment);//댓글 작성 내용 입력창
-        com_photo = (ImageView) findViewById(R.id.Comment_photo); //작성자 프로필 이미지
-        com_photo2 = (ImageView) findViewById(R.id.Comment_photo2); //작성자가 올린 이미지
-        likeButton = (Button) findViewById(R.id.like_button); //좋아요 버튼
-        likeText = (TextView) findViewById(R.id.like_text); // 좋아요 개수 보여주는 텍스트
-        mCommentRecyclerView = findViewById(R.id.comment_recycler);//코멘트 리사이클러뷰
+        com_nick = (TextView) findViewById(R.id.Comment_nickname);          //본문 작성자
+        com_title = (TextView) findViewById(R.id.Comment_title);            //제목
+        com_text = (TextView) findViewById(R.id.Comment_text);              //본문
+        com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
+        com_photo = (ImageView) findViewById(R.id.Comment_photo);           //작성자 프로필 이미지
+        com_photo2 = (ImageView) findViewById(R.id.Comment_photo2);         //작성자가 올린 이미지
+        treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
+        likeButton = (Button) findViewById(R.id.like_button);               //좋아요 버튼
+        likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
+        mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
         com_pos = intent.getExtras().getInt("position");
         com_nick.setText(intent.getStringExtra("nickname"));
@@ -154,6 +156,16 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         }
                     });
         }
+
+        treeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mcontext, Post_Treeview.class);
+                intent.putExtra("writerID", writer_id_post);
+                intent.putExtra("writerNickname", com_nick.getText().toString());
+                startActivity(intent);//게시글 수정
+            }
+        });
 
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override

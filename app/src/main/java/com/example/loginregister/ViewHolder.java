@@ -15,9 +15,9 @@ public class ViewHolder {
      */
 
     CardView tn_layout;
-    TextView mTextView;
-    TextView semesterTv;
-    ViewHolder(View view) {
+    public TextView mTextView;
+    public TextView semesterTv;
+    public ViewHolder(View view) {
         tn_layout = view.findViewById(R.id.card_view);
         mTextView = view.findViewById(R.id.textView);
         semesterTv = view.findViewById(R.id.tv_semester_view);

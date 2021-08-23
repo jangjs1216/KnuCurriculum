@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/activity_notice_board.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/activity_post__comment.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/activity_post__update.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/activity_post_treeview.xml" value="0.26421052631578945" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/activity_post_write.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/fragment_2.xml" value="0.13072916666666667" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_bottomsheet.xml" value="0.12604166666666666" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_nodechoicebottomsheet.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_subjectchoicebottomsheet.xml" value="0.25364583333333335" />

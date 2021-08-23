@@ -85,7 +85,16 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:layout_margin="10sp"
+                            android:layout_gravity="center"
+                            android:id="@+id/btn_post_treeview"
+                            android:layout_width="100sp"
+                            android:layout_height="wrap_content"
+                            android:background="#FFFFFF"
+                            android:text="트리 보기"/>
 
                         <Button
                             android:id="@+id/like_button"
