@@ -44,7 +44,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/btn_shape"
-        android:layout_marginHorizontal="3px"
+        android:layout_margin="3px"
         >
 
         <LinearLayout

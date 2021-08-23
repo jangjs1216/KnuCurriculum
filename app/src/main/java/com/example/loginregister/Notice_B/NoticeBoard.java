@@ -3,6 +3,8 @@ package com.example.loginregister.Notice_B;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,19 +12,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.loginregister.MainActivity;
+import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostAdapter;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,64 +43,72 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class NoticeBoard extends AppCompatActivity implements View.OnClickListener, PostAdapter.EventListener {
+public class NoticeBoard extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
+    private Toolbar toolbar;
     private RecyclerView mPostRecyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
     private PostAdapter mAdapter;
     private List<Post> mDatas;
-    private String edit_s;//검색어 저장용도
-    private EditText search_edit;//검색어 에딧
     private String forum_sort;
-
+    private TextView tv_forum_title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        Spinner sort_spinner = (Spinner) findViewById(R.id.sort_spinner);
-        search_edit = findViewById(R.id.edit_search);
-        edit_s = search_edit.getText().toString();
-        mPostRecyclerView = findViewById(R.id.recyclerview);
-        findViewById(R.id.edit_button).setOnClickListener(this);
-        findViewById(R.id.search_btn).setOnClickListener(this);
-        swipeRefreshLayout=findViewById(R.id.refresh_board);
+        toolbar =(Toolbar)findViewById(R.id.tb_notice_board);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar =getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
+        actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // 게시판 컬렉션 지정
         Intent intent=getIntent();
         int forum_num=intent.getExtras().getInt("게시판");
         forum_sort="Post"+forum_num;
+        tv_forum_title = findViewById(R.id.tv_notice_board_title);
+        tv_forum_title.setText(forum_sort);
 
-        String[] items = getResources().getStringArray(R.array.sort_spinner_array);
+        //          기본 날짜순 정렬
+        updateDatas();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, items);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        sort_spinner.setAdapter(adapter);
-        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (items[position].equals("좋아요순")) {
-                    Log.e("###","좋아요순");
-                    sortDatas();
-                }
-                if(items[position].equals("최신순")) {
-                    Log.e("###","최신순");
-                    updateDatas();
-                }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                updateDatas();
-            }
-        });
-        getSupportActionBar().setTitle("Board");
+        mPostRecyclerView = findViewById(R.id.recyclerview);
+        swipeRefreshLayout=findViewById(R.id.refresh_board);
+
+
+
+//        String[] items = getResources().getStringArray(R.array.sort_spinner_array);
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+//                this, android.R.layout.simple_spinner_item, items);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+//
+//        sort_spinner.setAdapter(adapter);
+//        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (items[position].equals("좋아요순")) {
+//                    Log.e("###","좋아요순");
+//                    sortDatas();
+//                }
+//                if(items[position].equals("최신순")) {
+//                    Log.e("###","최신순");
+//                    updateDatas();
+//                }
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -105,13 +121,33 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
         });
     }
 
+//          툴바레이아웃설정
     @Override
-    public boolean onOptionItemSelected(MenuItem item) {
-        Log.d("확인", "선택하세요");
-        switch (item.getItemId()) {
-            default:
-                return super.onOptionsItemSelected(item);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar_notice_board,menu);
+        return true;
+    }
+//          툴바 작동설정
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()){
+            case R.id.action_btn_search:
+                intent=new Intent(this, Post_Search.class);
+                intent.putExtra("게시판",forum_sort);
+                startActivity(intent);
+                break;
+            case R.id.action_btn_create:
+                Log.e("notice","글쓰기 선택");
+                intent=new Intent(this, Post_write.class);
+                intent.putExtra("게시판",forum_sort);
+                startActivity(intent);
+                break;
+            case android.R.id.home:
+                finish();
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -164,29 +200,7 @@ public class NoticeBoard extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.edit_button:
-                Intent intent=new Intent(this, Post_write.class);
-                intent.putExtra("게시판",forum_sort);
-                startActivity(intent);
-                break;
-          //  case R.id.search_btn:
-              //  Intent intent=new Intent(this,Search_Post_Activity.class);
-             //  intent.putExtra("search",search_edit.getText().toString());//검색어와 관련된 것을 추리는 곳에 보냄
-               // intent.putExtra("post",post_n);
-              //  startActivity(intent);
-               // Log.d("확인","여기는 포스트 코멘트:"+search_edit.getText().toString());
-             //   break;
-        }
-    }
 
-    @Override
-    public void onItemClicked(int position) {
-        Toast.makeText(this, "몇 번째" + position, Toast.LENGTH_SHORT).show();
-        //startActivity(new Intent(this,Post_Comment.class));
-    }
 
 
 }
