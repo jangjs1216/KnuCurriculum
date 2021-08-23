@@ -510,41 +510,73 @@ public class Fragment2 extends Fragment {
             subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int pos) {
-                    String choosedSubjectName = searchSubjectList.get(pos).getName();
-                    Log.e("###", choosedSubjectName + " 선택 됨");
+                    if(userTableInfo != null){
+                        String choosedSubjectName = searchSubjectList.get(pos).getName();
+                        Log.e("###", choosedSubjectName + " 선택 됨");
 
-                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-                    for(TreeNode tn : treeNodeList)
-                    {
-                        if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                        for(TreeNode tn : treeNodeList)
                         {
-                            //UserAccount 정보 업데이트
-                            userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                            docRef = db.collection("user").document(mAuth.getUid());
-                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                            if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                            {
+                                //UserAccount 정보 업데이트
+                                userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                                docRef = db.collection("user").document(mAuth.getUid());
+                                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
 
-                                    userAccount.setOverallTable(userTableInfo);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                }
-                            });
-                            int mappingPos = m.get(choosedSubjectName);
+                                        userAccount.setOverallTable(userTableInfo);
+                                        db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                    }
+                                });
+                                int mappingPos = m.get(choosedSubjectName);
 
-                            //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                            String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
-                            final TreeNode newChild = new TreeNode(convertedSubjectName);
+                                //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                                String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                                final TreeNode newChild = new TreeNode(convertedSubjectName);
 
-                            //[장준승] 화면 사이즈 node 개수에 비례하여 변화
-                            updateDisplaySize();
-                            Log.e("###", "Current displaySize : "+displaySize);
+                                //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                                updateDisplaySize();
+                                Log.e("###", "Current displaySize : "+displaySize);
 
-                            adj[m.get(curData)][mappingPos] = true;
-                            treeNodeList[mappingPos] = newChild;
-                            tn.addChild(newChild);
-                            break;
+                                adj[m.get(curData)][mappingPos] = true;
+                                treeNodeList[mappingPos] = newChild;
+                                tn.addChild(newChild);
+                                break;
+                            }
                         }
+                    }
+                    else{
+                        String choosedSubjectName = searchSubjectList.get(pos).getName();
+                        Log.e("###", choosedSubjectName + " 선택 됨");
+
+                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+
+                        Map<String, Map<String, String>> tb = new HashMap<>();
+                        for(Subject_ subject_ : subjectList){
+                            Map<String, String> line = new HashMap<>();
+                            for(Subject_ subject_1 : subjectList){
+                                line.put(subject_1.getName(), "0");
+                            }
+                            tb.put(subject_.getName(), line);
+                        }
+                        Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+
+                        docRef = db.collection("user").document(mAuth.getUid());
+                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                                userAccount.setOverallTable(table);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                subjectChoiceBottomSheetDialog.dismiss();
+
+                                //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                                getTableFromFB();
+                            }
+                        });
                     }
                     subjectChoiceBottomSheetDialog.dismiss();
                 }
