@@ -55,7 +55,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                             //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
                             ArrayList<String> liked_Post = new ArrayList<>();
-                            UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd, null, liked_Post, null);
+                            ArrayList<Table> tables = new ArrayList<>();
+                            ArrayList<String> tableNames = new ArrayList<>();
+                            UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd, null, liked_Post, tables, tableNames);
                             mStore.collection("user").document(user.getUid()).set(userAccount);
                             finish();
 

@@ -46,6 +46,13 @@
         android:layout_height="wrap_content"
         android:text="트리 추가 버튼"/>
 
+    <TextView
+        android:id="@+id/tableNameTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="테이블 이름"
+        android:textSize="30sp"/>
+
 
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/layout_zoom"

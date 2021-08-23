@@ -80,7 +80,9 @@ public class Fragment2 extends Fragment {
 
     //서버에 올리는 Table
     String tableName;
-    Map<String, Table> userTableMap;
+    ArrayList<String> tableNames;
+    ArrayList<Table> tables;
+    int tableLoc;
     Table userTableInfo;
 
     //크기 유동적 변화 구현
@@ -125,9 +127,21 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
-        /* 서버로부터 과목리스트, 테이블 받아와서 트리 보여주기 */
+        /* 테이블 이름 받아오고 해당 테이블 서버에서 받아와서 출력 */
+        if (getArguments() != null)
+        {
+            if(userTableInfo == null){
+                Log.e("###", "userTableInfo : null");
+            }
+            tableName = getArguments().getString("tableName");
+            TextView tableNameTV = v.findViewById(R.id.tableNameTV);
+            tableNameTV.setText("테이블 이름 : " + tableName);
+            getSubjectListFromFB();
+        }
+        else{
+            Toast.makeText(getContext(), "테이블을 선택해주세요", Toast.LENGTH_LONG).show();
+        }
 
-        getSubjectListFromFB();
 
         adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
             @NonNull
@@ -227,7 +241,7 @@ public class Fragment2 extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                            userAccount.getTableMap().put(tableName, userTableInfo);
+                            userAccount.getTables().set(tableLoc, userTableInfo);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                             deleteTreeFromDB(curData);
@@ -274,7 +288,7 @@ public class Fragment2 extends Fragment {
                                         @Override
                                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                            userAccount.getTableMap().put(tableName, userTableInfo);
+                                            userAccount.getTables().set(tableLoc, userTableInfo);
                                             db.collection("user").document(mAuth.getUid()).set(userAccount);
                                         }
                                     });
@@ -377,14 +391,19 @@ public class Fragment2 extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                userTableMap = userAccount.getTableMap();
-
-                if(userTableMap == null){
-                    Toast.makeText(getContext(), "테이블 정보가 없습니다.", Toast.LENGTH_LONG).show();
+                tableNames = userAccount.getTableNames();
+                tables = userAccount.getTables();
+                for(int i = 0; i < tableNames.size(); i++){
+                    if(tableNames.get(i).equals(tableName)){
+                        tableLoc = i;
+                        userTableInfo = tables.get(i);
+                        changeToAdj(userTableInfo);
+                        break;
+                    }
                 }
-                else{
-                    userTableInfo = userTableMap.get(tableName);
-                    changeToAdj(userTableInfo);
+
+                if(userTableInfo == null){
+                    Toast.makeText(getContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -410,7 +429,6 @@ public class Fragment2 extends Fragment {
         treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
-
         zoomLayout.addView(treeView);
 
         updateDisplaySize();
@@ -468,7 +486,7 @@ public class Fragment2 extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                userAccount.getTableMap().put(tableName, userTableInfo);
+                                userAccount.getTables().set(tableLoc, userTableInfo);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
                             }
                         });
@@ -526,7 +544,7 @@ public class Fragment2 extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                        userAccount.getTableMap().put(tableName, userTableInfo);
+                                        userAccount.getTables().set(tableLoc, userTableInfo);
                                         db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     }
                                 });
@@ -568,7 +586,8 @@ public class Fragment2 extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                userAccount.getTableMap().put(tableName, userTableInfo);
+                                userAccount.getTableNames().add(tableName);
+                                userAccount.getTables().add(table);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
                                 subjectChoiceBottomSheetDialog.dismiss();
 
@@ -625,11 +644,13 @@ public class Fragment2 extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                            userAccount.getTableMap().put(tableName, table);
+                            userAccount.getTableNames().add(tableName);
+                            userAccount.getTables().add(table);
+                            Log.e("###", "트리 추가 " + tableName);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
-                            subjectChoiceBottomSheetDialog.dismiss();
                             
                             //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                            subjectChoiceBottomSheetDialog.dismiss();
                             getTableFromFB();
                         }
                     });
@@ -655,7 +676,7 @@ public class Fragment2 extends Fragment {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                        userAccount.getTableMap().put(tableName, userTableInfo);
+                        userAccount.getTables().set(tableLoc, userTableInfo);
                         db.collection("user").document(mAuth.getUid()).set(userAccount);
                     }
                 });
