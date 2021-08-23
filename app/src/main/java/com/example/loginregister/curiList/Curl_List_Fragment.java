@@ -24,14 +24,18 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.Toast;
 
+import com.example.loginregister.Fragment2;
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.R;
 import com.example.loginregister.Setting_Container_Fragment;
 import com.example.loginregister.SubjectComment;
 import com.example.loginregister.SubjectInfoActivity;
 import com.example.loginregister.Subject_;
+import com.example.loginregister.Table;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +49,9 @@ import java.util.ArrayList;
 
 
 public class Curl_List_Fragment extends Fragment {
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference docRef;
     private View view;
     private LinearLayoutManager linearLayoutManager;
     private  RecyclerView recyclerView;
@@ -71,20 +78,50 @@ public class Curl_List_Fragment extends Fragment {
         /////////툴바끝///////////////
 
 
-        //      리싸이클러뷰
-        recyclerView = (RecyclerView)view.findViewById(R.id.Recycler_View_Curi_List);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        docRef = db.collection("user").document(mAuth.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
 
-        arrayList = ((MainActivity)getActivity()).getArrayList_curiList();
-        recycler_adapter = new Recycler_Adapter(arrayList);
-        recyclerView.setAdapter(recycler_adapter);
-        //      리싸이클러뷰 끝
+                //      리싸이클러뷰
+                recyclerView = (RecyclerView)view.findViewById(R.id.Recycler_View_Curi_List);
+                linearLayoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(linearLayoutManager);
+                arrayList = new ArrayList<>();
+                for(String tableName : userAccount.getTableNames()){
+                    Recycler_Data recycler_data = new Recycler_Data(tableName);
+                    arrayList.add(recycler_data);
+                    Log.e("###", "item : " + tableName);
+                }
+                recycler_adapter = new Recycler_Adapter(arrayList);
+                recyclerView.setAdapter(recycler_adapter);
+
+                //리싸이클러뷰 클릭 리스너
+                recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int pos) {
+                        String tableName = arrayList.get(pos).getTv_title().toString();
+                        Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+
+                        Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                        bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                        fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                        transaction.replace(R.id.main_frame, fragment2);
+                        transaction.commit();
+                    }
+                });
+            }
+        });
 
         //트리 추가 버튼 다이얼로그
         addTreeDialog = new Dialog(getContext());
         addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         addTreeDialog.setContentView(R.layout.dialog_addtree);
+
+
 
         return view;
     }

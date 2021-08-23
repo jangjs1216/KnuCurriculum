@@ -174,23 +174,26 @@ public class Post_Treeview extends AppCompatActivity{
     }
 
     public void getTableFromFB(){
-        docRef = db.collection("user").document(writerId);
+        docRef = db.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                userAccount.getTableMap().put(tableName, userTableInfo);
-                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                for(int i = 0; i < userAccount.getTableNames().size(); i++){
+                    if(userAccount.getTableNames().get(i).equals(tableName)){
+                        userTableInfo = userAccount.getTables().get(i);
+                        changeToAdj(userTableInfo);
+                        break;
+                    }
+                }
 
                 if(userTableInfo == null){
-                    Toast.makeText(getApplicationContext(), "테이블 정보가 없습니다.", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    changeToAdj(userTableInfo);
+                    Toast.makeText(getApplicationContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
+
 
     public void changeToAdj(Table table){
         for(String currSubject : table.getTable().keySet()){
