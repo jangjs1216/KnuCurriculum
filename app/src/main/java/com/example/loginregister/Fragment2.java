@@ -90,7 +90,7 @@ public class Fragment2 extends Fragment {
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
-    boolean adj[][];
+    ArrayList<Integer> adj[];
 
     /*
     [20210807] 장준승 Fragment2 시각화 구현
@@ -353,16 +353,14 @@ public class Fragment2 extends Fragment {
                             }
                         } else {
                         }
+                        Log.e("###", "개수 : " + Integer.toString(subjectList.size()));
                         treeNodeList = new TreeNode[subjectList.size()];
 
 
                         //adj 초기화
-                        adj = new boolean[subjectList.size()][subjectList.size()];
-                        for(int i=0;i<subjectList.size();i++){
-                            for(int j=0;j<subjectList.size();j++){
-                                adj[i][j] = false;
-                            }
-                        }
+                        adj = new ArrayList[subjectList.size()];
+                        for(int i=0; i<subjectList.size(); i++)
+                            adj[i] = new ArrayList<Integer>();
 
                         mappingSubjectList();
 
@@ -377,7 +375,6 @@ public class Fragment2 extends Fragment {
     public void mappingSubjectList(){
         /* DB에서 받아온 과목들 매핑 */
         m = new HashMap<String, Integer>();
-        adj = new boolean[subjectList.size()][subjectList.size()];
         for(int i=0; i<subjectList.size(); i++){
             m.put(subjectList.get(i).getName(), m.size());
         }
@@ -412,14 +409,14 @@ public class Fragment2 extends Fragment {
     // 서버에서 받아온 Table을 adj로 변환
     public void changeToAdj(Table table){
         for(String currSubject : table.getTable().keySet()){
-            Map<String, String> currRow =table.getTable().get(currSubject);
+            Map<String, String> currRow = table.getTable().get(currSubject);
 
             for(String nextSubject : currRow.keySet()){
                 if(!currRow.get(nextSubject).equals("0")){
                     int currMappingPos = m.get(currSubject);
                     int nextMappingPos = m.get(nextSubject);
 
-                    adj[currMappingPos][nextMappingPos] = true;
+                    adj[currMappingPos].add(nextMappingPos);
                 }
             }
         }
@@ -429,6 +426,8 @@ public class Fragment2 extends Fragment {
         treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
+
+        zoomLayout.removeAllViews();
         zoomLayout.addView(treeView);
 
         updateDisplaySize();
@@ -439,16 +438,15 @@ public class Fragment2 extends Fragment {
         String currSubjectName = currNode.getData().toString().split("\\.")[0];
         int currMappingPos = m.get(currSubjectName);
 
-        for(int i = 0; i < adj.length; i++){
-            if(adj[currMappingPos][i] == true){
-                String nextSubjectName = subjectList.get(i).getName();
-                final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
-                treeNodeList[i] = newChild;
+        for(int nextMappingPos : adj[currMappingPos])
+        {
+            String nextSubjectName = subjectList.get(nextMappingPos).getName();
+            final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
+            treeNodeList[nextMappingPos] = newChild;
 
-                Log.e("###", "newchild " + newChild.getData());
-                currNode.addChild(newChild);
-                makeTreeByAdj(newChild);
-            }
+            Log.e("###", "newchild " + newChild.getData());
+            currNode.addChild(newChild);
+            makeTreeByAdj(newChild);
         }
     }
 
@@ -500,7 +498,7 @@ public class Fragment2 extends Fragment {
                         updateDisplaySize();
                         Log.e("###", "Current displaySize : "+displaySize);
 
-                        adj[m.get(curData)][mappingPos] = true;
+                        adj[m.get(curData)].add(mappingPos);
                         treeNodeList[mappingPos] = newChild;
                         tn.addChild(newChild);
                         break;
@@ -558,7 +556,7 @@ public class Fragment2 extends Fragment {
                                 updateDisplaySize();
                                 Log.e("###", "Current displaySize : "+displaySize);
 
-                                adj[m.get(curData)][mappingPos] = true;
+                                adj[m.get(curData)].add(mappingPos);
                                 treeNodeList[mappingPos] = newChild;
                                 tn.addChild(newChild);
                                 break;
@@ -574,9 +572,6 @@ public class Fragment2 extends Fragment {
                         Map<String, Map<String, String>> tb = new HashMap<>();
                         for(Subject_ subject_ : subjectList){
                             Map<String, String> line = new HashMap<>();
-                            for(Subject_ subject_1 : subjectList){
-                                line.put(subject_1.getName(), "0");
-                            }
                             tb.put(subject_.getName(), line);
                         }
                         Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
@@ -632,9 +627,6 @@ public class Fragment2 extends Fragment {
                     Map<String, Map<String, String>> tb = new HashMap<>();
                     for(Subject_ subject_ : subjectList){
                         Map<String, String> line = new HashMap<>();
-                        for(Subject_ subject_1 : subjectList){
-                            line.put(subject_1.getName(), "0");
-                        }
                         tb.put(subject_.getName(), line);
                     }
                     Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
@@ -661,27 +653,28 @@ public class Fragment2 extends Fragment {
 
     // DB 바탕으로 트리 노드 삭제
     public void deleteTreeFromDB(String currNode){
-        int currNodeIndex = m.get(currNode);
+        int currNodeValue = m.get(currNode);
 
-        for(int i = 0; i < subjectList.size(); i++){
-            if(adj[currNodeIndex][i] == true){
-                String nextNode = subjectList.get(i).getName();
-                deleteTreeFromDB(nextNode);
-                adj[currNodeIndex][i] = false;
+        for(int nextNodeValue : adj[currNodeValue])
+        {
+            String nextNode = subjectList.get(nextNodeValue).getName();
+            deleteTreeFromDB(nextNode);
 
-                //UserAccount 정보 업데이트
-                userTableInfo.getTable().get(currNode).put(nextNode, "0");
-                docRef = db.collection("user").document(mAuth.getUid());
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                        userAccount.getTables().set(tableLoc, userTableInfo);
-                        db.collection("user").document(mAuth.getUid()).set(userAccount);
-                    }
-                });
-            }
+            adj[currNodeValue].remove(Integer.valueOf(nextNodeValue));
+
+            //UserAccount 정보 업데이트
+            userTableInfo.getTable().get(currNode).remove(nextNode);
+            docRef = db.collection("user").document(mAuth.getUid());
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                    userAccount.getTables().set(tableLoc, userTableInfo);
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+                }
+            });
         }
-        treeNodeList[currNodeIndex].getParent().removeChild(treeNodeList[currNodeIndex]);
+
+        treeNodeList[currNodeValue].getParent().removeChild(treeNodeList[currNodeValue]);
     }
 }
