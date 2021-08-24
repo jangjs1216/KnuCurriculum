@@ -25,6 +25,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.Map;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -47,8 +50,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Message data payload: " + remoteMessage.getData());
 
             if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-              //  scheduleJob();
+                Log.e(TAG,"###############");
             } else {
                 // Handle message within 10 seconds
                 handleNow();
@@ -58,12 +60,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        sendNotification(remoteMessage.getNotification().getBody());
+        sendNotification(remoteMessage.getData());
     }
     // [END receive_message]
 
@@ -84,7 +86,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * Handle time allotted to BroadcastReceivers.
      */
     private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
+        Log.e(TAG, "Short lived task is done.");
     }
 
     /**
@@ -102,9 +104,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Create and show a simple notification containing the received FCM message.
      *
-     * @param messageBody FCM message body received.
+
      */
-    private void sendNotification(String messageBody) {
+    private void sendNotification(Map message) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -116,9 +118,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_stat_ic_notification)
                         .setContentTitle(getString(R.string.fcm_message))
-                        .setContentText(messageBody)
+                        .setContentText((CharSequence) message.get("body"))
                         .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =

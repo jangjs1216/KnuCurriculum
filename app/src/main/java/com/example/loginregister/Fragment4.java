@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.loginregister.adapters.SubjectAdapter;
@@ -49,8 +51,10 @@ public class Fragment4 extends Fragment {
     EditText searchText;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<Subject_> subjectList = new ArrayList<>();
+    ArrayList<Subject_> search_subjectList = new ArrayList<>();
     SubjectAdapter subjectAdapter;
     RecyclerView recyclerView;
+    ImageView delete_btt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,77 +70,33 @@ public class Fragment4 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         recyclerView = view.findViewById(R.id.F4_frag);
+        delete_btt=view.findViewById(R.id.delete_btt);
 
         //검색완료시 함수 박경무
         searchText=view.findViewById(R.id.searcf_into);
         searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
-
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
                    Searchinto();
-
                     return true;
-
                 }
-
                 return false;
-
             }
-
         });
 
-        db.collection("Subject")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                           @Override
-                                           public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                               if (task.isSuccessful()) {
+       listSub();
 
-                                                   for (QueryDocumentSnapshot document : task.getResult()) {
-                                                       subjectList.add(document.toObject(Subject_.class));
-                                                   }
-                                                   subjectAdapter = new SubjectAdapter(subjectList);
-                                                   recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                                   recyclerView.setAdapter(subjectAdapter);
-
-                                                   subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-                                                       @Override
-                                                       public void onItemClick(View v, int pos) {
-                                                           String choosedSubjectName = subjectList.get(pos).getName();
-                                                           Intent intent = new Intent(getContext(),SubjectInfoActivity.class);
-                                                           intent.putExtra("subjectName",choosedSubjectName);
-                                                           startActivity(intent);
-                                                       }
-                                                   });
-
-                                               }
-                                           }
-                                       });
-
-
-
-
-
-
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        DocumentReference docRef = db.collection("Subject").document(subjectName);
-//        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
-//
-//
-//                ArrayList<SubjectComment> subjectComments = subject_.getComments();
-//
-//                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
-//                subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-//                subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
-//            }
-//        });
+       delete_btt.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               listSub();
+               searchText.setText(null);
+           }
+       });
 
 
         return view;
@@ -162,7 +122,53 @@ public class Fragment4 extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //과목리스트 출력
+    public void listSub()
+    {
+        db.collection("Subject")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subjectList.add(document.toObject(Subject_.class));
+                            }
+                            subjectAdapter = new SubjectAdapter(subjectList);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                            recyclerView.setAdapter(subjectAdapter);
+
+                            subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(View v, int pos) {
+                                    String choosedSubjectName = subjectList.get(pos).getName();
+                                    Intent intent = new Intent(getContext(),SubjectInfoActivity.class);
+                                    intent.putExtra("subjectName",choosedSubjectName);
+                                    startActivity(intent);
+                                }
+                            });
+
+                        }
+                    }
+                });
+
+
+    }
+
+    //검색학기
     public void Searchinto(){
+        String schtxt = searchText.getText().toString();
+
+        for(Subject_ ss: subjectList){
+            if(ss.getName().contains(schtxt) ){
+                search_subjectList.add(ss);
+            }
+        }
+        subjectAdapter = new SubjectAdapter(search_subjectList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(subjectAdapter);
 
     }
 
