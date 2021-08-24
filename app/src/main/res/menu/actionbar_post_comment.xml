@@ -2,6 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
+    <item android:id="@+id/action_btn_notification"
+        android:title="알람"
+        android:icon="@drawable/ic_baseline_notifications_off_24"
+        app:showAsAction ="always"
+        android:checkable="true"
+        />
+
     <item
         android:id="@+id/menu_main"
         android:icon="@drawable/ic_more_vert_menu"
@@ -10,10 +19,11 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/first"
+
+                android:id="@+id/action_btn_delete"
                 android:title="삭제" />
             <item
-                android:id="@+id/second"
+                android:id="@+id/action_btn_modify"
                 android:title="수정" />
         </menu>
     </item>
