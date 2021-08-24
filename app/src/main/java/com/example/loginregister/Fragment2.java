@@ -214,7 +214,6 @@ public class Fragment2 extends Fragment {
         addTreeBtn = v.findViewById(R.id.addTreeBtn);
         addTreeBtn.setOnClickListener(addTreeBtnOnClickListener);
 
-
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
 
         return v;
@@ -227,6 +226,8 @@ public class Fragment2 extends Fragment {
             switch (v.getId()){
                 case R.id.LL1:
                     nodeChoiceBottomSheetDialog.dismiss();
+                    // [장준승] BottomSheetDialog 를 사용하기 이전에 Listener를 업데이트 해 줍니다.
+                    makeRVBySubjectList();
                     subjectChoiceBottomSheetDialog.show();
                     break;
 
@@ -271,6 +272,29 @@ public class Fragment2 extends Fragment {
 
                             for(TreeNode tn : treeNodeList)
                             {
+                                // [장준승] rootnode 예외 처리
+                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]) && tn.getParent() == null)
+                                {
+                                    if(isTakenClass)
+                                    {
+                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
+                                        userTableInfo.setRoot(currSubjectName+"."+TakenSemester+".1");
+                                    }else{
+                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
+                                        userTableInfo.setRoot(currSubjectName+"."+TakenSemester+".1");
+                                    }
+                                    docRef = db.collection("user").document(mAuth.getUid());
+                                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                                            userAccount.getTables().set(tableLoc, userTableInfo);
+                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                        }
+                                    });
+                                    break;
+                                }
+
                                 if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                                 {
 //                                    Log.e("###", "선택되었음!!"+curData);
@@ -292,6 +316,7 @@ public class Fragment2 extends Fragment {
                                             db.collection("user").document(mAuth.getUid()).set(userAccount);
                                         }
                                     });
+                                    break;
                                 }
                             }
                         }
@@ -326,6 +351,9 @@ public class Fragment2 extends Fragment {
 
     public void updateDisplaySize()
     {
+
+        //Log.e("###", "Estimate the root node size .. : "+treeView.);
+
         int displaySize = rootNode.getNodeCount() * 300 + 500;
         treeView.setMinimumWidth(displaySize);
         treeView.setMinimumHeight(displaySize);
@@ -334,8 +362,6 @@ public class Fragment2 extends Fragment {
 
         return;
     }
-
-
 
     /* [최정인] 기능 함수화 */
 
@@ -477,6 +503,7 @@ public class Fragment2 extends Fragment {
                 {
                     if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                     {
+                        //DBG
                         //UserAccount 정보 업데이트
                         userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
                         docRef = db.collection("user").document(mAuth.getUid());
@@ -563,14 +590,14 @@ public class Fragment2 extends Fragment {
                             }
                         }
                     }
-                    else{
+                    else {
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
                         Log.e("###", choosedSubjectName + " 선택 됨");
 
                         Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
 
                         Map<String, Map<String, String>> tb = new HashMap<>();
-                        for(Subject_ subject_ : subjectList){
+                        for (Subject_ subject_ : subjectList) {
                             Map<String, String> line = new HashMap<>();
                             tb.put(subject_.getName(), line);
                         }
@@ -584,13 +611,13 @@ public class Fragment2 extends Fragment {
                                 userAccount.getTableNames().add(tableName);
                                 userAccount.getTables().add(table);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                subjectChoiceBottomSheetDialog.dismiss();
 
                                 //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
                                 getTableFromFB();
                             }
                         });
                     }
+
                     subjectChoiceBottomSheetDialog.dismiss();
                 }
             });
@@ -615,6 +642,7 @@ public class Fragment2 extends Fragment {
             subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             subjectRecyclerView.setAdapter(subjectAdapter);
 
+            //DBG
             //RecyclerView에서 선택된 아이템에 접근
             subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
                 @Override
@@ -638,15 +666,19 @@ public class Fragment2 extends Fragment {
                             UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
                             userAccount.getTableNames().add(tableName);
                             userAccount.getTables().add(table);
+
                             Log.e("###", "트리 추가 " + tableName);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
-                            
+
                             //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
-                            subjectChoiceBottomSheetDialog.dismiss();
+
                             getTableFromFB();
                         }
                     });
+
+                    subjectChoiceBottomSheetDialog.dismiss();
                 }
+
             });
         }
     };
