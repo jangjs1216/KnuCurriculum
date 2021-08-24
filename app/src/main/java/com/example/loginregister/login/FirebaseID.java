@@ -4,6 +4,8 @@ public class FirebaseID {
     public static String user = "user";
     public static String post = "post";
 
+    public static String Subscribed = "Subscribed_Post";
+    public static String Liked = "Liked_Post";
     public static String major="major";
     public static String university="university";
     public static String documentId = "documentId";//uid

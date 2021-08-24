@@ -12,12 +12,14 @@ public class UserAccount {
     private String password; // 비밀번호
     private String nickname;
     private ArrayList<String> Liked_Post; // 좋아요 누른 게시물의 Post_Id
+    private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
 
     public UserAccount() { }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<Table> tables, ArrayList<String> tableNames) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> Subscribed_Post) {
+        this.Subscribed_Post = Subscribed_Post;
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -81,5 +83,11 @@ public class UserAccount {
 
     public void setTableNames(ArrayList<String> tableNames) {
         this.tableNames = tableNames;
+    }
+
+    public ArrayList<String> getSubscribed_Post() {return Subscribed_Post;}
+
+    public void setSubscribed_Post(ArrayList<String> subscribed_Post) {
+        Subscribed_Post = subscribed_Post;
     }
 }
