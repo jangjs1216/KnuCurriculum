@@ -75,6 +75,7 @@ public class Fragment_SetNickName extends Fragment {
                     map.put("nickname",curNick);
                     Log.e("Setnickname", String.valueOf(map));
                     mStore.collection("user").document(mAuth.getUid()).update("nickname", curNick);
+                    ((MainActivity)getActivity()).setUser_nick(user_nick);
                     ft.replace(R.id.main_frame,new Fragment1()).commit();
                 }
                 else{
