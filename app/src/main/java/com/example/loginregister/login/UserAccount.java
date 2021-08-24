@@ -1,5 +1,6 @@
 package com.example.loginregister.login;
 
+import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.Table;
 
 import java.util.ArrayList;
@@ -11,14 +12,15 @@ public class UserAccount {
     private String emailId; // 이메일 아이디
     private String password; // 비밀번호
     private String nickname;
-    private ArrayList<String> Liked_Post; // 좋아요 누른 게시물의 Post_Id
+    private ArrayList<Where_who_post> Liked_Post; // 좋아요 누른 게시물의 Post_Id 경무 내가누른 좋아요 보기위해 새로운 변수생성
+    private ArrayList<Where_who_post> Mypost;
     private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
 
     public UserAccount() { }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> Subscribed_Post) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> Subscribed_Post, ArrayList<Where_who_post> mypost) {
         this.Subscribed_Post = Subscribed_Post;
         this.idToken = idToken;
         this.emailId = emailId;
@@ -27,6 +29,15 @@ public class UserAccount {
         Liked_Post = liked_Post;
         this.tables = tables;
         this.tableNames = tableNames;
+        this.Mypost = mypost;
+    }
+
+    public ArrayList<Where_who_post> getMypost() {
+        return Mypost;
+    }
+
+    public void setMypost(ArrayList<Where_who_post> mypost) {
+        Mypost = mypost;
     }
 
     public String getIdToken() {
@@ -61,11 +72,11 @@ public class UserAccount {
         this.nickname = nickname;
     }
 
-    public ArrayList<String> getLiked_Post() {
+    public ArrayList<Where_who_post> getLiked_Post() {
         return Liked_Post;
     }
 
-    public void setLiked_Post(ArrayList<String> liked_Post) {
+    public void setLiked_Post(ArrayList<Where_who_post> liked_Post) {
         Liked_Post = liked_Post;
     }
 

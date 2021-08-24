@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ public class Fragment3 extends Fragment {
     private View view;
     private Toolbar toolbar;
     private final static String TAG ="Frag3";
+    private LinearLayout layout_like, layout_ranking;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,6 +39,28 @@ public class Fragment3 extends Fragment {
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
+
+        //내가 누른 좋아요글과 베스트 글들 보기 박경무
+        layout_like = view.findViewById(R.id.layout_like);
+        layout_ranking = view.findViewById(R.id.layout_best);
+
+        layout_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),NoticeBoard.class);
+                intent.putExtra("게시판", 8);
+                startActivity(intent);
+            }
+        });
+
+        layout_ranking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),NoticeBoard.class);
+                intent.putExtra("게시판", 9);
+                startActivity(intent);
+            }
+        });
 
 
         View forum1=view.findViewById(R.id.layout_forum1);

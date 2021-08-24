@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +29,8 @@ import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
@@ -55,6 +58,10 @@ public class NoticeBoard extends AppCompatActivity {
     private List<Post> mDatas;
     private String forum_sort;
     private TextView tv_forum_title;
+    private ArrayList<Where_who_post> preLiked;
+    private ArrayList<Where_who_post> ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +77,25 @@ public class NoticeBoard extends AppCompatActivity {
         // 게시판 컬렉션 지정
         Intent intent=getIntent();
         int forum_num=intent.getExtras().getInt("게시판");
-        forum_sort="Post"+forum_num;
+
+        if(forum_num==8){
+            forum_sort="내가 누른 좋아요 글";
+            User_like_postlist();
+        }
+        else if(forum_num==9){
+            forum_sort="베스트 게시판";
+            Best_postlist();
+        }
+        else{
+            forum_sort="Post"+forum_num;
+            updateDatas();
+        }
+
         tv_forum_title = findViewById(R.id.tv_notice_board_title);
         tv_forum_title.setText(forum_sort);
 
         //          기본 날짜순 정렬
-        updateDatas();
+
 
 
         mPostRecyclerView = findViewById(R.id.recyclerview);
@@ -108,7 +128,6 @@ public class NoticeBoard extends AppCompatActivity {
 //
 //            }
 //        });
-
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -199,7 +218,50 @@ public class NoticeBoard extends AppCompatActivity {
                         });
     }
 
+    public void User_like_postlist(){
 
+        mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.getResult() != null) {
+
+
+                            preLiked = (ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked);
+
+
+                        }
+                    }
+                });
+
+
+
+        mDatas = new ArrayList<>();//
+        mStore.collection(forum_sort)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
+                .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
+                .addSnapshotListener(
+                        new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                if (queryDocumentSnapshots != null) {
+                                    mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
+                                    for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
+                                        Post post = snap.toObject(Post.class);
+                                        mDatas.add(post);//여기까지가 게시글에 해당하는 데이터 적용
+                                    }
+                                } else {
+                                }
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);
+                                mPostRecyclerView.setAdapter(mAdapter);
+                            }
+                        });
+    }
+
+    public void Best_postlist()
+    {
+
+    }
 
 
 

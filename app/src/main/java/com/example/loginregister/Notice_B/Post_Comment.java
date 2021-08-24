@@ -77,6 +77,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     public static Context mcontext;
     public boolean Compared_c = true;
     private ArrayList<String> Subscribed,Liked;
+    private ArrayList<Where_who_post> preLiked;
     private Menu menu;
     private MenuItem subscribe;
     private String photoUrl, uid, post_id, writer_id_post, current_user; //사진 저장 변수
@@ -169,8 +170,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                     subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
 
 
-                                if((ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked)!=null) {
-                                    Liked = (ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked);
+                                if((ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked)!=null) {
+                                    preLiked = (ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked);
+                                    for(Where_who_post predata : preLiked){
+                                        Liked.add(predata.getPostid());
+                                    }
                                     isLiked = Liked.contains(post_id);
                                     if (isLiked)
                                         likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
