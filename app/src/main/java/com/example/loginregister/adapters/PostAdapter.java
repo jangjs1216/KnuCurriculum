@@ -2,6 +2,7 @@ package com.example.loginregister.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,6 +72,8 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
                     intent.putExtra("position",posi);//게시글의 위치를 넘겨줌
                     intent.putExtra("like",datas.get(posi).getLike());
                     intent.putExtra("writer_id",datas.get(posi).getWriter_id());//사용자의 uid
+                    intent.putExtra("image_url",datas.get(posi).getImage_url());
+                    Log.d("###","넘기는 이미지 유알엘 : "+datas.get(posi).getImage_url());
                     mcontext.startActivity(intent);
                 }
             }
