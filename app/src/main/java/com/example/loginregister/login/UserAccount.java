@@ -2,6 +2,7 @@ package com.example.loginregister.login;
 
 import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.Table;
+import com.example.loginregister.User_Info;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,20 +18,31 @@ public class UserAccount {
     private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
-
+    private ArrayList<User_Info> specs;
     public UserAccount() { }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> Subscribed_Post, ArrayList<Where_who_post> mypost) {
-        this.Subscribed_Post = Subscribed_Post;
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Where_who_post> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info> specs) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
         this.nickname = nickname;
         Liked_Post = liked_Post;
+        Mypost = mypost;
+        Subscribed_Post = subscribed_Post;
         this.tables = tables;
         this.tableNames = tableNames;
-        this.Mypost = mypost;
+        this.specs = specs;
     }
+
+    public ArrayList<User_Info> getSpecs() {
+        return specs;
+    }
+
+    public void setSpecs(ArrayList<User_Info> specs) {
+        this.specs = specs;
+    }
+
+
 
     public ArrayList<Where_who_post> getMypost() {
         return Mypost;

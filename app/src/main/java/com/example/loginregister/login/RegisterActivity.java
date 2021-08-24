@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.R;
 import com.example.loginregister.Table;
+import com.example.loginregister.User_Info;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -67,7 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 ArrayList<Table> tables = new ArrayList<>();
                                 ArrayList<String> tableNames = new ArrayList<>();
                                 ArrayList<String> Subscribed= new ArrayList<>();
-                                UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd1, nickname, liked_Post, tables, tableNames, Subscribed,Mypost);
+                                ArrayList<User_Info> specs = new ArrayList<>();
+                                UserAccount userAccount = new UserAccount(user.getUid(), strEmail, strPwd1, nickname, liked_Post,  Mypost,Subscribed,tables,tableNames,specs);
                                 mStore.collection("user").document(user.getUid()).set(userAccount);
                                 finish();
 
