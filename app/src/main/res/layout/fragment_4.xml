@@ -36,16 +36,38 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/search_background"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/searcf_into"
-            android:layout_weight="1"
+        <LinearLayout
+            android:layout_marginBottom="5dp"
+
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            tools:ignore="Autofill,TextFields" />
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/searcf_into"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                tools:ignore="Autofill,TextFields" />
+
+            <ImageView
+                android:clickable="true"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:id="@+id/delete_btt"
+                android:src="@drawable/search_delete_button"
+                android:layout_width="20dp"
+                android:layout_height="20dp"/>
+
+
+        </LinearLayout>
+
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabBar"
