@@ -13,19 +13,15 @@ import android.widget.Toast;
 import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.R;
 import com.example.loginregister.Table;
-import com.example.loginregister.User_Info;
-import com.example.loginregister.curiList.User_Info_Data;
+import com.example.loginregister.UserInfo.User_Info_Data;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 

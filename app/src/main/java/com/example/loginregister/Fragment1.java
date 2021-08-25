@@ -1,21 +1,16 @@
 package com.example.loginregister;
 
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,20 +18,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -47,10 +37,10 @@ public class Fragment1 extends Fragment {
     private FragmentManager fm;
     private Button btn_add;
     private FragmentTransaction ft;
-    private ArrayList<Recycler_Data> arrayList;
+    private ArrayList<Recycler_Data> curi_List;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    private Recycler_Adapter recycler_adapter;
+    private Recycler_Adapter curi_adapter;
     private TextView tv_username;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -60,25 +50,15 @@ public class Fragment1 extends Fragment {
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_1, container, false);
         //리싸이클러뷰
-        recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_recyclerview);
+        recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        arrayList = ((MainActivity)getActivity()).getArrayList_curiList();
-        recycler_adapter = new Recycler_Adapter(arrayList);
-        recyclerView.setAdapter(recycler_adapter);
+        curi_List = ((MainActivity)getActivity()).getArrayList_curiList();
+        curi_adapter = new Recycler_Adapter(curi_List);
+        recyclerView.setAdapter(curi_adapter);
 
-        btn_add = view.findViewById(R.id.btn_recycler_add);
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Recycler_Data recycler_data = new Recycler_Data("헤헤");
-                arrayList.add(recycler_data);
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                Log.e("###", String.valueOf(recycler_adapter.getItemCount()));
-            }
-        });
-        //
+
+
 
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
@@ -118,6 +98,6 @@ public class Fragment1 extends Fragment {
     }
 
     public void setProfile(View view){
-       tv_username.setText(((MainActivity)getActivity()).getUser_nick());
+       tv_username.setText(((MainActivity)getActivity()).getUserAccount().getNickname());
     }
 }

@@ -1,9 +1,6 @@
-package com.example.loginregister;
+package com.example.loginregister.UserInfo;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,26 +19,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.loginregister.curiList.Adapter_User_Info;
-import com.example.loginregister.curiList.User_Info_Data;
-import com.example.loginregister.login.FirebaseID;
-import com.example.loginregister.login.LoginActivity;
+import com.example.loginregister.MainActivity;
+import com.example.loginregister.R;
+import com.example.loginregister.SettingsFragment;
 import com.example.loginregister.login.LogoutActivity;
+import com.example.loginregister.login.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Fragment_Edit_User_Info extends Fragment {
     private View view;
@@ -51,15 +44,17 @@ public class Fragment_Edit_User_Info extends Fragment {
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
     private RecyclerView recyclerView;
-    private ArrayList<User_Info_Data> arrayList;
     private LinearLayoutManager linearLayoutManager;
     private Adapter_User_Info adapter_user_info;
     private TextView btn_add_user_info;
     private FragmentManager fm2;
     private FragmentTransaction ft2;
     private EditText et_userName;
-    private EditText et_userUniv;
-    private EditText et_userMajor;
+    private TextView tv_userUniv;
+    private TextView tv_userMajor;
+    private TextView btn_logout;
+    private UserAccount userAccount;
+    private ArrayList<User_Info_Data> specs;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,9 +65,12 @@ public class Fragment_Edit_User_Info extends Fragment {
         fm2 = getChildFragmentManager();
         ft2=fm.beginTransaction();
         et_userName = view.findViewById(R.id.et_userName);
-        et_userName.setText(((MainActivity)getActivity()).getUser_nick());
-        et_userUniv = view.findViewById(R.id.et_userUniv);
-        et_userMajor = view.findViewById(R.id.et_userMajor);
+
+        userAccount = ((MainActivity)getActivity()).getUserAccount();
+
+        et_userName.setText(userAccount.getNickname());
+        tv_userUniv = view.findViewById(R.id.tv_userUniv);
+        tv_userMajor = view.findViewById(R.id.tv_userMajor);
 
 
         ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
@@ -81,16 +79,16 @@ public class Fragment_Edit_User_Info extends Fragment {
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
-        // actionBar.setLogo(getResources().getDrawable(R.drawable.knucurricular_app_icon));//앱아이콘
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         //툴바 끝
 
         //로그아웃
-        Button btn_logout=(Button)view.findViewById(R.id.btn_logout);
+        btn_logout=view.findViewById(R.id.btn_logout);
 //        SharedPreferences account_info= getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
 //        SharedPreferences.Editor editor=account_info.edit();
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,20 +101,21 @@ public class Fragment_Edit_User_Info extends Fragment {
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_edit_user_info);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        arrayList = ((MainActivity)getActivity()).getArrayList_userInfoData();
-        adapter_user_info = new Adapter_User_Info(arrayList);
+
+        adapter_user_info = new Adapter_User_Info(specs);
         recyclerView.setAdapter(adapter_user_info);
         btn_add_user_info = (TextView) view.findViewById(R.id.btn_add_user_info);
         btn_add_user_info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User_Info_Data user_info_data = new User_Info_Data("스펙이름","내용");
-                arrayList.add(user_info_data);
-                ((MainActivity)getActivity()).setArrayList_userInfoData(arrayList);
-                adapter_user_info.notifyDataSetChanged();
+                User_Info_Data user_info_data = new User_Info_Data("","");
+                Log.e("edit", "b"+String.valueOf(userAccount.getSpecs()));
+                specs.add(user_info_data);
+                Log.e("edit", "e"+String.valueOf(userAccount.getSpecs()));
+                Log.e("edit", String.valueOf(((MainActivity)getActivity()).getUserAccount().getSpecs()));
+                //adapter_user_info.notifyDataSetChanged();
             }
         });
-
         //      리싸이클러뷰 끝
         return view;
     }
@@ -133,25 +132,23 @@ public class Fragment_Edit_User_Info extends Fragment {
         switch (item.getItemId()){
             case R.id.action_btn_save:
                 String curName = et_userName.getText().toString();
-                String curUniv = et_userUniv.getText().toString();
-                String curMajor = et_userMajor.getText().toString();
-                if(curName==null||curName.length()==0
-                ||curUniv==null||curUniv.length()==0
-                ||curMajor==null||curMajor.length()==0){
+                if(curName==null||curName.length()==0){
                     Toast.makeText(getContext(),"회원정보를 다시 확인해주세요(공백x).",Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Map<String,String> map = new HashMap<String,String>();
-                    map.put(FirebaseID.nickname,curName);
-                    map.put(FirebaseID.university,curUniv);
-                    map.put(FirebaseID.major,curMajor);
-                    Log.e("Edit_User_Info", String.valueOf(map));
-                    mStore.collection("user").document(mAuth.getUid()).set(map, SetOptions.merge());
-                    ((MainActivity)getActivity()).setUser_nick(curName);
+                    Log.e("userinfo", String.valueOf(specs));
+                    userAccount.setNickname(curName);
+
+                    userAccount.setSpecs(specs);
+                    //에딧그냥들어가는지 봐야함
+
+                    mStore.collection("user").document(mAuth.getUid()).set(userAccount);
+                    ((MainActivity)getActivity()).setUserAccount(userAccount);
                     Toast.makeText(getContext(),"회원정보가 저장되었습니다.",Toast.LENGTH_LONG).show();
 
                 }
                 break;
+
             case android.R.id.home:
                 //데베에 올려야함
                 ft.remove(Fragment_Edit_User_Info.this).commit();
@@ -162,16 +159,5 @@ public class Fragment_Edit_User_Info extends Fragment {
     }
 }
 
-//
-// tv_logout.setOnClickListener(new View.OnClickListener() {
-//@Override
-//public void onClick(View v) {
-//        Log.e(TAG,"펑");
-//        mFirebaseAuth= FirebaseAuth.getInstance();
-//        mFirebaseAuth.signOut();
-//        Intent intent = new Intent(getActivity(), LoginActivity.class);
-//        startActivity(intent);
-//        }
-//        });
 
 

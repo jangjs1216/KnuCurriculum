@@ -2,11 +2,9 @@ package com.example.loginregister.login;
 
 import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.Table;
-import com.example.loginregister.User_Info;
-import com.example.loginregister.curiList.User_Info_Data;
+import com.example.loginregister.UserInfo.User_Info_Data;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 // 사용자 계정 정보 모델 클래스
 public class UserAccount {
