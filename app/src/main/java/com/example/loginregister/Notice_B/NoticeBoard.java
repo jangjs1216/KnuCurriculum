@@ -233,28 +233,29 @@ public class NoticeBoard extends AppCompatActivity {
         }
 
         mDatas = new ArrayList<>();
-        mDatas.getClass();
+        mDatas.clear();
+        if(preLiked.size() > 0) {
+            for (String data : strings) {
+                mStore.collection(data)
+                        .whereIn("post_id", preLiked)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Post post = document.toObject(Post.class);
+                                        mDatas.add(post);
+                                    }
+                                } else {
 
-        for(String data :strings){
-            mStore.collection(data)
-                    .whereIn("post_id", preLiked )
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Post post = document.toObject(Post.class);
-                                    mDatas.add(post);
                                 }
-                            } else {
-
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);
+                                mPostRecyclerView.setAdapter(mAdapter);
                             }
-                            mAdapter = new PostAdapter(NoticeBoard.this, mDatas );
-                            mPostRecyclerView.setAdapter(mAdapter);
-                        }
-                    });
+                        });
 
+            }
         }
 
     }
