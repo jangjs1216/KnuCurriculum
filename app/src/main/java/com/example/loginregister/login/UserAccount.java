@@ -1,8 +1,7 @@
 package com.example.loginregister.login;
 
-import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.Table;
-import com.example.loginregister.UserInfo.User_Info_Data;
+
 
 import java.util.ArrayList;
 
@@ -17,13 +16,13 @@ public class UserAccount {
     private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
-    private ArrayList<User_Info_Data> specs;
+    private ArrayList<String> specs;
     private String Total,Major;
 
     public UserAccount() {
     }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info_Data> specs, String total, String major) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String total, String major) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -54,11 +53,11 @@ public class UserAccount {
         Major = major;
     }
 
-    public ArrayList<User_Info_Data> getSpecs() {
+    public ArrayList<String> getSpecs() {
         return specs;
     }
 
-    public void setSpecs(ArrayList<User_Info_Data> specs) {
+    public void setSpecs(ArrayList<String> specs) {
         this.specs = specs;
     }
 

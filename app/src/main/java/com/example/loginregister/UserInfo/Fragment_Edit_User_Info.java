@@ -31,9 +31,11 @@ import com.example.loginregister.login.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fragment_Edit_User_Info extends Fragment {
@@ -55,7 +57,7 @@ public class Fragment_Edit_User_Info extends Fragment {
     private TextView btn_logout;
     private UserAccount userAccount;
     private ArrayList<User_Info_Data> specs;
-
+    private ArrayList<String> str_specs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,8 +68,8 @@ public class Fragment_Edit_User_Info extends Fragment {
         ft2=fm.beginTransaction();
         et_userName = view.findViewById(R.id.et_userName);
 
-        userAccount = ((MainActivity)getActivity()).getUserAccount();
 
+        userAccount = ((MainActivity)getActivity()).getUserAccount();
         et_userName.setText(userAccount.getNickname());
         tv_userUniv = view.findViewById(R.id.tv_userUniv);
         tv_userMajor = view.findViewById(R.id.tv_userMajor);
@@ -102,6 +104,7 @@ public class Fragment_Edit_User_Info extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        specs = str_specs_to_specs(userAccount.getSpecs());
         adapter_user_info = new Adapter_User_Info(specs);
         recyclerView.setAdapter(adapter_user_info);
         btn_add_user_info = (TextView) view.findViewById(R.id.btn_add_user_info);
@@ -109,11 +112,8 @@ public class Fragment_Edit_User_Info extends Fragment {
             @Override
             public void onClick(View v) {
                 User_Info_Data user_info_data = new User_Info_Data("","");
-                Log.e("edit", "b"+String.valueOf(userAccount.getSpecs()));
                 specs.add(user_info_data);
-                Log.e("edit", "e"+String.valueOf(userAccount.getSpecs()));
-                Log.e("edit", String.valueOf(((MainActivity)getActivity()).getUserAccount().getSpecs()));
-                //adapter_user_info.notifyDataSetChanged();
+                adapter_user_info.notifyDataSetChanged();
             }
         });
         //      리싸이클러뷰 끝
@@ -138,14 +138,11 @@ public class Fragment_Edit_User_Info extends Fragment {
                 else{
                     Log.e("userinfo", String.valueOf(specs));
                     userAccount.setNickname(curName);
-
-                    userAccount.setSpecs(specs);
+                    userAccount.setSpecs(specs_to_str_specs(specs));
                     //에딧그냥들어가는지 봐야함
-
                     mStore.collection("user").document(mAuth.getUid()).set(userAccount);
                     ((MainActivity)getActivity()).setUserAccount(userAccount);
                     Toast.makeText(getContext(),"회원정보가 저장되었습니다.",Toast.LENGTH_LONG).show();
-
                 }
                 break;
 
@@ -157,6 +154,28 @@ public class Fragment_Edit_User_Info extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public ArrayList<String> specs_to_str_specs(ArrayList<User_Info_Data> specs){
+        ArrayList<String> list_ret=new ArrayList<>();
+        for(User_Info_Data spec : specs){
+            String ret ="";
+            ret+=spec.getUser_info_title();
+            ret+=',';
+            ret+=spec.getUser_info_content();
+            list_ret.add(ret);
+        }
+        return list_ret;
+    }
+    public ArrayList<User_Info_Data> str_specs_to_specs(ArrayList<String> str_specs){
+        ArrayList<User_Info_Data> user_info_data = new ArrayList<>();
+        for(String spec : str_specs){
+            String [] temp = spec.split(",");
+            User_Info_Data uid = new User_Info_Data(temp[0],temp[1]);
+            user_info_data.add(uid);
+        }
+        return user_info_data;
+    }
+
 }
 
 
