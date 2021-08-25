@@ -20,6 +20,16 @@ public class Post implements Comparable<Post> {
     private int cur_comment;
     private String image_url;
 
+    public String getForum() {
+        return forum;
+    }
+
+    public void setForum(String forum) {
+        this.forum = forum;
+    }
+
+    private String forum;
+
     public int getServer() {
         return server;
     }
@@ -118,9 +128,10 @@ public class Post implements Comparable<Post> {
         this.comments = new ArrayList<>();
         this.coment_Num=0;
         this.image_url= "";
+        this.forum="";
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment, String image_url) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment, String image_url, String forum) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -133,6 +144,7 @@ public class Post implements Comparable<Post> {
         this.server = server;
         this.cur_comment = cur_comment;
         this.image_url = image_url;
+        this.forum = forum;
     }
 
     @Override

@@ -27,7 +27,7 @@ public class Fragment3 extends Fragment {
     private View view;
     private Toolbar toolbar;
     private final static String TAG ="Frag3";
-    private LinearLayout layout_like, layout_ranking;
+    private LinearLayout layout_like, layout_ranking, layout_mypost;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +43,7 @@ public class Fragment3 extends Fragment {
         //내가 누른 좋아요글과 베스트 글들 보기 박경무
         layout_like = view.findViewById(R.id.layout_like);
         layout_ranking = view.findViewById(R.id.layout_best);
+        layout_mypost = view.findViewById(R.id.layout_mypost);
 
         layout_like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,14 +54,24 @@ public class Fragment3 extends Fragment {
             }
         });
 
+        layout_mypost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),NoticeBoard.class);
+                intent.putExtra("게시판",9);
+                startActivity(intent);
+            }
+        });
+
         layout_ranking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),NoticeBoard.class);
-                intent.putExtra("게시판", 9);
+                intent.putExtra("게시판", 10);
                 startActivity(intent);
             }
         });
+
 
 
         View forum1=view.findViewById(R.id.layout_forum1);

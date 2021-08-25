@@ -94,12 +94,11 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     }
 
 
-
     @Override
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url,forum_sort);
             mStore.collection(forum_sort).document(post_id).set(post);
             startActivity(new Intent(this,NoticeBoard.class));
             finish();

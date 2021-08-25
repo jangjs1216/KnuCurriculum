@@ -79,7 +79,7 @@ public class Post_Search extends AppCompatActivity {
                                                 else {
                                                     Toast.makeText(getApplicationContext(),"일치하는 게시글이 없습니다.",Toast.LENGTH_LONG).show();
                                                 }
-                                                mAdapter = new PostAdapter(Post_Search.this, mDatas, forum_sort);
+                                                mAdapter = new PostAdapter(Post_Search.this, mDatas);
                                                 if(mAdapter.getItemCount()==0){
                                                     Toast.makeText(getApplicationContext(),"일치하는 게시글이 없습니다.",Toast.LENGTH_LONG).show();
                                                 }

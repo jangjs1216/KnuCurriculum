@@ -44,6 +44,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -180,10 +181,19 @@ public class Post_write extends AppCompatActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
 
+                    ArrayList<String> MyPost = new ArrayList<>();
+                    MyPost = userAccount.getMypost();
+
+                    MyPost.add(PostID);
+
+                    Map map1 = new HashMap<String, ArrayList<String>>();
+                    map1.put("mypost",MyPost);
+                    mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
+
                     long datetime = System.currentTimeMillis();
                     Date date = new Date(datetime);
                     Timestamp timestamp = new Timestamp(date);
-                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, 0, 0, image_url);
+                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, 0, 0, image_url,forum_sort);
                     mStore.collection(forum_sort).document(PostID).set(post[0]);
                     FirebaseMessaging.getInstance().subscribeToTopic(PostID)
                             .addOnCompleteListener(task -> {

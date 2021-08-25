@@ -29,7 +29,9 @@ import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostAdapter;
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +41,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -58,7 +61,7 @@ public class NoticeBoard extends AppCompatActivity {
     private List<Post> mDatas;
     private String forum_sort;
     private TextView tv_forum_title;
-    private ArrayList<Where_who_post> preLiked;
+    private ArrayList<String> preLiked;
 
 
     @Override
@@ -82,6 +85,10 @@ public class NoticeBoard extends AppCompatActivity {
             User_like_postlist();
         }
         else if(forum_num==9){
+            forum_sort="내가쓴 글";
+            Mypost_list();
+        }
+        else if(forum_num==10){
             forum_sort="베스트 게시판";
             Best_postlist();
         }
@@ -185,7 +192,7 @@ public class NoticeBoard extends AppCompatActivity {
                                     }
                                 } else {
                                 }
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);
                                 mPostRecyclerView.setAdapter(mAdapter);
                             }
                         });
@@ -211,50 +218,77 @@ public class NoticeBoard extends AppCompatActivity {
                                 } else {
                                 }
                                 Collections.sort(mDatas);
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);//mDatas라는 생성자를 넣어줌
+                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
                                 mPostRecyclerView.setAdapter(mAdapter);
                             }
                         });
+    }
+
+    public void Search_mypost()
+    {
+        String [] strings = new String[7];
+
+        for(int i=0;i<strings.length;++i){
+            strings[i]="Post"+(i+1);
+        }
+
+        mDatas = new ArrayList<>();
+        mDatas.getClass();
+
+        for(String data :strings){
+            mStore.collection(data)
+                    .whereIn("post_id", preLiked )
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Post post = document.toObject(Post.class);
+                                    mDatas.add(post);
+                                }
+                            } else {
+
+                            }
+                            mAdapter = new PostAdapter(NoticeBoard.this, mDatas );
+                            mPostRecyclerView.setAdapter(mAdapter);
+                        }
+                    });
+
+        }
+
     }
 
     public void User_like_postlist(){
 
         mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.getResult() != null) {
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                        preLiked = userAccount.getLiked_Post();
 
-
-                            preLiked = (ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked);
-
-
-                        }
+                        Search_mypost();
                     }
                 });
 
+    }
 
+    public void Mypost_list(){
 
-        mDatas = new ArrayList<>();//
-        mStore.collection(forum_sort)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
-                .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
-                .addSnapshotListener(
-                        new EventListener<QuerySnapshot>() {
-                            @Override
-                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                if (queryDocumentSnapshots != null) {
-                                    mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
-                                    for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
-                                        Post post = snap.toObject(Post.class);
-                                        mDatas.add(post);//여기까지가 게시글에 해당하는 데이터 적용
-                                    }
-                                } else {
-                                }
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas, forum_sort);
-                                mPostRecyclerView.setAdapter(mAdapter);
-                            }
-                        });
+        mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                        preLiked = userAccount.getMypost();
+
+                        Search_mypost();
+                    }
+                });
+
     }
 
     public void Best_postlist()
