@@ -49,13 +49,17 @@ public class Post_Treeview extends AppCompatActivity{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
 
-    String writerId, writerNick;
+    String writerId, writerNick, postId, forumId;
     TextView tv_post; // 상단 바 텍스트뷰
 
     ArrayList<Subject_> subjectList = new ArrayList<>();
     TreeNode[] treeNodeList;
-    boolean adj[][];
+    ArrayList<Integer> adj[];
     HashMap<String, Integer> m;
+
+    int tableLoc;
+    ArrayList<String> tableNames;
+    ArrayList<Table> tables;
 
     ZoomLayout zoomLayout;
     TreeView treeView;
@@ -73,6 +77,8 @@ public class Post_Treeview extends AppCompatActivity{
         setContentView(R.layout.activity_post_treeview);
 
         Intent intent=getIntent();
+        postId=intent.getStringExtra("postID");
+        forumId=intent.getStringExtra("forumID");
         writerId=intent.getStringExtra("writerID");
         writerNick=intent.getStringExtra("writerNickname");
 
@@ -148,17 +154,12 @@ public class Post_Treeview extends AppCompatActivity{
                         }
                         treeNodeList = new TreeNode[subjectList.size()];
 
-
                         //adj 초기화
-                        adj = new boolean[subjectList.size()][subjectList.size()];
-                        for(int i=0;i<subjectList.size();i++){
-                            for(int j=0;j<subjectList.size();j++){
-                                adj[i][j] = false;
-                            }
-                        }
+                        adj = new ArrayList[subjectList.size()];
+                        for(int i=0; i<subjectList.size(); i++)
+                            adj[i] = new ArrayList<Integer>();
 
                         mappingSubjectList();
-
                         getTableFromFB();
                     }
                 });
@@ -167,25 +168,22 @@ public class Post_Treeview extends AppCompatActivity{
     public void mappingSubjectList(){
         /* DB에서 받아온 과목들 매핑 */
         m = new HashMap<String, Integer>();
-        adj = new boolean[subjectList.size()][subjectList.size()];
         for(int i=0; i<subjectList.size(); i++){
             m.put(subjectList.get(i).getName(), m.size());
         }
     }
 
     public void getTableFromFB(){
-        docRef = db.collection("user").document(mAuth.getUid());
+        Log.e("###", "Current forum ID : "+forumId+"and postID : "+postId);
+        docRef = db.collection(forumId).document(postId);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                for(int i = 0; i < userAccount.getTableNames().size(); i++){
-                    if(userAccount.getTableNames().get(i).equals(tableName)){
-                        userTableInfo = userAccount.getTables().get(i);
-                        changeToAdj(userTableInfo);
-                        break;
-                    }
-                }
+                Post post = documentSnapshot.toObject(Post.class);
+
+                Log.e("###","Cur Post: "+post.getTable().toString());
+                userTableInfo = post.getTable();
+                changeToAdj(userTableInfo);
 
                 if(userTableInfo == null){
                     Toast.makeText(getApplicationContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
@@ -197,24 +195,25 @@ public class Post_Treeview extends AppCompatActivity{
 
     public void changeToAdj(Table table){
         for(String currSubject : table.getTable().keySet()){
-            Map<String, String> currRow =table.getTable().get(currSubject);
+            Map<String, String> currRow = table.getTable().get(currSubject);
 
             for(String nextSubject : currRow.keySet()){
-                if(currRow.get(nextSubject).equals("1")){
+                if(!currRow.get(nextSubject).equals("0")){
                     int currMappingPos = m.get(currSubject);
                     int nextMappingPos = m.get(nextSubject);
 
-                    adj[currMappingPos][nextMappingPos] = true;
+                    adj[currMappingPos].add(nextMappingPos);
                 }
             }
         }
 
         //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
-        rootNode = new TreeNode(table.getRoot() + ".1학년 1학기.0");
-        treeNodeList[m.get(table.getRoot())] = rootNode;
+        rootNode = new TreeNode(table.getRoot());
+        treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
 
+        zoomLayout.removeAllViews();
         zoomLayout.addView(treeView);
 
         updateDisplaySize();
@@ -222,19 +221,18 @@ public class Post_Treeview extends AppCompatActivity{
 
     // adj로 트리 만들기
     public void makeTreeByAdj(TreeNode currNode){
-        String[] nodeData = currNode.getData().toString().split("\\.");
-        String currSubjectName = nodeData[0];
+        String currSubjectName = currNode.getData().toString().split("\\.")[0];
         int currMappingPos = m.get(currSubjectName);
 
-        for(int i = 0; i < adj.length; i++){
-            if(adj[currMappingPos][i] == true){
-                String nextSubjectName = subjectList.get(i).getName();
+        for(int nextMappingPos : adj[currMappingPos])
+        {
+            String nextSubjectName = subjectList.get(nextMappingPos).getName();
+            final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
+            treeNodeList[nextMappingPos] = newChild;
 
-                final TreeNode newChild = new TreeNode(nextSubjectName + ".1학년 1학기.1");
-                treeNodeList[i] = newChild;
-                currNode.addChild(newChild);
-                makeTreeByAdj(newChild);
-            }
+            Log.e("###", "newchild " + newChild.getData());
+            currNode.addChild(newChild);
+            makeTreeByAdj(newChild);
         }
     }
 

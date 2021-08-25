@@ -85,8 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(RegisterActivity.this, "닉네임을 입력해주세요", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
     }

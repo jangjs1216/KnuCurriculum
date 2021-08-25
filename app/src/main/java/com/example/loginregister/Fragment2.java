@@ -87,6 +87,7 @@ public class Fragment2 extends Fragment {
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
+    private int displayHeightSize = 500;
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
@@ -472,6 +473,9 @@ public class Fragment2 extends Fragment {
 
             Log.e("###", "newchild " + newChild.getData());
             currNode.addChild(newChild);
+
+            Log.e("###", currNode.toString());
+
             makeTreeByAdj(newChild);
         }
     }
