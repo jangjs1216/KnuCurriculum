@@ -159,6 +159,8 @@
                             android:id="@+id/et_total_GPA"
                             android:layout_width="0dp"
                             android:layout_height="27sp"
+                            android:inputType="number"
+                            android:gravity="right"
                             android:background="@android:color/transparent"
                             app:layout_constraintBottom_toTopOf="@+id/et_major_GPA"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -168,6 +170,8 @@
                             android:id="@+id/et_major_GPA"
                             android:layout_width="0dp"
                             android:layout_height="27sp"
+                            android:gravity="right"
+                            android:inputType="number"
                             android:background="@android:color/transparent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -211,6 +215,7 @@
             <FrameLayout
                 android:id="@+id/fragment_setting_container"
                 android:layout_width="match_parent"
+                android:nestedScrollingEnabled="false"
                 android:layout_height="wrap_content">
 
             </FrameLayout>

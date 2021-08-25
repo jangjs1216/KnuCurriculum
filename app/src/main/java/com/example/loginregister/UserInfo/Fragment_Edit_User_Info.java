@@ -56,6 +56,8 @@ public class Fragment_Edit_User_Info extends Fragment {
     private TextView tv_userMajor;
     private TextView btn_logout;
     private UserAccount userAccount;
+    private EditText et_major;
+    private EditText et_total;
     private ArrayList<User_Info_Data> specs;
     private ArrayList<String> str_specs;
     @Override
@@ -73,8 +75,10 @@ public class Fragment_Edit_User_Info extends Fragment {
         et_userName.setText(userAccount.getNickname());
         tv_userUniv = view.findViewById(R.id.tv_userUniv);
         tv_userMajor = view.findViewById(R.id.tv_userMajor);
-
-
+        et_total = view.findViewById(R.id.et_total_GPA);
+        et_major=view.findViewById(R.id.et_major_GPA);
+        et_major.setText(userAccount.getMajor());
+        et_total.setText(userAccount.getTotal());
         ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
          //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         toolbar = (Toolbar)view.findViewById(R.id.tb_edit_user_info);
@@ -139,6 +143,8 @@ public class Fragment_Edit_User_Info extends Fragment {
                     Log.e("userinfo", String.valueOf(specs));
                     userAccount.setNickname(curName);
                     userAccount.setSpecs(specs_to_str_specs(specs));
+                    userAccount.setTotal(et_total.getText().toString());
+                    userAccount.setMajor(et_major.getText().toString());
                     //에딧그냥들어가는지 봐야함
                     mStore.collection("user").document(mAuth.getUid()).set(userAccount);
                     ((MainActivity)getActivity()).setUserAccount(userAccount);
