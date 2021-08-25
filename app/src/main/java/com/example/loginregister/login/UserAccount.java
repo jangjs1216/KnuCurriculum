@@ -3,6 +3,7 @@ package com.example.loginregister.login;
 import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.Table;
 import com.example.loginregister.User_Info;
+import com.example.loginregister.curiList.User_Info_Data;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,10 +19,13 @@ public class UserAccount {
     private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
-    private ArrayList<User_Info> specs;
-    public UserAccount() { }
+    private ArrayList<User_Info_Data> specs;
+    private String Total,Major;
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Where_who_post> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info> specs) {
+    public UserAccount() {
+    }
+
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Where_who_post> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info_Data> specs, String total, String major) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -32,13 +36,31 @@ public class UserAccount {
         this.tables = tables;
         this.tableNames = tableNames;
         this.specs = specs;
+        Total = total;
+        Major = major;
     }
 
-    public ArrayList<User_Info> getSpecs() {
+    public String getTotal() {
+        return Total;
+    }
+
+    public void setTotal(String total) {
+        Total = total;
+    }
+
+    public String getMajor() {
+        return Major;
+    }
+
+    public void setMajor(String major) {
+        Major = major;
+    }
+
+    public ArrayList<User_Info_Data> getSpecs() {
         return specs;
     }
 
-    public void setSpecs(ArrayList<User_Info> specs) {
+    public void setSpecs(ArrayList<User_Info_Data> specs) {
         this.specs = specs;
     }
 
