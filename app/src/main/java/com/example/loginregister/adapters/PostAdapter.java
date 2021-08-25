@@ -73,6 +73,10 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
                     intent.putExtra("like",datas.get(posi).getLike());
                     intent.putExtra("writer_id",datas.get(posi).getWriter_id());//사용자의 uid
                     intent.putExtra("image_url",datas.get(posi).getImage_url());
+                    if(datas.get(posi).getTable() == null){
+                        intent.putExtra("isTreeExist", "no");
+                    }
+                    else intent.putExtra("isTreeExist", "yes");
                     Log.d("###","넘기는 이미지 유알엘 : "+datas.get(posi).getImage_url());
                     mcontext.startActivity(intent);
                 }

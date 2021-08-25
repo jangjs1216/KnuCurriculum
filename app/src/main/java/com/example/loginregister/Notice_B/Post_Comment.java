@@ -90,7 +90,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private ArrayList<String> Subscribed,Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
-    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url;
+    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist;
     private Boolean isChecked,isLiked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +115,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_text.setText(intent.getStringExtra("content"));
         com_title.setText(intent.getStringExtra("title"));
         forum_sort=getIntent().getExtras().getString("게시판");
+        isTreeExist=getIntent().getExtras().getString("isTreeExist");
         //likeText.setText(intent.getStringExtra("like").toString());
         like = Integer.parseInt(intent.getStringExtra("like"));
         likeText.setText(intent.getStringExtra("like").toString());
@@ -126,6 +127,10 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         if(image_url!=null)
         {
             Glide.with(this).load(image_url).into(url_image);
+        }
+
+        if(isTreeExist.equals("yes")){
+            treeButton.setVisibility(View.VISIBLE);
         }
 
 //        Bitmap bitmap=GetImageFromUrl(image_url);
