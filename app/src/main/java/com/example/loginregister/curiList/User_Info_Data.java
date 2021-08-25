@@ -20,6 +20,7 @@ public class User_Info_Data {
         this.user_info_content = user_info_content;
     }
 
+    public User_Info_Data(){}
     public User_Info_Data(String user_info_title, String user_info_content) {
         this.user_info_title = user_info_title;
         this.user_info_content = user_info_content;
