@@ -48,21 +48,16 @@ public class MainActivity extends AppCompatActivity {
     //닉네임 검사
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    public UserAccount userAccount;
     private String user_nick;
 
     //리싸이클러뷰
     private ArrayList<Recycler_Data> arrayList_curiList;
-    private ArrayList<User_Info_Data> arrayList_userInfoData;
-
-
+    private UserAccount userAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.e("###", "userID : " + mAuth.getUid());
 
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -78,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // Log and toast
                         String msg = getString(R.string.msg_token_fmt, token);
-                        Log.e(TAG, msg);
+                        //Log.e(TAG, msg);
                        // Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -87,20 +82,10 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setVisibility(View.INVISIBLE);
 
-        userAccount = new UserAccount();
-
-        mStore.collection("user").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                userAccount =task.getResult().toObject(UserAccount.class);
-                Log.e(TAG, String.valueOf(userAccount));
-            }
-        });
-
         check_nickname();
 
         arrayList_curiList = new ArrayList<>();
-        arrayList_userInfoData = new ArrayList<>();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -122,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+
+
 
 
         //과목코드 받아오기 함수시작
@@ -166,41 +155,34 @@ public class MainActivity extends AppCompatActivity {
     public void check_nickname(){
         if(mAuth.getCurrentUser()!=null){
             Log.e(TAG, "계정정보있음");
-            mStore.collection("user").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.getResult() != null) {
-                        userAccount = task.getResult().toObject(UserAccount.class);
-                        user_nick = userAccount.getNickname();
-                        if (user_nick != null && user_nick.length() != 0) {
-                            Log.e(TAG, "닉네임받아오기성공 - " + user_nick);
-                            bottomNavigationView.setVisibility(View.VISIBLE);
-                            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
-                        } else {
-                            Log.e(TAG, "닉네임없음");
-                            getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment_SetNickName()).commit();
+            mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.getResult()!=null){
+                                userAccount = task.getResult().toObject(UserAccount.class);
+                                user_nick = userAccount.getNickname();
+                                if(user_nick!=null&&user_nick.length()!=0) {
+                                    Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
+                                    bottomNavigationView.setVisibility(View.VISIBLE);
+                                    getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
+                                }
+                                else{
+                                    Log.e(TAG,"닉네임없음");
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new Fragment_SetNickName()).commit();
+                                }
+                            }
+                            else Log.e(TAG,"계정정보받아오기좆버그");
                         }
-                    }
-                    else {
-                        Log.e(TAG, "계정정보받아오기좆버그");
-                    }
-                }
-            });
+                    });
+        }
+        else {
+            Log.e(TAG,"계정정보없음 " );
         }
     }
 
 
-    public ArrayList<User_Info_Data> getArrayList_userInfoData() {return arrayList_userInfoData;}
-
-    public void setArrayList_userInfoData(ArrayList<User_Info_Data> arrayList_userInfoData) {this.arrayList_userInfoData = arrayList_userInfoData;}
-
-    public ArrayList<Recycler_Data> getArrayList_curiList() {
-        return arrayList_curiList;
-    }
-
-    public void setArrayList_curiList(ArrayList<Recycler_Data> arrayList_curiList) {
-        this.arrayList_curiList = arrayList_curiList;
-    }
     public UserAccount getUserAccount() {
         return userAccount;
     }
@@ -208,5 +190,19 @@ public class MainActivity extends AppCompatActivity {
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
     }
+    public ArrayList<Recycler_Data> getArrayList_curiList() {
+        return arrayList_curiList;
+    }
 
+    public void setArrayList_curiList(ArrayList<Recycler_Data> arrayList_curiList) {
+        this.arrayList_curiList = arrayList_curiList;
+    }
+
+    public String getUser_nick() {
+        return user_nick;
+    }
+
+    public void setUser_nick(String user_nick) {
+        this.user_nick = user_nick;
+    }
 }
