@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.loginregister.Table;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.login.UserAccount;
@@ -55,6 +56,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private int server;
     private int cur_commnet;
     private String image_url;
+    private Table table;
     private static final int CHOOSE_IMAGE = 101;
     ArrayList<Comment> comments = new ArrayList<>();
     int commnet_num;
@@ -88,6 +90,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        server = post.getServer();
                                                        cur_commnet = post.getCur_comment();
                                                        image_url=post.getImage_url();
+                                                       table = post.getTable();
                                                    }
                                                });
         }
@@ -98,7 +101,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url,forum_sort);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url,forum_sort, table);
             mStore.collection(forum_sort).document(post_id).set(post);
             startActivity(new Intent(this,NoticeBoard.class));
             finish();
