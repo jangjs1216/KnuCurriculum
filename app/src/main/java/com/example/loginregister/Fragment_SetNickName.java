@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,11 +38,11 @@ public class Fragment_SetNickName extends Fragment {
     private final static String TAG = "setNIckName_Activity";
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
-    private String user_nick;
     private EditText et_nickname;
     private TextView tv_confirm;
     private FragmentManager fm;
     private FragmentTransaction ft;
+    private UserAccount userAccount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +52,7 @@ public class Fragment_SetNickName extends Fragment {
         et_nickname =view.findViewById(R.id.et_setNickName);
         tv_confirm = view.findViewById(R.id.tv_confirm);
 
+        userAccount = new UserAccount();
         toolbar = (Toolbar)view.findViewById(R.id.tb_setNickname);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
@@ -71,11 +73,11 @@ public class Fragment_SetNickName extends Fragment {
                 if(curNick!=null&&curNick.length()!=0){
                     Log.e(TAG, "닉네임입력완료");
                     ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
-                    Map<String,String> map = new HashMap<String,String>();
-                    map.put("nickname",curNick);
-                    Log.e("Setnickname", String.valueOf(map));
-                    mStore.collection("user").document(mAuth.getUid()).update("nickname", curNick);
-                    ((MainActivity)getActivity()).setUser_nick(user_nick);
+                    userAccount = ((MainActivity)getActivity()).getUserAccount();
+                    userAccount.setNickname(curNick);
+                    Log.e("Setnickname", String.valueOf(curNick));
+                    mStore.collection("user").document(mAuth.getUid()).set(userAccount);
+
                     ft.replace(R.id.main_frame,new Fragment1()).commit();
                 }
                 else{
