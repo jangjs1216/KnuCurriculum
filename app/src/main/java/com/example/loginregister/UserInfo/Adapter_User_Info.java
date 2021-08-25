@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,45 +34,8 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
 
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.et_user_info_title.setText(arrayList.get(position).getUser_info_title());
-        holder.et_user_info_title.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(position<arrayList.size()){
-                    arrayList.get(holder.getAdapterPosition()).setUser_info_title(s.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        holder.et_user_info_content.setText(arrayList.get(position).getUser_info_content());
-        holder.et_user_info_content.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(position<arrayList.size()){
-                    arrayList.get(holder.getAdapterPosition()).setUser_info_content(s.toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
+        holder.tv_user_info_title.setText(arrayList.get(position).getUser_info_title());
+        holder.tv_user_info_content.setText(arrayList.get(position).getUser_info_content());
         holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +47,7 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
             @Override
             public boolean onLongClick(View v) {
                 //  길게 눌렀을 때 할 동작
-                //remove(holder.getAdapterPosition());
+               remove(holder.getAdapterPosition());
                return true;
             }
         });
@@ -104,12 +68,12 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected EditText et_user_info_title;
-        protected EditText et_user_info_content;
+        protected TextView tv_user_info_title;
+        protected TextView tv_user_info_content;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.et_user_info_title = itemView.findViewById(R.id.et_user_info_title);
-            this.et_user_info_content=itemView.findViewById(R.id.et_user_info_content);
+            this.tv_user_info_title = itemView.findViewById(R.id.tv_user_info_title);
+            this.tv_user_info_content=itemView.findViewById(R.id.tv_user_info_content);
         }
     }
 }

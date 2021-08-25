@@ -118,13 +118,12 @@
                         android:orientation="horizontal"></LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_UserPoint"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="bottom|right"
-                    android:orientation="vertical">
+                    android:gravity="bottom|right">
 
                     <TextView
                         android:id="@+id/tv_userTotalPoint"
@@ -132,7 +131,9 @@
                         android:layout_height="wrap_content"
                         android:text="전체학점"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_userMajorPoint"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_userMajorPoint"
@@ -140,13 +141,43 @@
                         android:layout_height="wrap_content"
                         android:text="전공학점"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
-                </LinearLayout>
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_major"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text=""
+                        android:paddingRight="20px"
+                        android:gravity="right"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_userMajorPoint" />
+
+                    <TextView
+                        android:id="@+id/tv_total"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:paddingRight="20px"
+                        android:text=""
+                        android:gravity="right"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_major"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/tv_userTotalPoint" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/layout_frag1_specs_recyclerview"
                 android:nestedScrollingEnabled="false"
+                android:clickable="false"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
             <androidx.recyclerview.widget.RecyclerView

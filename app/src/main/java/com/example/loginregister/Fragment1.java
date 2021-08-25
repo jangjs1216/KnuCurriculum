@@ -21,9 +21,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.example.loginregister.UserInfo.Adapter_User_Info;
 import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
+import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
+import com.example.loginregister.login.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -38,24 +41,38 @@ public class Fragment1 extends Fragment {
     private Button btn_add;
     private FragmentTransaction ft;
     private ArrayList<Recycler_Data> curi_List;
-    private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
+    private RecyclerView curi_recyclerView;
+    private RecyclerView specs_recyclerView;
+    private LinearLayoutManager curi_linearLayoutManager;
+    private LinearLayoutManager specs_linearLayoutManager;
     private Recycler_Adapter curi_adapter;
-    private TextView tv_username;
+    private Adapter_User_Info spec_adapter;
+    private TextView tv_username,tv_total,tv_major;
+    private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+    private ArrayList<User_Info_Data> specs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_1, container, false);
+        tv_total = view.findViewById(R.id.tv_total);
+        tv_major = view.findViewById(R.id.tv_major);
+        userAccount = ((MainActivity)getActivity()).getUserAccount();
+
         //리싸이클러뷰
-        recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        specs_recyclerView=(RecyclerView)view.findViewById(R.id.layout_frag1_specs_recyclerview);
+        curi_recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
+        curi_linearLayoutManager = new LinearLayoutManager(getContext());
+        specs_linearLayoutManager = new LinearLayoutManager(getContext());
+        curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
+        specs_recyclerView.setLayoutManager(specs_linearLayoutManager);
         curi_List = ((MainActivity)getActivity()).getArrayList_curiList();
+        specs = str_specs_to_specs(userAccount.getSpecs());
         curi_adapter = new Recycler_Adapter(curi_List);
-        recyclerView.setAdapter(curi_adapter);
+        spec_adapter = new Adapter_User_Info(specs);
+        curi_recyclerView.setAdapter(curi_adapter);
+        specs_recyclerView.setAdapter(spec_adapter);
 
 
 
@@ -98,6 +115,28 @@ public class Fragment1 extends Fragment {
     }
 
     public void setProfile(View view){
-       tv_username.setText(((MainActivity)getActivity()).getUserAccount().getNickname());
+        tv_total.setText(userAccount.getTotal());
+        tv_major.setText(userAccount.getMajor());
+       tv_username.setText(userAccount.getNickname());
+    }
+    public ArrayList<String> specs_to_str_specs(ArrayList<User_Info_Data> specs){
+        ArrayList<String> list_ret=new ArrayList<>();
+        for(User_Info_Data spec : specs){
+            String ret ="";
+            ret+=spec.getUser_info_title();
+            ret+=',';
+            ret+=spec.getUser_info_content();
+            list_ret.add(ret);
+        }
+        return list_ret;
+    }
+    public ArrayList<User_Info_Data> str_specs_to_specs(ArrayList<String> str_specs){
+        ArrayList<User_Info_Data> user_info_data = new ArrayList<>();
+        for(String spec : str_specs){
+            String [] temp = spec.split(",");
+            User_Info_Data uid = new User_Info_Data(temp[0],temp[1]);
+            user_info_data.add(uid);
+        }
+        return user_info_data;
     }
 }

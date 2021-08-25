@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/et_user_info_title"
+    <TextView
+        android:id="@+id/tv_user_info_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
         android:hint="이름"
         android:padding="3sp"
         android:layout_marginRight="400px"
@@ -19,14 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/et_user_info_content"
+    <TextView
+        android:id="@+id/tv_user_info_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="3sp"
         android:hint="내용"
         android:textSize="18sp"
-        android:background="@android:color/transparent"
         android:textColor="@color/black"
         android:layout_marginLeft="60px"
         app:layout_constraintBottom_toBottomOf="parent"
