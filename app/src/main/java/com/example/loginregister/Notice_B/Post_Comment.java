@@ -87,8 +87,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
     public static Context mcontext;
     public boolean Compared_c = true;
-    private ArrayList<String> Subscribed,Liked;
-    private ArrayList<Where_who_post> preLiked;
+    private ArrayList<String> Subscribed,Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
     private String photoUrl, uid, post_id, writer_id_post, current_user, image_url;
@@ -190,12 +189,10 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                 else
                                     subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
 
+                                Liked = (ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked);
 
-                                if((ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked)!=null) {
-                                    preLiked = (ArrayList<Where_who_post>) task.getResult().getData().get(FirebaseID.Liked);
-                                    for(Where_who_post predata : preLiked){
-                                        Liked.add(predata.getPostid());
-                                    }
+                                if(Liked!=null) {
+
                                     isLiked = Liked.contains(post_id);
                                     if (isLiked)
                                         likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
@@ -230,27 +227,29 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             ll = Integer.parseInt(task.getResult().get("like").toString());
+
+                            if(isLiked){
+                                Liked.remove(post_id);
+                                likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                                ll--;
+                            }
+                            else{
+                                Liked.add(post_id);
+                                likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
+                                ll++;
+                            }
+                            isLiked= !isLiked;
+                            likeText.setText(Integer.toString(ll));
+                            Map map1 = new HashMap<String, ArrayList<String>>();
+                            map1.put(FirebaseID.Liked,Liked);
+                            mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
+                            Map map2 = new HashMap<String,String>();
+                            map2.put(FirebaseID.like,Integer.toString(ll));
+                            Log.e("Post_Comment",Integer.toString(ll));
+                            mStore.collection(forum_sort).document(post_id).set(map2, SetOptions.merge());
                         }
                     });
-                if(isLiked){
-                    Liked.remove(post_id);
-                    likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                    ll--;
-                }
-                else{
-                    Liked.add(post_id);
-                    likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
-                    ll++;
-                }
-                isLiked= !isLiked;
-                likeText.setText(Integer.toString(ll));
-                Map map1 = new HashMap<String, ArrayList<String>>();
-                map1.put(FirebaseID.Liked,Liked);
-                mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
-                Map map2 = new HashMap<String,String>();
-                map2.put(FirebaseID.like,Integer.toString(ll));
-                Log.e("Post_Comment",Integer.toString(ll));
-                mStore.collection(forum_sort).document(post_id).set(map2, SetOptions.merge());
+
                 }
         });
     }

@@ -23,14 +23,13 @@ public class Where_who_post {
         this.postId = postid;
     }
 
-    public Where_who_post()
-    {
-        forumNum="";
-        postId="";
-    }
     public Where_who_post(String forumNum, String postId){
         this.postId=postId;
         this.forumNum=forumNum;
     }
 
+    public Where_who_post()
+    {
+
+    }
 }

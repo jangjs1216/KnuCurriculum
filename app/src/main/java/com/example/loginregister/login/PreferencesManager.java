@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
-import com.example.loginregister.Fragment_Edit_User_Info;
 
 public class PreferencesManager {
 

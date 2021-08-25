@@ -12,8 +12,8 @@ public class UserAccount {
     private String emailId; // 이메일 아이디
     private String password; // 비밀번호
     private String nickname;
-    private ArrayList<Where_who_post> Liked_Post; // 좋아요 누른 게시물의 Post_Id 경무 내가누른 좋아요 보기위해 새로운 변수생성
-    private ArrayList<Where_who_post> Mypost;
+    private ArrayList<String> Liked_Post; // 좋아요 누른 게시물의 Post_Id 경무 내가누른 좋아요 보기위해 새로운 변수생성
+    private ArrayList<String> Mypost;
     private ArrayList<String> Subscribed_Post;
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
@@ -23,7 +23,7 @@ public class UserAccount {
     public UserAccount() {
     }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<Where_who_post> liked_Post, ArrayList<Where_who_post> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info_Data> specs, String total, String major) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<User_Info_Data> specs, String total, String major) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -64,11 +64,11 @@ public class UserAccount {
 
 
 
-    public ArrayList<Where_who_post> getMypost() {
+    public ArrayList<String> getMypost() {
         return Mypost;
     }
 
-    public void setMypost(ArrayList<Where_who_post> mypost) {
+    public void setMypost(ArrayList<String> mypost) {
         Mypost = mypost;
     }
 
@@ -104,11 +104,11 @@ public class UserAccount {
         this.nickname = nickname;
     }
 
-    public ArrayList<Where_who_post> getLiked_Post() {
+    public ArrayList<String> getLiked_Post() {
         return Liked_Post;
     }
 
-    public void setLiked_Post(ArrayList<Where_who_post> liked_Post) {
+    public void setLiked_Post(ArrayList<String> liked_Post) {
         Liked_Post = liked_Post;
     }
 

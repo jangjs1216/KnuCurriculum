@@ -13,9 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.curiList.Recycler_Data;
-import com.example.loginregister.curiList.User_Info_Data;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     //리싸이클러뷰
     private ArrayList<Recycler_Data> arrayList_curiList;
     private ArrayList<User_Info_Data> arrayList_userInfoData;
-
 
 
 

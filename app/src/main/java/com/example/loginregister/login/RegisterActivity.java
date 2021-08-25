@@ -60,8 +60,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
 
                                 //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
-                                ArrayList<Where_who_post> liked_Post = new ArrayList<>();
-                                ArrayList<Where_who_post> Mypost = new ArrayList<>();
+                                ArrayList<String> liked_Post = new ArrayList<>();
+                                ArrayList<String> Mypost = new ArrayList<>();
                                 ArrayList<Table> tables = new ArrayList<>();
                                 ArrayList<String> tableNames = new ArrayList<>();
                                 ArrayList<String> Subscribed= new ArrayList<>();
