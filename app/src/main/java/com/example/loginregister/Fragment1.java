@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.loginregister.UserInfo.Adapter_User_Info;
@@ -27,7 +29,10 @@ import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.UserAccount;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +56,7 @@ public class Fragment1 extends Fragment {
     private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    DocumentReference docRef;
     private ArrayList<User_Info_Data> specs;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,17 +68,51 @@ public class Fragment1 extends Fragment {
 
         //리싸이클러뷰
         specs_recyclerView=(RecyclerView)view.findViewById(R.id.layout_frag1_specs_recyclerview);
-        curi_recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
-        curi_linearLayoutManager = new LinearLayoutManager(getContext());
         specs_linearLayoutManager = new LinearLayoutManager(getContext());
-        curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
         specs_recyclerView.setLayoutManager(specs_linearLayoutManager);
-        curi_List = ((MainActivity)getActivity()).getArrayList_curiList();
         specs = str_specs_to_specs(userAccount.getSpecs());
-        curi_adapter = new Recycler_Adapter(curi_List);
         spec_adapter = new Adapter_User_Info(specs);
-        curi_recyclerView.setAdapter(curi_adapter);
         specs_recyclerView.setAdapter(spec_adapter);
+
+
+        docRef = mStore.collection("user").document(mAuth.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+
+                curi_recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
+                curi_linearLayoutManager = new LinearLayoutManager(getContext());
+                curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
+
+                //      리싸이클러뷰
+                curi_List = new ArrayList<>();
+                for(String tableName : userAccount.getTableNames()){
+                    Recycler_Data recycler_data = new Recycler_Data(tableName);
+                    curi_List.add(recycler_data);
+                    Log.e("###", "item : " + tableName);
+                }
+                curi_adapter = new Recycler_Adapter(curi_List);
+                curi_recyclerView.setAdapter(curi_adapter);
+
+                //리싸이클러뷰 클릭 리스너
+                curi_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int pos) {
+                        String tableName = curi_List.get(pos).getTv_title().toString();
+                        Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+
+                        Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                        bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                        fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                        transaction.replace(R.id.main_frame, fragment2);
+                        transaction.commit();
+                    }
+                });
+            }
+        });
 
 
 
@@ -99,7 +139,6 @@ public class Fragment1 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag1,menu);
-       // Log.e(TAG,"sex");
     }
 
     @Override
