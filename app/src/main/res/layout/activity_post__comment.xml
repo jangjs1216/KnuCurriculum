@@ -148,7 +148,7 @@
                         tools:text="본문내용입니다" />
 
                     <ImageView
-                        android:id="@+id/Comment_photo2"
+                        android:id="@+id/url_image"
                         android:layout_width="200sp"
                         android:layout_height="200sp"
                         android:layout_gravity="center"

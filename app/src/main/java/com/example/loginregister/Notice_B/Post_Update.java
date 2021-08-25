@@ -54,6 +54,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private String forum_sort;
     private int server;
     private int cur_commnet;
+    private String image_url;
     private static final int CHOOSE_IMAGE = 101;
     ArrayList<Comment> comments = new ArrayList<>();
     int commnet_num;
@@ -86,13 +87,10 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        commnet_num=post.getcoment_Num();
                                                        server = post.getServer();
                                                        cur_commnet = post.getCur_comment();
+                                                       image_url=post.getImage_url();
                                                    }
                                                });
-
         }
-
-
-
     }
 
 
@@ -101,12 +99,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-
-
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url);
             mStore.collection(forum_sort).document(post_id).set(post);
-
-
             startActivity(new Intent(this,NoticeBoard.class));
             finish();
         }

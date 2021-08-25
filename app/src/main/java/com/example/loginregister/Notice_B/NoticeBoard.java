@@ -59,7 +59,6 @@ public class NoticeBoard extends AppCompatActivity {
     private String forum_sort;
     private TextView tv_forum_title;
     private ArrayList<Where_who_post> preLiked;
-    private ArrayList<Where_who_post> ;
 
 
     @Override

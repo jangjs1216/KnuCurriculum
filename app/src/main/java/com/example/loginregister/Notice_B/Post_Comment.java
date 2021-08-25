@@ -3,6 +3,9 @@ package com.example.loginregister.Notice_B;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,12 +26,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostCommentAdapter;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,7 +43,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.BufferedInputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,7 +66,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private TextView com_text;
     private TextView com_nick;
     private ImageView com_photo;
-    private ImageView com_photo2;
+    private ImageView url_image; // 게시글 이미지
     private String forum_sort;
     private ImageView btn_comment;
     private PostCommentAdapter contentAdapter;
@@ -80,7 +91,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Where_who_post> preLiked;
     private Menu menu;
     private MenuItem subscribe;
-    private String photoUrl, uid, post_id, writer_id_post, current_user; //사진 저장 변수
+    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url;
     private Boolean isChecked,isLiked;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +105,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
         com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
         com_photo = (ImageView) findViewById(R.id.Comment_photo);           //작성자 프로필 이미지
-        com_photo2 = (ImageView) findViewById(R.id.Comment_photo2);         //작성자가 올린 이미지
+        url_image = (ImageView) findViewById(R.id.url_image);               //작성자가 올린 이미지
         treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
-        likeButton = (ImageView) findViewById(R.id.like_button);               //좋아요 버튼
+        likeButton = (ImageView) findViewById(R.id.like_button);            //좋아요 버튼
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
@@ -112,10 +123,22 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         post_id = intent.getStringExtra("post_id");
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
+        image_url=getIntent().getExtras().getString("image_url");
+        if(image_url!=null)
+        {
+            Glide.with(this).load(image_url).into(url_image);
+        }
+
+//        Bitmap bitmap=GetImageFromUrl(image_url);
+//        url_image.setImageBitmap(bitmap);
+//        Log.d("###","image_url : "+image_url);
+//        if(bitmap==null)
+//        {
+//            Log.d("###","bitmap은 null값");
+//        }
+
 
         swipeRefreshLayout=findViewById(R.id.refresh_commnet);
-
-
 
         Toolbar toolbar = findViewById(R.id.tb_post_comment);
         setSupportActionBar(toolbar);
@@ -140,10 +163,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                onStart();
-                swipeRefreshLayout.setRefreshing(false);
-
+               swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -198,7 +219,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(mcontext, Post_Treeview.class);
                 intent.putExtra("writerID", writer_id_post);
                 intent.putExtra("writerNickname", com_nick.getText().toString());
-                startActivity(intent);//게시글 수정`
+                startActivity(intent); //게시글 수정`
             }
         });
 
@@ -232,8 +253,34 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 mStore.collection(forum_sort).document(post_id).set(map2, SetOptions.merge());
                 }
         });
-
     }
+
+//    public static Bitmap GetImageFromUrl(String image_url) {
+//        Bitmap bitmap=null;
+//        URLConnection connection=null;
+//        BufferedInputStream bis=null;
+//        Log.d("###","여기는 GetImageFromUrl");
+//        try{
+//            Log.d("###","try문 들어옴1");
+//            URL url=new URL(image_url);
+//            Log.d("###","try문 들어옴2");
+//            connection= (HttpURLConnection) url.openConnection();
+//            Log.d("###","try문 들어옴3");
+//            connection.connect();
+//            Log.d("###","try문 들어옴4");
+//
+//            int nSize=connection.getContentLength();
+//            Log.d("###","size는 "+nSize);
+//            bis=new BufferedInputStream(connection.getInputStream(),nSize);
+//            bitmap= BitmapFactory.decodeStream(bis);
+//
+//            bis.close();
+//        } catch (Exception e) {
+//            Log.d("###","오류발생");
+//            e.printStackTrace();
+//        }
+//        return bitmap;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -305,7 +352,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 Post post = documentSnapshot.toObject(Post.class);
                 Cdata.clear();
                 Cdata = post.getComments();
-
                 contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this);//mDatas라는 생성자를 넣어줌
                 mCommentRecyclerView.setAdapter(contentAdapter);
             }
@@ -315,7 +361,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     public void compared(String comment_id) {
         Compared_c = false;
         com_edit.setHint("대댓글 작성하기");
-
         P_comment_id = comment_id;
     }
 
