@@ -28,8 +28,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.loader.content.CursorLoader;
 
+import com.example.loginregister.MainActivity;
 import com.example.loginregister.Table;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
@@ -80,10 +82,11 @@ public class Post_write extends AppCompatActivity {
     private static final int FROM_GALLERY = 2;
     private Table choosedTable=null;
     private String forum_sort;
-    private Uri uri;
+    private Uri uri, imageUri;
     private String image_url;
     private ArrayList<String> subscriber;
     private FirebaseStorage storage;
+    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,20 +166,57 @@ public class Post_write extends AppCompatActivity {
     }
 
     private void takePhoto() {
+        String state = Environment.getExternalStorageState();
         Log.d("###", "들어옴 takephoto");
-        String state=Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if(Environment.MEDIA_MOUNTED.equals(state)) {
-            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if(intent.resolveActivity(getPackageManager())!=null) {
                 File photoFile=null;
-//                try {
-//                    String imgFileName=System.currentTimeMillis()+".jpg";
-//                    File imageFile=null;
-//                    File st
-//                }
+                try {
+                    photoFile=createImageFile();
+                } catch (IOException e) {
+                    // 실패
+                }
+                if (photoFile != null) {
+                    Uri providerURI = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+                    imageUri = providerURI;
+
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
+                    startActivityForResult(intent, FROM_CAMERA);
+                }
             }
+        } else {
+            Toast.makeText(this, "접근이 불가합니다", Toast.LENGTH_SHORT).show();
+            return;
         }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+        File imageFile = null;
+        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "picture");
+
+        if (!storageDir.exists()) {
+            Log.i("mCurrentPhotoPath1", storageDir.toString());
+            storageDir.mkdirs();
+        }
+
+        imageFile = new File(storageDir, imageFileName);
+        currentPhotoPath = imageFile.getAbsolutePath();
+
+        return imageFile;
+    }
+
+    private void galleryAddPic(){
+        Log.i("galleryAddPic", "Call");
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
+        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     public void SavePost(View view)
@@ -230,7 +270,10 @@ public class Post_write extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FROM_GALLERY) {
+        if(resultCode!=RESULT_OK) {
+            return;
+        }
+        else if (requestCode == FROM_GALLERY) {
             uri = data.getData();
             Log.d("###", "첫번째 uri : "+String.valueOf(uri));
             post_imageView.setImageURI(uri);
@@ -250,10 +293,15 @@ public class Post_write extends AppCompatActivity {
             }
             setImage();
         } else if (requestCode == FROM_CAMERA) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            post_imageView.setVisibility(View.VISIBLE);
-            post_imageView.setImageBitmap(imageBitmap);
+            try {
+                Log.i("REQUEST_TAKE_PHOTO", "OK");
+                galleryAddPic();
+                post_imageView.setImageURI(imageUri);
+            } catch (Exception e) {
+                Log.e("REQUEST_TAKE_PHOTO", e.toString());
+            }
+        } else {
+            Toast.makeText(Post_write.this, "취소하였습니다", Toast.LENGTH_SHORT).show();
         }
         StorageReference storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
         Log.d("###", "Uri 는: "+uri);
