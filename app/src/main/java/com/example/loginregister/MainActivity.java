@@ -54,6 +54,23 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Recycler_Data> arrayList_curiList;
     private UserAccount userAccount;
 
+    private long time=0;
+    private Toast toast;
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if(System.currentTimeMillis()-time >= 2000){
+            time=System.currentTimeMillis();
+            toast=Toast.makeText(getApplicationContext(),"뒤로 가기 버튼 한번 더 누르면 앱 종료",Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            toast.cancel();
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
         check_nickname();
 
         arrayList_curiList = new ArrayList<>();
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
