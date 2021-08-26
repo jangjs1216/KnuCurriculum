@@ -146,7 +146,28 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         image_url=getIntent().getExtras().getString("image_url");
         if(image_url!=null)
         {
-            Glide.with(this).load(image_url).into(url_image);
+            Log.d("###","image_url : "+image_url);
+            FirebaseStorage storage=FirebaseStorage.getInstance();
+            StorageReference storageReference=storage.getReference();
+            StorageReference pathReference=storageReference.child("post_image");
+            if(pathReference==null) {
+                Toast.makeText(Post_Comment.this,"해당 사진이 없습니다",Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d("###","최종 사진 주소 : "+"post_image/"+image_url);
+                StorageReference submitImage=storageReference.child("post_image/"+image_url);
+                submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("###", String.valueOf(uri));
+                        Glide.with(Post_Comment.this).load(uri).into(url_image);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // 실패
+                    }
+                });
+            }
         }
 
         if(isTreeExist.equals("yes")){
@@ -356,7 +377,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     });
-
                 }
                 else{
                     Log.e("Post_Comment","알람설정");
@@ -375,6 +395,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                 }
+            case android.R.id.home:
+                finish();
+                break;
 
         }
         return true;
@@ -412,159 +435,169 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 if(task.isSuccessful()){
                     post = task.getResult().toObject(Post.class);
                     subs = post.getSubscriber();
+                    //명단에서 뺌
                     subs.remove(mAuth.getUid());
+                    Log.e("###",mAuth.getUid());
                     post.setSubscriber(subs);
-                    mStore.collection(forum_sort).document(post.getPost_id()).set(post);
+                    Log.e("###", String.valueOf(subs));
+                    mStore.collection(forum_sort).document(post.getPost_id()).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                if (Compared_c) { // 댓글
+                                    if (mAuth.getCurrentUser() != null) {
+                                        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
+                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                Post post = documentSnapshot.toObject(Post.class);
+                                                subs = post.getSubscriber();
+                                                subs.add(mAuth.getUid());
+                                                post.setSubscriber(subs);
+                                                ArrayList<Comment> data = new ArrayList<>();
+
+                                                if(post.getComments() !=null) {
+                                                    data = post.getComments();
+                                                }
+
+                                                Comment cur_comment = new Comment();
+
+                                                int Csize = post.getcoment_Num();
+
+                                                cur_comment.setComment(com_edit.getText().toString());
+                                                cur_comment.setC_nickname(comment_p);
+                                                cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                                                cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
+
+                                                if(Csize+1 >=100)
+                                                {
+                                                    Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                                                    return;
+                                                }
+
+                                                data.add(cur_comment);
+                                                Collections.sort(data);
+
+                                                post.setcoment_Num(Csize+1);
+                                                post.setComments(data);
+                                                post.setCur_comment(post.getCur_comment()+1);
+                                                mStore.collection(forum_sort).document(post_id).set(post);
+
+                                                View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
+
+                                                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
+
+                                                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                                    com_edit.setText("");
+                                                }
+
+                                                Intent intent = getIntent();//데이터 전달받기
+
+                                                comment_post = intent.getStringExtra("post_id");
+                                                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                                                finish();
+                                                startActivity(intent);
+                                            }
+                                        });
+
+
+
+                                    }
+                                } else if(P_comment_id != null) { // 대댓글
+                                    if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
+
+                                        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
+                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                Post post = documentSnapshot.toObject(Post.class);
+                                                subs = post.getSubscriber();
+                                                subs.add(mAuth.getUid());
+                                                post.setSubscriber(subs);
+
+
+                                                ArrayList<Comment> data = new ArrayList<>();
+                                                int Csize = 1;
+
+                                                if(post.getComments() !=null) {
+                                                    data = post.getComments();
+
+                                                    for(int i=0;i<data.size();++i){
+                                                        Log.e("&&&",data.get(i).getComment_id());
+                                                        if((data.get(i).getComment_id()).equals(P_comment_id)){
+                                                            Csize=+1+data.get(i).getCcoment_Num();
+                                                            Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
+                                                        }
+                                                        data.get(i).setCcoment_Num(Csize);
+                                                    }
+                                                }
+
+                                                if(Csize >=100)
+                                                {
+                                                    Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                                                    return;
+                                                }
+                                                Comment cur_comment = new Comment();
+
+
+                                                cur_comment.setComment(com_edit.getText().toString());
+                                                cur_comment.setC_nickname(comment_p);
+                                                cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                                                cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
+
+
+
+                                                data.add(cur_comment);
+                                                Collections.sort(data);
+
+                                                post.setComments(data);
+                                                post.setCur_comment(post.getCur_comment()+1);
+                                                mStore.collection(forum_sort).document(post_id).set(post);
+
+
+
+
+                                                FirebaseMessaging.getInstance().subscribeToTopic(post_id)
+                                                        .addOnCompleteListener(task -> {
+                                                            if(task.isSuccessful()){
+                                                                Log.e("댓글 생성"," 구독성공");
+                                                            }
+                                                            else{
+                                                                Log.e("댓글 생성"," 구독실패");
+                                                            }
+                                                        });
+
+                                                View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
+
+                                                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
+
+                                                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                                    com_edit.setText("");
+                                                }
+
+                                                Intent intent = getIntent();//데이터 전달받기
+
+                                                comment_post = intent.getStringExtra("post_id");
+                                                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                                                finish();
+                                                startActivity(intent);
+                                            }
+                                        });
+
+
+                                    }
+                                    Compared_c=true;
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
 
-        if (Compared_c) { // 댓글
-            if (mAuth.getCurrentUser() != null) {
-                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Post post = documentSnapshot.toObject(Post.class);
-                        subs = post.getSubscriber();
-                        subs.add(mAuth.getUid());
-                        post.setSubscriber(subs);
-                        ArrayList<Comment> data = new ArrayList<>();
 
-                        if(post.getComments() !=null) {
-                            data = post.getComments();
-                        }
-
-                        Comment cur_comment = new Comment();
-
-                        int Csize = post.getcoment_Num();
-
-                        cur_comment.setComment(com_edit.getText().toString());
-                        cur_comment.setC_nickname(comment_p);
-                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                        cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
-
-                        if(Csize+1 >=100)
-                        {
-                            Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        data.add(cur_comment);
-                        Collections.sort(data);
-
-                        post.setcoment_Num(Csize+1);
-                        post.setComments(data);
-                        post.setCur_comment(post.getCur_comment()+1);
-                        mStore.collection(forum_sort).document(post_id).set(post);
-
-                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-
-                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-
-                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                            com_edit.setText("");
-                        }
-
-                        Intent intent = getIntent();//데이터 전달받기
-
-                        comment_post = intent.getStringExtra("post_id");
-                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                        finish();
-                        startActivity(intent);
-                    }
-                });
-
-
-
-            }
-        } else if(P_comment_id != null) { // 대댓글
-            if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
-
-                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Post post = documentSnapshot.toObject(Post.class);
-                        subs = post.getSubscriber();
-                        subs.add(mAuth.getUid());
-                        post.setSubscriber(subs);
-
-
-                        ArrayList<Comment> data = new ArrayList<>();
-                        int Csize = 1;
-
-                        if(post.getComments() !=null) {
-                            data = post.getComments();
-
-                            for(int i=0;i<data.size();++i){
-                                Log.e("&&&",data.get(i).getComment_id());
-                                if((data.get(i).getComment_id()).equals(P_comment_id)){
-                                    Csize=+1+data.get(i).getCcoment_Num();
-                                    Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
-                                }
-                                data.get(i).setCcoment_Num(Csize);
-                            }
-                        }
-
-                        if(Csize >=100)
-                        {
-                            Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Comment cur_comment = new Comment();
-
-
-                        cur_comment.setComment(com_edit.getText().toString());
-                        cur_comment.setC_nickname(comment_p);
-                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                        cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
-
-
-
-                        data.add(cur_comment);
-                        Collections.sort(data);
-
-                        post.setComments(data);
-                        post.setCur_comment(post.getCur_comment()+1);
-                        mStore.collection(forum_sort).document(post_id).set(post);
-
-
-
-
-                        FirebaseMessaging.getInstance().subscribeToTopic(post_id)
-                                .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        Log.e("댓글 생성"," 구독성공");
-                                    }
-                                    else{
-                                        Log.e("댓글 생성"," 구독실패");
-                                    }
-                                });
-
-                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-
-                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-
-                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                            com_edit.setText("");
-                        }
-
-                        Intent intent = getIntent();//데이터 전달받기
-
-                        comment_post = intent.getStringExtra("post_id");
-                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                        finish();
-                        startActivity(intent);
-                    }
-                });
-
-
-            }
-            Compared_c=true;
-        }
 
     }
 

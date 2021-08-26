@@ -251,14 +251,16 @@ public class Post_write extends AppCompatActivity {
         Uri file=Uri.fromFile(new File(getPath(uri)));
         Log.d("###", "Uri file은: "+file);
         StorageReference ref=storageReference.child("post_image/"+file.getLastPathSegment());
+        image_url=file.getLastPathSegment();
+        Log.d("###",file.getLastPathSegment());
         ref.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 final Task<Uri> imageUrl=task.getResult().getStorage().getDownloadUrl();
                 while(!imageUrl.isComplete());
-                image_url=imageUrl.getResult().toString();
-                Log.d("###","image_url : " + image_url);
-                Log.d("###","imageUrl : " + imageUrl);
+//                image_url=imageUrl.getResult().toString();
+//                Log.d("###","image_url : " + image_url);
+//                Log.d("###","imageUrl : " + imageUrl);
             }
         });
     }
