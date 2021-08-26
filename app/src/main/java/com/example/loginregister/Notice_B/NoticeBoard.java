@@ -1,6 +1,8 @@
 package com.example.loginregister.Notice_B;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
@@ -62,13 +65,15 @@ public class NoticeBoard extends AppCompatActivity {
     private String forum_sort;
     private TextView tv_forum_title;
     private ArrayList<String> preLiked;
-
+    private FloatingActionButton likesort_btn;
+    private boolean likeSort_TF=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board);
 
+        likesort_btn=findViewById(R.id.like_sort);
         toolbar =(Toolbar)findViewById(R.id.tb_notice_board);
         setSupportActionBar(toolbar);
         ActionBar actionBar =getSupportActionBar();
@@ -101,7 +106,6 @@ public class NoticeBoard extends AppCompatActivity {
         tv_forum_title.setText(forum_sort);
 
         //          기본 날짜순 정렬
-
 
 
         mPostRecyclerView = findViewById(R.id.recyclerview);
@@ -144,6 +148,23 @@ public class NoticeBoard extends AppCompatActivity {
 
             }
         });
+
+        likesort_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(likeSort_TF) {
+                    likeSort_TF = false;
+                    sortDatas();
+                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")) );
+                }
+                else{
+                    likeSort_TF = true;
+                    updateDatas();
+                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#EDE4E4")) );
+                }
+            }
+        });
+
     }
 
 //          툴바레이아웃설정
@@ -292,8 +313,41 @@ public class NoticeBoard extends AppCompatActivity {
 
     }
 
-    public void Best_postlist()
-    {
+    public void Best_postlist() {
+
+        String[] strings = new String[7];
+
+        for (int i = 0; i < strings.length; ++i) {
+            strings[i] = "Post" + (i + 1);
+        }
+
+        mDatas = new ArrayList<>();
+        mDatas.clear();
+
+            for (String data : strings) {
+                mStore.collection(data)//리사이클러뷰에 띄울 파이어베이스 테이블 경로
+                        .orderBy(FirebaseID.timestamp, Query.Direction.DESCENDING)//시간정렬순으로
+                        .addSnapshotListener(
+                                new EventListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                        if (queryDocumentSnapshots != null) {
+                                            mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
+                                            for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
+                                                Post post = snap.toObject(Post.class);
+
+                                                if (Integer.parseInt(post.getLike()) > 1) {
+                                                    mDatas.add(post);
+                                                }
+                                            }
+                                        } else {
+                                        }
+                                        Collections.sort(mDatas);
+                                        mAdapter = new PostAdapter(NoticeBoard.this, mDatas);//mDatas라는 생성자를 넣어줌
+                                        mPostRecyclerView.setAdapter(mAdapter);
+                                    }
+                                });
+            }
 
     }
 
