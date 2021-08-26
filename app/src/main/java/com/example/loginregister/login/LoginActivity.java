@@ -72,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
             Intent intent=new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
 
         btn_login.setOnClickListener(v -> {
@@ -93,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                     else {
                         Log.e("Login","로그인실패");
@@ -150,8 +152,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             finish();
-                            // 여기서 구글계정 정보 받아올 수 있음
-                            startActivity(intent);
                         } else { // 로그인 실패했을 경우
                             Log.e("Login","로그인실패");
                             Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
