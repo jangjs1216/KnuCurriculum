@@ -153,8 +153,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             if(pathReference==null) {
                 Toast.makeText(Post_Comment.this,"해당 사진이 없습니다",Toast.LENGTH_SHORT).show();
             } else {
-                Log.d("###","최종 사진 주소 : "+"post_image/"+image_url);
-                StorageReference submitImage=storageReference.child("post_image/"+image_url);
+                Log.d("###","최종 사진 주소 : "+"post_image/"+image_url+".jpg");
+                StorageReference submitImage=storageReference.child("post_image/"+image_url+".jpg");
                 submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {

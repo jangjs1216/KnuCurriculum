@@ -163,10 +163,19 @@ public class Post_write extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        Log.d("###", "들어옴 takepoto");
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, FROM_CAMERA);
+        Log.d("###", "들어옴 takephoto");
+        String state=Environment.getExternalStorageState();
+
+        if(Environment.MEDIA_MOUNTED.equals(state)) {
+            Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if(intent.resolveActivity(getPackageManager())!=null) {
+                File photoFile=null;
+//                try {
+//                    String imgFileName=System.currentTimeMillis()+".jpg";
+//                    File imageFile=null;
+//                    File st
+//                }
+            }
         }
     }
 
@@ -250,9 +259,10 @@ public class Post_write extends AppCompatActivity {
         Log.d("###", "Uri 는: "+uri);
         Uri file=Uri.fromFile(new File(getPath(uri)));
         Log.d("###", "Uri file은: "+file);
-        StorageReference ref=storageReference.child("post_image/"+file.getLastPathSegment());
-        image_url=file.getLastPathSegment();
-        Log.d("###",file.getLastPathSegment());
+        String filename=mAuth.getUid()+"_"+System.currentTimeMillis();
+        StorageReference ref=storageReference.child("post_image/"+filename+".jpg");
+        image_url=filename;
+        Log.d("###",filename);
         ref.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
