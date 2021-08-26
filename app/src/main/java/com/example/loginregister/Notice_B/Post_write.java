@@ -98,7 +98,7 @@ public class Post_write extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Recycler_Data> arrayList;
     private Recycler_Adapter recycler_adapter;
-
+    private ArrayList<String>subscriber;
     private FirebaseStorage storage;
 
     @Override
@@ -215,7 +215,8 @@ public class Post_write extends AppCompatActivity {
                     long datetime = System.currentTimeMillis();
                     Date date = new Date(datetime);
                     Timestamp timestamp = new Timestamp(date);
-                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, 0, 0, image_url,forum_sort, choosedTable);
+                    subscriber.add(mAuth.getUid());
+                    post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, 0, 0, image_url,forum_sort, choosedTable,subscriber);
                     mStore.collection(forum_sort).document(PostID).set(post[0]);
                     FirebaseMessaging.getInstance().subscribeToTopic(PostID)
                             .addOnCompleteListener(task -> {

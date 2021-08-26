@@ -22,6 +22,8 @@ public class Post implements Comparable<Post> {
     private String image_url;
     private Table table;
 
+    private ArrayList<String> subscriber;
+
     public Table getTable() {
         return table;
     }
@@ -124,6 +126,14 @@ public class Post implements Comparable<Post> {
         this.post_id = post_id;
     }
 
+    public ArrayList<String> getSubscriber() {
+        return subscriber;
+    }
+
+    public void setSubscriber(ArrayList<String> subscriber) {
+        this.subscriber = subscriber;
+    }
+
     public Post() {
        //빈생성자 생성
         this.server =0;
@@ -139,10 +149,11 @@ public class Post implements Comparable<Post> {
         this.coment_Num=0;
         this.image_url= "";
         this.forum="";
-        this.table = null;
+        this.table = new Table();
+        this.subscriber = new ArrayList<>();
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment, String image_url, String forum, Table table) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment, String image_url, String forum, Table table,ArrayList<String> subscriber) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -157,6 +168,7 @@ public class Post implements Comparable<Post> {
         this.image_url = image_url;
         this.forum = forum;
         this.table = table;
+        this.subscriber = subscriber;
     }
 
     @Override
