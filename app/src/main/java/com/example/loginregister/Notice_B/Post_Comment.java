@@ -87,11 +87,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
     public static Context mcontext;
     public boolean Compared_c = true;
-    private ArrayList<String> Subscribed,Liked = new ArrayList<>();
+    private ArrayList<String> subs,Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
     private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist;
     private Boolean isChecked,isLiked;
+    private Post post;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,24 +104,43 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_title = (TextView) findViewById(R.id.Comment_title);            //제목
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
         com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
-        com_photo = (ImageView) findViewById(R.id.Comment_photo);           //작성자 프로필 이미지
         url_image = (ImageView) findViewById(R.id.url_image);               //작성자가 올린 이미지
         treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
         likeButton = (ImageView) findViewById(R.id.like_button);            //좋아요 버튼
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
+        forum_sort=getIntent().getExtras().getString("게시판");
+        post_id = intent.getStringExtra("post_id");
+
+        mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                post = task.getResult().toObject(Post.class);
+                Log.e("postcomment1", String.valueOf(post)+subs);
+                subs = post.getSubscriber();
+                Log.e("postcomment2", String.valueOf(post)+subs);
+                if(subs.contains(mAuth.getUid())){
+                    subscribe.setIcon(R.drawable.ic_baseline_notifications_active_24);
+                    isChecked = true;
+                }
+                else{
+                    subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
+                    isChecked= false;
+                }
+            }
+        });
         com_pos = intent.getExtras().getInt("position");
         com_nick.setText(intent.getStringExtra("nickname"));
         com_text.setText(intent.getStringExtra("content"));
         com_title.setText(intent.getStringExtra("title"));
-        forum_sort=getIntent().getExtras().getString("게시판");
+
         isTreeExist=getIntent().getExtras().getString("isTreeExist");
         //likeText.setText(intent.getStringExtra("like").toString());
         like = Integer.parseInt(intent.getStringExtra("like"));
         likeText.setText(intent.getStringExtra("like").toString());
         uid = intent.getStringExtra("uid");//게시글 작성자의 uid를 받아옴
-        post_id = intent.getStringExtra("post_id");
+
         writer_id_post = intent.getStringExtra("writer_id");
         post_num = intent.getStringExtra("number");
         image_url=getIntent().getExtras().getString("image_url");
@@ -156,7 +176,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
         //로그인 유저 정보 받아오기
         user = mAuth.getCurrentUser();
-        Subscribed = new ArrayList<>();
         Liked = new ArrayList<>();
 
         post_t = intent.getStringExtra("title");//게시글의 위치
@@ -172,6 +191,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+
+
         if (mAuth.getCurrentUser() != null) {//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
             mStore.collection("user").document(mAuth.getCurrentUser().getUid())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                     .get()
@@ -182,17 +203,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                                 comment_p = (String) task.getResult().getData().get(FirebaseID.nickname);//
                                 current_user = (String) task.getResult().getData().get(FirebaseID.documentId);
-                                Subscribed = (ArrayList<String>)task.getResult().getData().get(FirebaseID.Subscribed);
-                                if(Subscribed!=null) {
-                                    Log.e("tlqkf", Subscribed + post_id);
-                                    isChecked = Subscribed.contains(post_id);
-                                    if (isChecked)
-                                        subscribe.setIcon(R.drawable.ic_baseline_notifications_active_24);
-                                    else
-                                        subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
-                                }
-                                else
-                                    subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
 
                                 Liked = (ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked);
 
@@ -329,19 +339,42 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_btn_notification:
-                isChecked = item.isChecked();
-                if(item.isChecked()){
+                if(isChecked){
                     Log.e("Post_Comment","알람해제");
-
+                    isChecked=!isChecked;
                     item.setIcon(R.drawable.ic_baseline_notifications_off_24);
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(post_id);
+
+                    mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                post = task.getResult().toObject(Post.class);
+                                subs = post.getSubscriber();
+                                subs.remove(mAuth.getUid());
+                                post.setSubscriber(subs);
+                                mStore.collection(forum_sort).document(post.getPost_id()).set(post);
+                            }
+                        }
+                    });
+
                 }
                 else{
                     Log.e("Post_Comment","알람설정");
+                    isChecked=!isChecked;
                     item.setIcon(R.drawable.ic_baseline_notifications_active_24);
-                    FirebaseMessaging.getInstance().subscribeToTopic(post_id);
+                    mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful()){
+                                post = task.getResult().toObject(Post.class);
+                                subs = post.getSubscriber();
+                                subs.add(mAuth.getUid());
+                                post.setSubscriber(subs);
+                                mStore.collection(forum_sort).document(post.getPost_id()).set(post);
+                            }
+                        }
+                    });
                 }
-                item.setChecked(!isChecked);
 
         }
         return true;
@@ -372,7 +405,20 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(post_id);
+        Log.e("Post_Comment","알람해제");
+        mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    post = task.getResult().toObject(Post.class);
+                    subs = post.getSubscriber();
+                    subs.remove(mAuth.getUid());
+                    post.setSubscriber(subs);
+                    mStore.collection(forum_sort).document(post.getPost_id()).set(post);
+                }
+            }
+        });
+
         if (Compared_c) { // 댓글
             if (mAuth.getCurrentUser() != null) {
                 DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
@@ -380,7 +426,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Post post = documentSnapshot.toObject(Post.class);
-
+                        subs = post.getSubscriber();
+                        subs.add(mAuth.getUid());
+                        post.setSubscriber(subs);
                         ArrayList<Comment> data = new ArrayList<>();
 
                         if(post.getComments() !=null) {
@@ -439,7 +487,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Post post = documentSnapshot.toObject(Post.class);
-
+                        subs = post.getSubscriber();
+                        subs.add(mAuth.getUid());
+                        post.setSubscriber(subs);
 
 
                         ArrayList<Comment> data = new ArrayList<>();
@@ -515,6 +565,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
             Compared_c=true;
         }
-        FirebaseMessaging.getInstance().subscribeToTopic(post_id);
+
     }
+
 }
