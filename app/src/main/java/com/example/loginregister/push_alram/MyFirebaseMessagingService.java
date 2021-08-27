@@ -117,7 +117,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                        .setContentTitle(getString(R.string.fcm_message))
+                        .setContentTitle((CharSequence) message.get("title"))
                         .setContentText((CharSequence) message.get("body"))
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent);

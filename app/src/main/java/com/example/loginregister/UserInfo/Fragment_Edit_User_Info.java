@@ -1,5 +1,6 @@
 package com.example.loginregister.UserInfo;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -33,12 +34,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 
+import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class Fragment_Edit_User_Info extends Fragment {
+public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IOnBackPressed {
     private View view;
     private Toolbar toolbar;
     private FragmentManager fm;
@@ -60,6 +62,7 @@ public class Fragment_Edit_User_Info extends Fragment {
     private EditText et_total;
     private ArrayList<User_Info_Data> specs;
     private ArrayList<String> str_specs;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -110,7 +113,21 @@ public class Fragment_Edit_User_Info extends Fragment {
 
         specs = str_specs_to_specs(userAccount.getSpecs());
         adapter_user_info = new Adapter_User_Info(specs);
+        Log.e("spec","what?");
+
         recyclerView.setAdapter(adapter_user_info);
+
+        adapter_user_info.setOnItemListener(new Adapter_User_Info.OnItemClickListner() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                Log.e("spec","enter");
+               showDialog(pos);
+
+
+
+            }
+        });
+
         btn_add_user_info = (TextView) view.findViewById(R.id.btn_add_user_info);
         btn_add_user_info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +138,10 @@ public class Fragment_Edit_User_Info extends Fragment {
             }
         });
         //      리싸이클러뷰 끝
+        //뒤로가기
+        ((MainActivity) getActivity()).setBackPressedlistener(this);
+
+
         return view;
     }
 
@@ -128,7 +149,6 @@ public class Fragment_Edit_User_Info extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_edit_user_info,menu);
-        // Log.e(TAG,"sex");
     }
 
     @Override
@@ -153,10 +173,11 @@ public class Fragment_Edit_User_Info extends Fragment {
                 break;
 
             case android.R.id.home:
-                //데베에 올려야함
                 ft.remove(Fragment_Edit_User_Info.this).commit();
                 fm.popBackStack();
                 break;
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -181,7 +202,37 @@ public class Fragment_Edit_User_Info extends Fragment {
         }
         return user_info_data;
     }
+    public void showDialog(int pos){
+        SpecDiaLog specdialog = new SpecDiaLog(getContext(), specs.get(pos));
+        specdialog.setContentView(R.layout.dialog_edit_spec);
+        specdialog.setDialogListener(new SpecDiaLog.SpecDiaLogListener() {
+            @Override
+            public void onPositiveClicked(User_Info_Data user_info_data) {
+                specs.set(pos,user_info_data);
+                adapter_user_info.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onNegativeClicked() {
+
+            }
+        });
+        Log.e("spec","listen");
+        specdialog.show();
+        Log.e("spec","show");
+    }
+
+    @Override
+    public void onBackPressed() {
+        ft.remove(Fragment_Edit_User_Info.this).commit();
+        fm.popBackStack();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity) getActivity()).setBackPressedlistener(null);
+    }
 }
 
 

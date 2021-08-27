@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.CustomViewHolder> {
 
     private ArrayList<User_Info_Data> arrayList;
+    private OnItemClickListner listner=null;
 
     public Adapter_User_Info(ArrayList<User_Info_Data> arrayList){
         this.arrayList = arrayList;
@@ -40,7 +41,7 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //  눌렀을때 할 동작 하면 된다
+                listner.onItemClick(v,position);
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -75,5 +76,11 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
             this.tv_user_info_title = itemView.findViewById(R.id.tv_user_info_title);
             this.tv_user_info_content=itemView.findViewById(R.id.tv_user_info_content);
         }
+    }
+    public interface OnItemClickListner{
+        void onItemClick(View v, int pos);
+    }
+    public void setOnItemListener(OnItemClickListner listener){
+        this.listner = listener;
     }
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="350dp"
+    android:layout_height="500dp"
+    android:background="@color/white"
+    >
+
+    <EditText
+        android:id="@+id/et_spec_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="5dp"
+        android:hint="제목"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_spec_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:hint="내용"
+        android:layout_marginHorizontal="5dp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_spec_title" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custon_button"
+        android:clickable="true"
+        android:text="확인"
+        android:textColor="@color/btn_theme"
+        android:textAlignment="center"
+        android:padding="3dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_cancle"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custon_button"
+        android:padding="3dp"
+        android:clickable="true"
+        android:text="취소"
+        android:textAlignment="center"
+        android:textColor="@color/btn_theme"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

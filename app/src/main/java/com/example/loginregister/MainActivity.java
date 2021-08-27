@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.loginregister.UserInfo.User_Info_Data;
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
 
+
+    public void setBackPressedlistener(IOnBackPressed backPressedlistener) {
+        this.backPressedlistener = backPressedlistener;
+    }
+
+    IOnBackPressed backPressedlistener;
     //닉네임 검사
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -57,17 +64,27 @@ public class MainActivity extends AppCompatActivity {
     private long time=0;
     private Toast toast;
 
+    public interface IOnBackPressed{
+        void onBackPressed();
+    }
+
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if(System.currentTimeMillis()-time >= 2000){
-            time=System.currentTimeMillis();
-            toast=Toast.makeText(getApplicationContext(),"뒤로 가기 버튼 한번 더 누르면 앱 종료",Toast.LENGTH_SHORT);
-            toast.show();
+        if(backPressedlistener!=null){
+            Log.e("backpress","null아님");
+           backPressedlistener.onBackPressed();
         }
         else {
-            toast.cancel();
-            finish();
+            Log.e("backpress","null");
+            if (System.currentTimeMillis() - time >= 2000) {
+                time = System.currentTimeMillis();
+                toast = Toast.makeText(getApplicationContext(), "뒤로 가기 버튼 한번 더 누르면 앱 종료", Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                toast.cancel();
+                finish();
+            }
         }
     }
 
