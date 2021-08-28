@@ -311,15 +311,66 @@ public class Fragment2 extends Fragment {
                                     break;
                                 }
 
-                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
-                                {
-//                                    Log.e("###", "선택되었음!!"+curData);
+                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
                                     String parentSubjectName = tn.getParent().getData().toString().split("\\.")[0];
+                                    String currLinkInfo = userTableInfo.getTable().get(parentSubjectName).get(currSubjectName);
+
+                                    Boolean isChecked = false;
+
+                                    if (currLinkInfo != null && currLinkInfo.split("\\.")[2].equals("1"))
+                                    {
+                                        isChecked = true;
+                                    }
+
                                     if(isTakenClass)
                                     {
+                                        if(!isChecked)
+                                        {
+                                            // 수강 한다고 되어있을 때 수강 안 하는 경우
+                                            docRef = db.collection("UsersTableInfo").document("Matrix");
+                                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
+                                                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                    currCount += 1;
+                                                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+                                                    currParentCount += 1;
+
+                                                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+                                                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+                                                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
+                                                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                }
+                                            });
+                                        }
+
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
                                         userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
                                     }else{
+                                        if(isChecked)
+                                        {
+                                            // 수강 안할때 수강하는 경우
+                                            docRef = db.collection("UsersTableInfo").document("Matrix");
+                                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
+                                                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                    currCount -= 1;
+                                                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+                                                    currParentCount -= 1;
+
+                                                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+                                                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+                                                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
+                                                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                                                }
+                                            });
+                                        }
+
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
                                         userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
                                     }
