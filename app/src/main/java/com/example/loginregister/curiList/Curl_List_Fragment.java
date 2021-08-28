@@ -52,6 +52,7 @@ public class Curl_List_Fragment extends Fragment {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
+    UserAccount userAccount;
     private View view;
     private LinearLayoutManager linearLayoutManager;
     private  RecyclerView recyclerView;
@@ -59,6 +60,7 @@ public class Curl_List_Fragment extends Fragment {
     private Recycler_Adapter recycler_adapter;
     private Toolbar toolbar;
     Dialog addTreeDialog;
+    Dialog deleteTreeDialog;
 
 
     @Override
@@ -82,7 +84,7 @@ public class Curl_List_Fragment extends Fragment {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                userAccount = documentSnapshot.toObject(UserAccount.class);
 
                 //      리싸이클러뷰
                 recyclerView = (RecyclerView)view.findViewById(R.id.Recycler_View_Curi_List);
@@ -100,17 +102,22 @@ public class Curl_List_Fragment extends Fragment {
                 //리싸이클러뷰 클릭 리스너
                 recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View v, int pos) {
-                        String tableName = arrayList.get(pos).getTv_title().toString();
-                        Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+                    public void onItemClick(View v, int pos, String option) {
+                        if(option.equals("choice")){
+                            String tableName = arrayList.get(pos).getTv_title().toString();
+                            Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 
-                        Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                        bundle.putString("tableName", tableName);//번들에 넘길 값 저장
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                        fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                        transaction.replace(R.id.main_frame, fragment2);
-                        transaction.commit();
+                            Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                            bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                            fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                            transaction.replace(R.id.main_frame, fragment2);
+                            transaction.commit();
+                        }
+                        else{
+                            showDeleteTreeDialog(pos);
+                        }
                     }
                 });
             }
@@ -120,6 +127,11 @@ public class Curl_List_Fragment extends Fragment {
         addTreeDialog = new Dialog(getContext());
         addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         addTreeDialog.setContentView(R.layout.dialog_addtree);
+
+        //트리 삭제 다이얼로그
+        deleteTreeDialog = new Dialog(getContext());
+        deleteTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        deleteTreeDialog.setContentView(R.layout.dialog_deletetree);
 
 
 
@@ -136,7 +148,7 @@ public class Curl_List_Fragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_add:
-                showDialog();
+                showAddTreeDialog();
                 break;
 
             case android.R.id.home:
@@ -147,17 +159,18 @@ public class Curl_List_Fragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showDialog() {
+    public void showAddTreeDialog() {
         addTreeDialog.show();
 
         Button noBtn = addTreeDialog.findViewById(R.id.noBtn);
+        Button yesBtn = addTreeDialog.findViewById(R.id.yesBtn);
         noBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addTreeDialog.dismiss();
             }
         });
-        addTreeDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
+        yesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText treeNameET = addTreeDialog.findViewById(R.id.treeNameET);
@@ -169,6 +182,34 @@ public class Curl_List_Fragment extends Fragment {
                 ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
                 addTreeDialog.dismiss();
+            }
+        });
+    }
+
+    public void showDeleteTreeDialog(int pos) {
+        deleteTreeDialog.show();
+
+        Button noBtn = deleteTreeDialog.findViewById(R.id.noBtn);
+        Button yesBtn = deleteTreeDialog.findViewById(R.id.yesBtn);
+        noBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTreeDialog.dismiss();
+            }
+        });
+        yesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String deleteTreeName = userAccount.getTableNames().get(pos);
+                userAccount.getTableNames().remove(pos);
+                userAccount.getTables().remove(pos);
+                db.collection("user").document(userAccount.getIdToken()).set(userAccount);
+                Toast.makeText(getContext(), deleteTreeName + "을 삭제했습니다.", Toast.LENGTH_LONG).show();
+
+                arrayList.remove(pos);
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                recycler_adapter.notifyDataSetChanged();
+                deleteTreeDialog.dismiss();
             }
         });
     }

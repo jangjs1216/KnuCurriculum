@@ -65,6 +65,15 @@ public class Post_Treeview extends AppCompatActivity{
     TreeView treeView;
     BaseTreeAdapter adapter;
 
+    /*
+   [ 장준승 ]
+   treeNodeDepth : treeNodeList에 매핑된 각 노드의 Depth정보를 저장합니다.
+   treeLevel : 위에서 구한 treeNodeDepth를 이용해서, 각 Depth에 노드가 몇 개 있는지를 저장합니다.
+    */
+    int[] treeNodeDepth;
+    int[] treeLevel;
+    int displayHeight, displayWidth;
+
     Table userTableInfo;
 
     TreeNode rootNode;
@@ -75,6 +84,11 @@ public class Post_Treeview extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_treeview);
+
+        //과목 갯수
+        int subjectNumber = 200;
+        treeNodeDepth = new int[subjectNumber];
+        treeLevel = new int[subjectNumber];
 
         Intent intent=getIntent();
         postId=intent.getStringExtra("postID");
@@ -210,6 +224,9 @@ public class Post_Treeview extends AppCompatActivity{
         //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
         rootNode = new TreeNode(table.getRoot());
         treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
+        treeNodeDepth[m.get(table.getRoot().split("\\.")[0])] = 0;
+        treeLevel[0] = 1;
+
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
 
@@ -230,7 +247,12 @@ public class Post_Treeview extends AppCompatActivity{
             final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
             treeNodeList[nextMappingPos] = newChild;
 
-            Log.e("###", "newchild " + newChild.getData());
+            // [ 장준승 ] : 전체 트리의 세로, 가로길이 구하기
+            treeNodeDepth[nextMappingPos] = treeNodeDepth[currMappingPos]+1;
+
+            int currDepth = treeNodeDepth[nextMappingPos];
+            treeLevel[currDepth] += 1;
+
             currNode.addChild(newChild);
             makeTreeByAdj(newChild);
         }
@@ -238,9 +260,39 @@ public class Post_Treeview extends AppCompatActivity{
 
     public void updateDisplaySize()
     {
-        int displaySize = rootNode.getNodeCount() * 300 + 500;
-        treeView.setMinimumWidth(displaySize);
-        treeView.setMinimumHeight(displaySize);
+
+        for(int nodeHeight : treeNodeDepth)
+        {
+            if(displayHeight < nodeHeight)
+                displayHeight = nodeHeight;
+        }
+
+        for(int nodeWidth : treeLevel)
+        {
+            if(displayWidth < nodeWidth)
+                displayWidth = nodeWidth;
+        }
+        displayHeight += 1;
+
+        //Log.e("###", "트리의 가로 갯수 : " + displayWidth + " 트리의 세로 갯수 : " + displayHeight);
+
+        //트리 전체 세로길이, 트리 전체 가로길이
+        int displayHeightSize, displayWidthSize;
+
+        //노드 가로 길이, 노드 세로 길이, 노드 가로 마진, 노드 세로 마진
+        int nodeWidthSize, nodeHeightSize, nodeWidthMargin, nodeHeightMargin;
+        nodeWidthSize = 700;
+        nodeHeightSize = 150;
+        nodeWidthMargin = 100;
+        nodeHeightMargin = 100;
+
+        displayHeightSize = (nodeHeightSize + nodeHeightMargin) * displayHeight + 300;
+        displayWidthSize = (nodeWidthSize + nodeWidthMargin) * displayWidth;
+
+        //Log.e("###", "트리의 가로 크기 : " + displayWidthSize + " 트리의 세로 크기 : " + displayHeightSize);
+
+        treeView.setMinimumWidth(displayWidthSize);
+        treeView.setMinimumHeight(displayHeightSize);
         zoomLayout.moveTo((float)1.0, 0, 0, false);
         zoomLayout.zoomBy((float)1.0, false);
 
