@@ -58,10 +58,11 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
-            android:backgroundTint="#EDE4E4"
+            app:backgroundTint="#EDE4E4"
             android:src="@drawable/ic_baseline_favorite_24"
             app:borderWidth="0dp"
             app:fabSize="normal"
+
             />
 
 

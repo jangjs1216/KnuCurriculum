@@ -155,12 +155,12 @@ public class NoticeBoard extends AppCompatActivity {
                 if(likeSort_TF) {
                     likeSort_TF = false;
                     sortDatas();
-                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")) );
+                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_last)));
                 }
                 else{
                     likeSort_TF = true;
                     updateDatas();
-                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#EDE4E4")) );
+                    likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_pre)));
                 }
             }
         });

@@ -127,6 +127,7 @@ public class Fragment4 extends Fragment {
     //과목리스트 출력
     public void listSub()
     {
+        subjectList.clear();
         db.collection("Subject")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -161,7 +162,7 @@ public class Fragment4 extends Fragment {
     //검색학기
     public void Searchinto(){
         String schtxt = searchText.getText().toString();
-
+        search_subjectList.clear();
         for(Subject_ ss: subjectList){
             if(ss.getName().contains(schtxt) ){
                 search_subjectList.add(ss);
@@ -171,6 +172,15 @@ public class Fragment4 extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(subjectAdapter);
 
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String choosedSubjectName = subjectList.get(pos).getName();
+                Intent intent = new Intent(getContext(),SubjectInfoActivity.class);
+                intent.putExtra("subjectName",choosedSubjectName);
+                startActivity(intent);
+            }
+        });
     }
 
 }

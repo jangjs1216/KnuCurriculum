@@ -22,7 +22,7 @@ public class Post implements Comparable<Post> {
     private String image_url;
     private Table table;
     private ArrayList<String> subscriber;
-
+    private String forum;
 
     public Table getTable() {
         return table;
@@ -40,7 +40,6 @@ public class Post implements Comparable<Post> {
         this.forum = forum;
     }
 
-    private String forum;
 
     public int getServer() {
         return server;

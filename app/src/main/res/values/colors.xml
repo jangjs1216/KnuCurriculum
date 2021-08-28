@@ -10,4 +10,7 @@
     <color name="line">#6A6A6A</color>
     <color name="btn_theme">#FF3D00</color>
     <color name="colorAccent">#FF3D00</color>
+    <color name="search_pre">#EDE4E4</color>
+    <color name="search_last">#FF4444</color>
+
 </resources>
