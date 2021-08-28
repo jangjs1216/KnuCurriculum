@@ -21,8 +21,8 @@ public class Post implements Comparable<Post> {
     private int cur_comment;
     private String image_url;
     private Table table;
-
     private ArrayList<String> subscriber;
+
 
     public Table getTable() {
         return table;
@@ -134,10 +134,11 @@ public class Post implements Comparable<Post> {
         this.subscriber = subscriber;
     }
 
+
+
+
     public Post() {
        //빈생성자 생성
-        this.server =0;
-        this.cur_comment = 0;
         this.writer_id = "";
         this.title = "";
         this.contents = "";
@@ -169,6 +170,7 @@ public class Post implements Comparable<Post> {
         this.forum = forum;
         this.table = table;
         this.subscriber = subscriber;
+
     }
 
     @Override

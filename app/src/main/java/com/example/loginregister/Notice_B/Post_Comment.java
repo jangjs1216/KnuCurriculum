@@ -3,8 +3,6 @@ package com.example.loginregister.Notice_B;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,31 +25,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
-import com.example.loginregister.MainActivity;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.adapters.PostCommentAdapter;
-import com.example.loginregister.login.UserAccount;
+import com.example.loginregister.push_alram.Msg;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.BufferedInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -428,177 +422,154 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Log.e("Post_Comment","알람해제");
-        mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    post = task.getResult().toObject(Post.class);
-                    subs = post.getSubscriber();
-                    //명단에서 뺌
-                    subs.remove(mAuth.getUid());
-                    Log.e("###",mAuth.getUid());
-                    post.setSubscriber(subs);
-                    Log.e("###", String.valueOf(subs));
-                    mStore.collection(forum_sort).document(post.getPost_id()).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                if (Compared_c) { // 댓글
-                                    if (mAuth.getCurrentUser() != null) {
-                                        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                Post post = documentSnapshot.toObject(Post.class);
-                                                subs = post.getSubscriber();
-                                                subs.add(mAuth.getUid());
-                                                post.setSubscriber(subs);
-                                                ArrayList<Comment> data = new ArrayList<>();
+        if (Compared_c) { // 댓글
+            if (mAuth.getCurrentUser() != null) {
+                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        post = documentSnapshot.toObject(Post.class);
+                        Log.e("TLqkf", String.valueOf(post.getSubscriber()));
+                        ArrayList<Comment> data = new ArrayList<>();
 
-                                                if(post.getComments() !=null) {
-                                                    data = post.getComments();
-                                                }
+                        if(post.getComments() !=null) {
+                            data = post.getComments();
+                        }
 
-                                                Comment cur_comment = new Comment();
+                        Comment cur_comment = new Comment();
 
-                                                int Csize = post.getcoment_Num();
+                        int Csize = post.getcoment_Num();
 
-                                                cur_comment.setComment(com_edit.getText().toString());
-                                                cur_comment.setC_nickname(comment_p);
-                                                cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                                                cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
+                        cur_comment.setComment(com_edit.getText().toString());
+                        cur_comment.setC_nickname(comment_p);
+                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                        cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
 
-                                                if(Csize+1 >=100)
-                                                {
-                                                    Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
-                                                    return;
-                                                }
+                        if(Csize+1 >=100)
+                        {
+                            Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                            return;
+                        }
 
-                                                data.add(cur_comment);
-                                                Collections.sort(data);
+                        data.add(cur_comment);
+                        Collections.sort(data);
+                        post.setComments(data);
+                        post.setCur_comment(post.getCur_comment()+1);
+                        subs = post.getSubscriber();
+                        post.setState(true);
+                        if(!subs.contains(mAuth.getUid())){
+                            subs.add(mAuth.getUid());
+                            post.setSubscriber(subs);
+                        }
+                        Log.e("TLqkf",post.getSubscriber().toString());
+                        mStore.collection(forum_sort).document(post_id).set(post);
+                        String mId = mStore.collection("message").document().getId();
 
-                                                post.setcoment_Num(Csize+1);
-                                                post.setComments(data);
-                                                post.setCur_comment(post.getCur_comment()+1);
-                                                mStore.collection(forum_sort).document(post_id).set(post);
-
-                                                View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-
-                                                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-
-                                                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                                                    com_edit.setText("");
-                                                }
-
-                                                Intent intent = getIntent();//데이터 전달받기
-
-                                                comment_post = intent.getStringExtra("post_id");
-                                                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                                                finish();
-                                                startActivity(intent);
-                                            }
-                                        });
+                        long datetime = System.currentTimeMillis();
+                        Date date = new Date(datetime);
+                        Timestamp timestamp = new Timestamp(date);
+                        Msg msg = new Msg(forum_sort,post_id,mAuth.getUid(),timestamp);
+                        mStore.collection("message").document(mId).set(msg);
 
 
 
-                                    }
-                                } else if(P_comment_id != null) { // 대댓글
-                                    if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
+                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
 
-                                        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                Post post = documentSnapshot.toObject(Post.class);
-                                                subs = post.getSubscriber();
-                                                subs.add(mAuth.getUid());
-                                                post.setSubscriber(subs);
+                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
 
+                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            com_edit.setText("");
+                        }
 
-                                                ArrayList<Comment> data = new ArrayList<>();
-                                                int Csize = 1;
+                        Intent intent = getIntent();//데이터 전달받기
 
-                                                if(post.getComments() !=null) {
-                                                    data = post.getComments();
+                        comment_post = intent.getStringExtra("post_id");
+                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                        finish();
+                        startActivity(intent);
+                    }
+                });
+            }
+        }
+        else if(P_comment_id != null) { // 대댓글
+            if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
+                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Post post = documentSnapshot.toObject(Post.class);
+                        ArrayList<Comment> data = new ArrayList<>();
+                        int Csize = 1;
 
-                                                    for(int i=0;i<data.size();++i){
-                                                        Log.e("&&&",data.get(i).getComment_id());
-                                                        if((data.get(i).getComment_id()).equals(P_comment_id)){
-                                                            Csize=+1+data.get(i).getCcoment_Num();
-                                                            Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
-                                                        }
-                                                        data.get(i).setCcoment_Num(Csize);
-                                                    }
-                                                }
+                        if(post.getComments() !=null) {
+                            data = post.getComments();
 
-                                                if(Csize >=100)
-                                                {
-                                                    Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
-                                                    return;
-                                                }
-                                                Comment cur_comment = new Comment();
-
-
-                                                cur_comment.setComment(com_edit.getText().toString());
-                                                cur_comment.setC_nickname(comment_p);
-                                                cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                                                cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
-
-
-
-                                                data.add(cur_comment);
-                                                Collections.sort(data);
-
-                                                post.setComments(data);
-                                                post.setCur_comment(post.getCur_comment()+1);
-                                                mStore.collection(forum_sort).document(post_id).set(post);
-
-
-
-
-                                                FirebaseMessaging.getInstance().subscribeToTopic(post_id)
-                                                        .addOnCompleteListener(task -> {
-                                                            if(task.isSuccessful()){
-                                                                Log.e("댓글 생성"," 구독성공");
-                                                            }
-                                                            else{
-                                                                Log.e("댓글 생성"," 구독실패");
-                                                            }
-                                                        });
-
-                                                View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
-
-                                                if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
-
-                                                    InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                                    hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                                                    com_edit.setText("");
-                                                }
-
-                                                Intent intent = getIntent();//데이터 전달받기
-
-                                                comment_post = intent.getStringExtra("post_id");
-                                                com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
-                                                finish();
-                                                startActivity(intent);
-                                            }
-                                        });
-
-
-                                    }
-                                    Compared_c=true;
+                            for(int i=0;i<data.size();++i){
+                                Log.e("&&&",data.get(i).getComment_id());
+                                if((data.get(i).getComment_id()).equals(P_comment_id)){
+                                    Csize=+1+data.get(i).getCcoment_Num();
+                                    Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
                                 }
+                                data.get(i).setCcoment_Num(Csize);
                             }
                         }
-                    });
-                }
+
+                        if(Csize >=100)
+                        {
+                            Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Comment cur_comment = new Comment();
+
+
+                        cur_comment.setComment(com_edit.getText().toString());
+                        cur_comment.setC_nickname(comment_p);
+                        cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
+                        cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
+
+
+
+                        data.add(cur_comment);
+                        Collections.sort(data);
+                        post.setState(true);
+                        post.setComments(data);
+                        post.setCur_comment(post.getCur_comment()+1);
+                        if(!subs.contains(mAuth.getUid())){
+                            subs.add(mAuth.getUid());
+                            post.setSubscriber(subs);
+                        }
+                        mStore.collection(forum_sort).document(post_id).set(post);
+
+                        String mId = mStore.collection("message").document().getId();
+
+                        long datetime = System.currentTimeMillis();
+                        Date date = new Date(datetime);
+                        Timestamp timestamp = new Timestamp(date);
+                        Msg msg = new Msg( forum_sort,post_id,mAuth.getUid(),timestamp);
+                        mStore.collection("message").document(mId).set(msg);
+
+
+                        View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
+
+                        if (view != null) {//댓글작성시 키보드 내리고 댓글에 작성한 내용 초기화
+
+                            InputMethodManager hide = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                            hide.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                            com_edit.setText("");
+                        }
+
+                        Intent intent = getIntent();//데이터 전달받기
+
+                        comment_post = intent.getStringExtra("post_id");
+                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+                        finish();
+                        startActivity(intent);
+                    }
+                });
             }
-        });
-
-
-
+            Compared_c=true;
+        }
     }
 
 }

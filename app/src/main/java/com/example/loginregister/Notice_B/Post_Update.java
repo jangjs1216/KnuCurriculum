@@ -57,6 +57,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private int cur_commnet;
     private String image_url;
     private Table table;
+    private Boolean state;
     private static final int CHOOSE_IMAGE = 101;
     private ArrayList<Comment> comments = new ArrayList<>();
     private ArrayList<String> subscriber;
