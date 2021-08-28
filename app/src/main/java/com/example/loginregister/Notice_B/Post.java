@@ -17,8 +17,6 @@ public class Post implements Comparable<Post> {
     private String post_id;
     private ArrayList<Comment> comments; //댓글 리스트들
     private int coment_Num;
-    private int server;
-    private int cur_comment;
     private String image_url;
     private Table table;
     private ArrayList<String> subscriber;
@@ -40,22 +38,6 @@ public class Post implements Comparable<Post> {
         this.forum = forum;
     }
 
-
-    public int getServer() {
-        return server;
-    }
-
-    public void setServer(int server) {
-        this.server = server;
-    }
-
-    public int getCur_comment() {
-        return cur_comment;
-    }
-
-    public void setCur_comment(int cur_comment) {
-        this.cur_comment = cur_comment;
-    }
 
     public String getImage_url() { return image_url; }
 
@@ -153,7 +135,7 @@ public class Post implements Comparable<Post> {
         this.subscriber = new ArrayList<>();
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, int server, int cur_comment, String image_url, String forum, Table table,ArrayList<String> subscriber) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, String image_url, String forum, Table table,ArrayList<String> subscriber) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -163,8 +145,6 @@ public class Post implements Comparable<Post> {
         this.post_id = post_id;
         this.comments = comments;
         this.coment_Num = coment_Num;
-        this.server = server;
-        this.cur_comment = cur_comment;
         this.image_url = image_url;
         this.forum = forum;
         this.table = table;
