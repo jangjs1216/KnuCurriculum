@@ -266,7 +266,7 @@ public class Post_write extends AppCompatActivity {
                         Timestamp timestamp = new Timestamp(date);
                         subscriber = new ArrayList<>();
                         subscriber.add(mAuth.getUid());
-                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, 0, 0, image_url,forum_sort, choosedTable,subscriber);
+                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, image_url,forum_sort, choosedTable,subscriber);
                         mStore.collection(forum_sort).document(PostID).set(post[0]);
                         FirebaseMessaging.getInstance().subscribeToTopic(PostID)
                                 .addOnCompleteListener(task -> {

@@ -90,8 +90,6 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        timestamp = post.getTimestamp();
                                                        comments = post.getComments();
                                                        commnet_num=post.getcoment_Num();
-                                                       server = post.getServer();
-                                                       cur_commnet = post.getCur_comment();
                                                        image_url=post.getImage_url();
                                                        table = post.getTable();
                                                        subscriber = post.getSubscriber();
@@ -105,7 +103,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
 
         if(mAuth.getCurrentUser()!=null){
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url,forum_sort, table,subscriber);
+            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,image_url,forum_sort, table,subscriber);
             mStore.collection(forum_sort).document(post_id).set(post);
             finish();
         }
