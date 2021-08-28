@@ -3,6 +3,7 @@ package com.example.loginregister.Notice_B;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,9 +32,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.loader.content.CursorLoader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.Table;
+import com.example.loginregister.curiList.Recycler_Adapter;
+import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.login.UserAccount;
@@ -70,6 +76,7 @@ public class Post_write extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();//사용자 정보 가져오기
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private DocumentReference docRef;
     private EditText mTitle, mContents;//제목, 내용
     private String p_nickname;//게시판에 표기할 닉네잉 //이게 가져온 값을 저장하는 임시 변수
     private Button post_photo;
@@ -88,6 +95,11 @@ public class Post_write extends AppCompatActivity {
     private ArrayList<String> subscriber;
     private FirebaseStorage storage;
     private String currentPhotoPath;
+    private Dialog addTreeDialog;
+    private RecyclerView postAddTreeRV;
+    private LinearLayoutManager linearLayoutManager;
+    private ArrayList<Recycler_Data> arrayList;
+    private Recycler_Adapter recycler_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +158,11 @@ public class Post_write extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // 트리 사진 올리기
+                            //트리 추가 버튼 다이얼로그
+                            addTreeDialog = new Dialog(Post_write.this);
+                            addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            addTreeDialog.setContentView(R.layout.dialog_postaddtree);
+                            showDialog();
                         }
                     });
             AlertDialog alertDialog = picBuilder.create();
@@ -342,4 +359,40 @@ public class Post_write extends AppCompatActivity {
         }
     };
 
+    public void showDialog() {
+        addTreeDialog.show();
+
+        docRef = mStore.collection("user").document(mAuth.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+
+                ArrayList<Table> tables = userAccount.getTables();
+
+                postAddTreeRV = addTreeDialog.findViewById(R.id.treeListRV);
+                linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                postAddTreeRV.setLayoutManager(linearLayoutManager);
+                arrayList = new ArrayList<>();
+                for(String tableName : userAccount.getTableNames()){
+                    Recycler_Data recycler_data = new Recycler_Data(tableName);
+                    arrayList.add(recycler_data);
+                }
+                recycler_adapter = new Recycler_Adapter(arrayList);
+                postAddTreeRV.setAdapter(recycler_adapter);
+
+                //리싸이클러뷰 클릭 리스너
+                recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int pos) {
+                        String tableName = arrayList.get(pos).getTv_title().toString();
+                        Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+
+                        choosedTable = tables.get(pos);
+                        addTreeDialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
 }
