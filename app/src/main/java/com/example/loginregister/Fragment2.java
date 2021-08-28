@@ -2,6 +2,7 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -67,6 +68,14 @@ public class Fragment2 extends Fragment {
     private FragmentTransaction ft;
 
     TreeNode[] treeNodeList;
+    /*
+    [ 장준승 ]
+    treeNodeDepth : treeNodeList에 매핑된 각 노드의 Depth정보를 저장합니다.
+    treeLevel : 위에서 구한 treeNodeDepth를 이용해서, 각 Depth에 노드가 몇 개 있는지를 저장합니다.
+     */
+    int[] treeNodeDepth;
+    int[] treeLevel;
+
     ZoomLayout zoomLayout;
     ArrayList<Subject_> subjectList = new ArrayList<>();
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
@@ -87,7 +96,8 @@ public class Fragment2 extends Fragment {
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
-    private int displayHeightSize = 500;
+    private int displayHeight = 0;
+    private int displayWidth = 0;
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
@@ -111,6 +121,11 @@ public class Fragment2 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         //툴바끝
+
+        //과목 갯수
+        int subjectNumber = 200;
+        treeNodeDepth = new int[subjectNumber];
+        treeLevel = new int[subjectNumber];
 
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
@@ -353,11 +368,38 @@ public class Fragment2 extends Fragment {
     public void updateDisplaySize()
     {
 
-        //Log.e("###", "Estimate the root node size .. : "+treeView.);
+        for(int nodeHeight : treeNodeDepth)
+        {
+            if(displayHeight < nodeHeight)
+                displayHeight = nodeHeight;
+        }
 
-        int displaySize = rootNode.getNodeCount() * 300 + 500;
-        treeView.setMinimumWidth(displaySize);
-        treeView.setMinimumHeight(displaySize);
+        for(int nodeWidth : treeLevel)
+        {
+            if(displayWidth < nodeWidth)
+                displayWidth = nodeWidth;
+        }
+        displayHeight += 1;
+
+        //Log.e("###", "트리의 가로 갯수 : " + displayWidth + " 트리의 세로 갯수 : " + displayHeight);
+
+        //트리 전체 세로길이, 트리 전체 가로길이
+        int displayHeightSize, displayWidthSize;
+
+        //노드 가로 길이, 노드 세로 길이, 노드 가로 마진, 노드 세로 마진
+        int nodeWidthSize, nodeHeightSize, nodeWidthMargin, nodeHeightMargin;
+        nodeWidthSize = 700;
+        nodeHeightSize = 150;
+        nodeWidthMargin = 100;
+        nodeHeightMargin = 100;
+
+        displayHeightSize = (nodeHeightSize + nodeHeightMargin) * displayHeight + 300;
+        displayWidthSize = (nodeWidthSize + nodeWidthMargin) * displayWidth;
+
+        //Log.e("###", "트리의 가로 크기 : " + displayWidthSize + " 트리의 세로 크기 : " + displayHeightSize);
+
+        treeView.setMinimumWidth(displayWidthSize);
+        treeView.setMinimumHeight(displayHeightSize);
         zoomLayout.moveTo((float)1.0, 0, 0, false);
         zoomLayout.zoomBy((float)1.0, false);
 
@@ -451,9 +493,11 @@ public class Fragment2 extends Fragment {
         //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
         rootNode = new TreeNode(table.getRoot());
         treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
+        treeNodeDepth[m.get(table.getRoot().split("\\.")[0])] = 0;
+        treeLevel[0] = 1;
+
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
-
         zoomLayout.removeAllViews();
         zoomLayout.addView(treeView);
 
@@ -471,11 +515,13 @@ public class Fragment2 extends Fragment {
             final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
             treeNodeList[nextMappingPos] = newChild;
 
-            Log.e("###", "newchild " + newChild.getData());
+            // [ 장준승 ] : 전체 트리의 세로, 가로길이 구하기
+            treeNodeDepth[nextMappingPos] = treeNodeDepth[currMappingPos]+1;
+
+            int currDepth = treeNodeDepth[nextMappingPos];
+            treeLevel[currDepth] += 1;
+
             currNode.addChild(newChild);
-
-            Log.e("###", currNode.toString());
-
             makeTreeByAdj(newChild);
         }
     }
