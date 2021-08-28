@@ -384,7 +384,7 @@ public class Post_write extends AppCompatActivity {
                 //리싸이클러뷰 클릭 리스너
                 recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View v, int pos) {
+                    public void onItemClick(View v, int pos, String option) {
                         String tableName = arrayList.get(pos).getTv_title().toString();
                         Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 

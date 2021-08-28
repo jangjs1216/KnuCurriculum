@@ -98,7 +98,7 @@ public class Fragment1 extends Fragment {
                 //리싸이클러뷰 클릭 리스너
                 curi_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
                     @Override
-                    public void onItemClick(View v, int pos) {
+                    public void onItemClick(View v, int pos, String option) {
                         String tableName = curi_List.get(pos).getTv_title().toString();
                         Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 

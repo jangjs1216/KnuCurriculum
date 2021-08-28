@@ -3,6 +3,8 @@ package com.example.loginregister.curiList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +20,8 @@ import java.util.ArrayList;
 public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.CustomViewHolder> {
 
     private ArrayList<Recycler_Data> arrayList;
-    private OnItemClickListener mListener;
+    private OnItemClickListener mListener = null;
+    private OnItemLongClickListener mLongListener = null;
 
     public Recycler_Adapter(ArrayList<Recycler_Data> arrayList){
         this.arrayList = arrayList;
@@ -54,9 +57,15 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView tv_title;
+        protected LinearLayout optionLL, choiceLL, deleteLL;
+        protected ImageView imageView2;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.tv_title = (TextView)itemView.findViewById(R.id.tv_curri_name);
+            this.tv_title = (TextView) itemView.findViewById(R.id.tv_curri_name);
+            this.optionLL = (LinearLayout) itemView.findViewById(R.id.optionLL);
+            this.choiceLL = (LinearLayout) itemView.findViewById(R.id.choiceLL);
+            this.deleteLL = (LinearLayout) itemView.findViewById(R.id.deleteLL);
+            this.imageView2 = (ImageView) itemView.findViewById(R.id.imageView2);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -64,19 +73,52 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         if(mListener != null){
-                            mListener.onItemClick(v, pos);
+                            imageView2.setVisibility(View.INVISIBLE);
+                            optionLL.setVisibility(View.VISIBLE);
+
+                            choiceLL.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mListener.onItemClick(v, pos, "choice");
+                                }
+                            });
+
+                            deleteLL.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mListener.onItemClick(v, pos, "delete");
+                                }
+                            });
                         }
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION)
+                    {
+                        mLongListener.onItemLongClick(v, pos);
+                    }
+                    return true;
                 }
             });
         }
     }
 
     public interface OnItemClickListener{
-        void onItemClick(View v, int pos);
+        void onItemClick(View v, int pos, String option);
+    }
+
+    public interface OnItemLongClickListener{
+        void onItemLongClick(View v, int pos);
     }
 
     public void setOnItemListener(OnItemClickListener listener){
         this.mListener = listener;
     }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener){ this.mLongListener = listener; }
 }
