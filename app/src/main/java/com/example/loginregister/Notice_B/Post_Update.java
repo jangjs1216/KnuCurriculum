@@ -74,6 +74,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
 
         Intent intent=getIntent();
         post_id=intent.getStringExtra("Postid");
+        forum_sort=intent.getStringExtra("게시판");
         Log.d("확인","여기는 게시글 작성위:"+post_num);
 
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
@@ -106,7 +107,6 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         if(mAuth.getCurrentUser()!=null){
             Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,server,cur_commnet,image_url,forum_sort, table,subscriber);
             mStore.collection(forum_sort).document(post_id).set(post);
-            startActivity(new Intent(this,NoticeBoard.class));
             finish();
         }
     }
