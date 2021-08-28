@@ -105,45 +105,32 @@ public class NoticeBoard extends AppCompatActivity {
         tv_forum_title = findViewById(R.id.tv_notice_board_title);
         tv_forum_title.setText(forum_sort);
 
-        //          기본 날짜순 정렬
-
 
         mPostRecyclerView = findViewById(R.id.recyclerview);
         swipeRefreshLayout=findViewById(R.id.refresh_board);
 
 
-
-//        String[] items = getResources().getStringArray(R.array.sort_spinner_array);
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//                this, android.R.layout.simple_spinner_item, items);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-//
-//        sort_spinner.setAdapter(adapter);
-//        sort_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                if (items[position].equals("좋아요순")) {
-//                    Log.e("###","좋아요순");
-//                    sortDatas();
-//                }
-//                if(items[position].equals("최신순")) {
-//                    Log.e("###","최신순");
-//                    updateDatas();
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
 
-                updateDatas();
+                if(forum_num==8){
+
+                    User_like_postlist();
+                }
+                else if(forum_num==9){
+
+                    Mypost_list();
+                }
+                else if(forum_num==10){
+
+                    Best_postlist();
+                }
+                else{
+
+                    updateDatas();
+                }
+
                 swipeRefreshLayout.setRefreshing(false);
 
             }

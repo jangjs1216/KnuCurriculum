@@ -47,6 +47,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -235,6 +236,13 @@ public class Post_write extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+
+                        ArrayList<String> mmpost = new ArrayList<>();
+                        if(userAccount.getMypost()!= null){mmpost=userAccount.getMypost();}
+                        mmpost.add(PostID);
+                        Map map1 = new HashMap<String, ArrayList<String>>();
+                        map1.put("mypost",mmpost);
+                        mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
 
                         long datetime = System.currentTimeMillis();
                         Date date = new Date(datetime);

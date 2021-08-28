@@ -10,10 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.loginregister.Notice_B.Where_who_post;
 import com.example.loginregister.R;
 import com.example.loginregister.Table;
-import com.example.loginregister.UserInfo.User_Info_Data;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
