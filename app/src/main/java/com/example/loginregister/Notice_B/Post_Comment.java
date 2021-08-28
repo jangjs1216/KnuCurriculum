@@ -456,7 +456,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         post.setComments(data);
                         post.setCur_comment(post.getCur_comment()+1);
                         subs = post.getSubscriber();
-                        post.setState(true);
+
                         if(!subs.contains(mAuth.getUid())){
                             subs.add(mAuth.getUid());
                             post.setSubscriber(subs);
@@ -532,7 +532,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         data.add(cur_comment);
                         Collections.sort(data);
-                        post.setState(true);
+
                         post.setComments(data);
                         post.setCur_comment(post.getCur_comment()+1);
                         if(!subs.contains(mAuth.getUid())){
