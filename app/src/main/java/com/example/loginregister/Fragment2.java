@@ -1,5 +1,6 @@
 package com.example.loginregister;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -93,6 +94,7 @@ public class Fragment2 extends Fragment {
     ArrayList<Table> tables;
     int tableLoc;
     Table userTableInfo;
+    Boolean treeResisted = false;
 
     //크기 유동적 변화 구현
     private int displaySize = 500;
@@ -152,6 +154,7 @@ public class Fragment2 extends Fragment {
             tableName = getArguments().getString("tableName");
             TextView tableNameTV = v.findViewById(R.id.tableNameTV);
             tableNameTV.setText("테이블 이름 : " + tableName);
+            treeResisted = false;
             getSubjectListFromFB();
         }
         else{
@@ -521,6 +524,112 @@ public class Fragment2 extends Fragment {
 
                 if(userTableInfo == null){
                     Toast.makeText(getContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
+
+                    subjectChoiceBottomSheetDialog.show();
+                    ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+                    for(Subject_ subject_ : subjectList){
+                        if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+                    }
+                    subjectAdapter = new SubjectAdapter(searchSubjectList);
+                    subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    subjectRecyclerView.setAdapter(subjectAdapter);
+
+                    //DBG
+                    //RecyclerView에서 선택된 아이템에 접근
+                    subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int pos) {
+                            treeResisted = true;
+                            String choosedSubjectName = searchSubjectList.get(pos).getName();
+                            Log.e("###", choosedSubjectName + " 선택 됨");
+
+                            Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+
+                            Map<String, Map<String, String>> tb = new HashMap<>();
+                            for(Subject_ subject_ : subjectList){
+                                Map<String, String> line = new HashMap<>();
+                                tb.put(subject_.getName(), line);
+                            }
+                            Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+
+                            docRef = db.collection("user").document(mAuth.getUid());
+                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                                    userAccount.getTableNames().add(tableName);
+                                    userAccount.getTables().add(table);
+
+                                    Log.e("###", "트리 추가 " + tableName);
+                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                                    //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+
+                                    getTableFromFB();
+                                }
+                            });
+
+                            subjectChoiceBottomSheetDialog.dismiss();
+                        }
+
+                    });
+
+                    subjectChoiceBottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            Log.e("###", "dismiss" + treeResisted.toString());
+                            if(treeResisted == false){
+                                subjectChoiceBottomSheetDialog.show();
+                                ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+                                for(Subject_ subject_ : subjectList){
+                                    if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+                                }
+                                subjectAdapter = new SubjectAdapter(searchSubjectList);
+                                subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                subjectRecyclerView.setAdapter(subjectAdapter);
+
+                                //DBG
+                                //RecyclerView에서 선택된 아이템에 접근
+                                subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(View v, int pos) {
+                                        treeResisted = true;
+                                        String choosedSubjectName = searchSubjectList.get(pos).getName();
+                                        Log.e("###", choosedSubjectName + " 선택 됨");
+
+                                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+
+                                        Map<String, Map<String, String>> tb = new HashMap<>();
+                                        for(Subject_ subject_ : subjectList){
+                                            Map<String, String> line = new HashMap<>();
+                                            tb.put(subject_.getName(), line);
+                                        }
+                                        Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+
+                                        docRef = db.collection("user").document(mAuth.getUid());
+                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                                                userAccount.getTableNames().add(tableName);
+                                                userAccount.getTables().add(table);
+
+                                                Log.e("###", "트리 추가 " + tableName);
+                                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                                                //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+
+                                                getTableFromFB();
+                                            }
+                                        });
+
+                                        subjectChoiceBottomSheetDialog.dismiss();
+                                    }
+
+                                });
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -692,6 +801,7 @@ public class Fragment2 extends Fragment {
                         }
                     }
                     else {
+                        treeResisted = true;
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
                         Log.e("###", choosedSubjectName + " 선택 됨");
 

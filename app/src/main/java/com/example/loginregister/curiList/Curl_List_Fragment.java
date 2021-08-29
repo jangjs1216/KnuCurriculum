@@ -182,6 +182,14 @@ public class Curl_List_Fragment extends Fragment {
                 ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
                 addTreeDialog.dismiss();
+
+                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                transaction.replace(R.id.main_frame, fragment2);
+                transaction.commit();
             }
         });
     }
