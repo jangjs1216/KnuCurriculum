@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,7 +47,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     RecyclerView subjectCommentRecyclerView,picksubjectList;
     Dialog commentDialog;
     String subjectName;
-    TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc;
+    TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
     int curNum;
     float totalScore;
     RatingBar Trating;
@@ -75,6 +78,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         tabLayout = (TabLayout)findViewById(R.id.tabBar);
          scrollView = (NestedScrollView)findViewById(R.id.scrollId);
          picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
+        Pickname = (TextView) findViewById(R.id.Pick_title);
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -91,9 +95,12 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     scrollView.smoothScrollTo(0,P2);
                 }
                 else if(position==2){
-                    int P3 = (int) picksubjectList.getY();
+                    int P3 = (int) Pickname.getY();
                     scrollView.smoothScrollTo(0,P3);
+                    Log.e("%%%%%",Integer.toString(P3));
+
                 }
+
             }
 
             @Override
@@ -142,6 +149,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
         commentDialog = new Dialog(SubjectInfoActivity.this);
         commentDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         commentDialog.setContentView(R.layout.dialog_subjectcomment);
+
+        Pick();
     }
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -238,35 +247,46 @@ public class SubjectInfoActivity extends AppCompatActivity {
         ArrayList<String> n_nextnames = new ArrayList<>();
         ArrayList<Float> seconds = new ArrayList<Float>();
 
-        mStore.collection("UserTableInfo").document("Matrix")// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+        mStore.collection("UsersTableInfo").document("Matrix")// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Table table = documentSnapshot.toObject(Table.class);
                         Map<String,String> curtable =  new HashMap<>();
                         curtable=table.getTable().get(subjectName);
 
-                        int total = Integer.parseInt(curtable.get(subjectName));
+                        float total = Integer.parseInt(curtable.get(subjectName));
 
                         List<String> listKeySet = new ArrayList<>(curtable.keySet());
 
                         Map<String, String> finalCurtable = curtable;
-                        Collections.sort(listKeySet, (value1, value2) -> finalCurtable.get(value2).compareTo(finalCurtable.get(value1)));
 
+                        listKeySet.sort((o1,o2) -> Integer.parseInt(finalCurtable.get(o2)) - Integer.parseInt(finalCurtable.get(o1)) );
+
+
+                      
                         int i=0;
-                        for(String key : finalCurtable.keySet() ){
+                        for( String key : listKeySet ){
                             if(i>4) break;
-                            nextnames.add(key);
-                            int curr = Integer.parseInt(finalCurtable.get(key));
-                            firsts.add((float) (curr/total));
-                            ++i;
+                            if(!key.equals(subjectName)){
+                                nextnames.add(key);
+                                float curr = Integer.parseInt(finalCurtable.get(key));
+                                if (total > 0) {
+                                    firsts.add((float) (curr / total));
+
+                                } else {
+                                    firsts.add((float) (0));
+                                }
+                                ++i;
+                            }
                         }
 
                         for(int j=0;j<5;++j) {
                             Map<String, String> nextnametable = table.getTable().get(nextnames.get(j));
-                            int ntotal = Integer.parseInt(nextnametable.get(nextnames.get(j)));
-                            int maxi=0;
+                            float ntotal = Integer.parseInt(nextnametable.get(nextnames.get(j)));
+                            float maxi=0;
                             String maxstring = null;
                             for( String Nkey : nextnametable.keySet()){
                                 if(Integer.parseInt(nextnametable.get(Nkey))>maxi){
@@ -274,25 +294,28 @@ public class SubjectInfoActivity extends AppCompatActivity {
                                     maxi=Integer.parseInt(nextnametable.get(Nkey));
                                 }
                             }
-                            n_nextnames.add(maxstring);
-                            seconds.add((float)maxi/ntotal);
+                            if(maxstring!=null){ n_nextnames.add(maxstring);}
+                            else{n_nextnames.add("데이터가 없습니다");}
+
+                            if(ntotal>0) {
+                                seconds.add((float)maxi/ntotal);
+                            }
+                            else{
+                                seconds.add((float) (0));
+                            }
                         }
+
+
+                        for(int ii=0;ii<5;++ii){
+                            Picksubject picksubject = new Picksubject(subjectName, nextnames.get(ii),n_nextnames.get(ii),firsts.get(ii),seconds.get(ii));
+                            Picklist.add(picksubject);
+                        }
+                        pickAdapter = new PickAdapter(Picklist);
+                        picksubjectList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                        picksubjectList.setAdapter(pickAdapter);
 
                     }
                 });
-
-
-
-
-        for(int i=0;i<5;++i){
-            Picksubject picksubject = new Picksubject(subjectName, nextnames.get(i),n_nextnames.get(i),firsts.get(i),seconds.get(i));
-            Picklist.add(picksubject);
-        }
-        pickAdapter = new PickAdapter(Picklist);
-        picksubjectList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        picksubjectList.setAdapter(pickAdapter);
-
-
 
 
     }
