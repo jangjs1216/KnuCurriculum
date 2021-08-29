@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.Notice_B.Comment;
 import com.example.loginregister.Notice_B.Post_Comment;
+import com.example.loginregister.adapters.PickAdapter;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
+import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -31,12 +33,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SubjectInfoActivity extends AppCompatActivity {
     private FirebaseUser user;
     SubjectCommentAdapter subjectCommentAdapter;
-    RecyclerView subjectCommentRecyclerView;
+    RecyclerView subjectCommentRecyclerView,picksubjectList;
     Dialog commentDialog;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc;
@@ -45,6 +50,9 @@ public class SubjectInfoActivity extends AppCompatActivity {
     RatingBar Trating;
     TabLayout tabLayout;
     NestedScrollView scrollView;
+    PickAdapter pickAdapter;
+    ArrayList<Picksubject> Picklist= new ArrayList<>();
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -66,6 +74,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         Trating = (RatingBar)findViewById(R.id.Totalrating);
         tabLayout = (TabLayout)findViewById(R.id.tabBar);
          scrollView = (NestedScrollView)findViewById(R.id.scrollId);
+         picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -82,7 +91,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     scrollView.smoothScrollTo(0,P2);
                 }
                 else if(position==2){
-                    int P3 = (int) subjectCommentRecyclerView.getY();
+                    int P3 = (int) picksubjectList.getY();
                     scrollView.smoothScrollTo(0,P3);
                 }
             }
@@ -221,4 +230,70 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
     }
 
+    //픽률 추출하기
+    public void Pick(){
+
+        ArrayList<String> nextnames = new ArrayList<>();
+        ArrayList<Float> firsts = new ArrayList<Float>();
+        ArrayList<String> n_nextnames = new ArrayList<>();
+        ArrayList<Float> seconds = new ArrayList<Float>();
+
+        mStore.collection("UserTableInfo").document("Matrix")// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Table table = documentSnapshot.toObject(Table.class);
+                        Map<String,String> curtable =  new HashMap<>();
+                        curtable=table.getTable().get(subjectName);
+
+                        int total = Integer.parseInt(curtable.get(subjectName));
+
+                        List<String> listKeySet = new ArrayList<>(curtable.keySet());
+
+                        Map<String, String> finalCurtable = curtable;
+                        Collections.sort(listKeySet, (value1, value2) -> finalCurtable.get(value2).compareTo(finalCurtable.get(value1)));
+
+                        int i=0;
+                        for(String key : finalCurtable.keySet() ){
+                            if(i>4) break;
+                            nextnames.add(key);
+                            int curr = Integer.parseInt(finalCurtable.get(key));
+                            firsts.add((float) (curr/total));
+                            ++i;
+                        }
+
+                        for(int j=0;j<5;++j) {
+                            Map<String, String> nextnametable = table.getTable().get(nextnames.get(j));
+                            int ntotal = Integer.parseInt(nextnametable.get(nextnames.get(j)));
+                            int maxi=0;
+                            String maxstring = null;
+                            for( String Nkey : nextnametable.keySet()){
+                                if(Integer.parseInt(nextnametable.get(Nkey))>maxi){
+                                    maxstring=Nkey;
+                                    maxi=Integer.parseInt(nextnametable.get(Nkey));
+                                }
+                            }
+                            n_nextnames.add(maxstring);
+                            seconds.add((float)maxi/ntotal);
+                        }
+
+                    }
+                });
+
+
+
+
+        for(int i=0;i<5;++i){
+            Picksubject picksubject = new Picksubject(subjectName, nextnames.get(i),n_nextnames.get(i),firsts.get(i),seconds.get(i));
+            Picklist.add(picksubject);
+        }
+        pickAdapter = new PickAdapter(Picklist);
+        picksubjectList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        picksubjectList.setAdapter(pickAdapter);
+
+
+
+
+    }
 }
