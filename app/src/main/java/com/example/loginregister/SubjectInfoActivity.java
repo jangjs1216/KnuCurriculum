@@ -95,9 +95,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     scrollView.smoothScrollTo(0,P2);
                 }
                 else if(position==2){
-                    int P3 = (int) Pickname.getY();
-                    scrollView.smoothScrollTo(0,P3);
-                    Log.e("%%%%%",Integer.toString(P3));
+
+                    scrollView.smoothScrollTo(0,subjectCommentRecyclerView.getBottom());
 
                 }
 
