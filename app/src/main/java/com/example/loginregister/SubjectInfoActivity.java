@@ -52,7 +52,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     Subject_ subject_;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
-    RatingBar Trating;
+    RatingBar Totalrating;
     TabLayout tabLayout;
     NestedScrollView scrollView;
     PickAdapter pickAdapter;
@@ -76,7 +76,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         openTV = (TextView) findViewById(R.id.openTV);
         totalsc = (TextView)findViewById(R.id.totalSc);
         subjectCommentRecyclerView = (RecyclerView) findViewById(R.id.subjectCommentRecyclerView);
-        Trating = (RatingBar)findViewById(R.id.Totalrating);
+        Totalrating = (RatingBar)findViewById(R.id.Totalrating);
         tabLayout = (TabLayout)findViewById(R.id.tabBar);
         scrollView = (NestedScrollView)findViewById(R.id.scrollId);
         picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
@@ -130,6 +130,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
+                calculate_total();
+
                 subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
@@ -181,7 +183,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     }
 
                     if(alreadyCommented == true){
-                        Toast.makeText(getApplicationContext(), "이미 수강평을 작성한 과목입니다.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "이미 수강평을 작성한 과목입니다.", Toast.LENGTH_SHORT).show();
                     }
                     else{
                         showAddDialog();
@@ -261,7 +263,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
+                subject_ = documentSnapshot.toObject(Subject_.class);
 
 
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
@@ -269,6 +271,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
+                calculate_total();
+
                 subjectCommentAdapter.setOnItemListener(new SubjectCommentAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
@@ -324,8 +328,6 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
                         listKeySet.sort((o1,o2) -> Integer.parseInt(finalCurtable.get(o2)) - Integer.parseInt(finalCurtable.get(o1)) );
 
-
-                      
                         int i=0;
                         for( String key : listKeySet ){
                             if(i>4) break;
@@ -375,7 +377,23 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
                     }
                 });
+    }
 
+    public void calculate_total()
+    {
+        ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
+        float totalsum=0;
+        int num = subjectComments.size();
+
+        for(SubjectComment data : subjectComments){
+            totalsum += Float.parseFloat(data.getRating());
+        }
+
+        if(num>0) {
+            String Totalstring = String.format("%.2f", totalsum / num);
+            totalsc.setText("전체평점: " + Totalstring);
+            Totalrating.setRating(totalsum / num);
+        }
     }
 }
