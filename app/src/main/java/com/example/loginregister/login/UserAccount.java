@@ -17,12 +17,13 @@ public class UserAccount {
     private ArrayList<Table> tables;
     private ArrayList<String> tableNames;
     private ArrayList<String> specs;
-    private String Total,Major;
+    private String Major;
+    private String taked;
 
     public UserAccount() {
     }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String total, String major) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String major, String taked) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -33,42 +34,8 @@ public class UserAccount {
         this.tables = tables;
         this.tableNames = tableNames;
         this.specs = specs;
-        Total = total;
         Major = major;
-    }
-
-    public String getTotal() {
-        return Total;
-    }
-
-    public void setTotal(String total) {
-        Total = total;
-    }
-
-    public String getMajor() {
-        return Major;
-    }
-
-    public void setMajor(String major) {
-        Major = major;
-    }
-
-    public ArrayList<String> getSpecs() {
-        return specs;
-    }
-
-    public void setSpecs(ArrayList<String> specs) {
-        this.specs = specs;
-    }
-
-
-
-    public ArrayList<String> getMypost() {
-        return Mypost;
-    }
-
-    public void setMypost(ArrayList<String> mypost) {
-        Mypost = mypost;
+        this.taked = taked;
     }
 
     public String getIdToken() {
@@ -111,6 +78,22 @@ public class UserAccount {
         Liked_Post = liked_Post;
     }
 
+    public ArrayList<String> getMypost() {
+        return Mypost;
+    }
+
+    public void setMypost(ArrayList<String> mypost) {
+        Mypost = mypost;
+    }
+
+    public ArrayList<String> getSubscribed_Post() {
+        return Subscribed_Post;
+    }
+
+    public void setSubscribed_Post(ArrayList<String> subscribed_Post) {
+        Subscribed_Post = subscribed_Post;
+    }
+
     public ArrayList<Table> getTables() {
         return tables;
     }
@@ -127,9 +110,27 @@ public class UserAccount {
         this.tableNames = tableNames;
     }
 
-    public ArrayList<String> getSubscribed_Post() {return Subscribed_Post;}
+    public ArrayList<String> getSpecs() {
+        return specs;
+    }
 
-    public void setSubscribed_Post(ArrayList<String> subscribed_Post) {
-        Subscribed_Post = subscribed_Post;
+    public void setSpecs(ArrayList<String> specs) {
+        this.specs = specs;
+    }
+
+    public String getMajor() {
+        return Major;
+    }
+
+    public void setMajor(String major) {
+        Major = major;
+    }
+
+    public String getTaked() {
+        return taked;
+    }
+
+    public void setTaked(String taked) {
+        this.taked = taked;
     }
 }

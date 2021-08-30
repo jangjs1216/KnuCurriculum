@@ -64,8 +64,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 ArrayList<String> tableNames = new ArrayList<>();
                                 ArrayList<String> Subscribed= new ArrayList<>();
                                 ArrayList<String> specs = new ArrayList<>();
-                                String total="",major="";
-                                UserAccount userAccount = new UserAccount( user.getUid(),  strEmail, strPwd1, nickname, liked_Post ,Mypost, Subscribed,tables,tableNames,specs,total,major);
+                                String major = "", taked = "";
+                                UserAccount userAccount = new UserAccount( user.getUid(),  strEmail, strPwd1, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0");
                                 mStore.collection("user").document(user.getUid()).set(userAccount);
                                 finish();
 

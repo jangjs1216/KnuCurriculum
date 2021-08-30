@@ -60,6 +60,7 @@ public class Fragment2 extends Fragment {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
+    UserAccount userAccount;
     String curData;
     ViewHolder curViewHolder;
     private View v;
@@ -260,25 +261,17 @@ public class Fragment2 extends Fragment {
                         String[] nodeData = parent.getData().toString().split("\\.");
                         userTableInfo.getTable().get(nodeData[0]).put(curData, "0");
 
-                        //UserAccount 정보 업데이트
-                        docRef = db.collection("user").document(mAuth.getUid());
-                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                userAccount.getTables().set(tableLoc, userTableInfo);
-                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                        userAccount.getTables().set(tableLoc, userTableInfo);
+                        db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                                deleteTreeFromDB(curData);
+                        deleteTreeFromDB(curData);
 
-                                // 자신 노드 삭제
-                                int currNodeValue = m.get(curData);
-                                treeNodeList[currNodeValue].getParent().removeChild(treeNodeList[currNodeValue]);
+                        // 자신 노드 삭제
+                        int currNodeValue = m.get(curData);
+                        treeNodeList[currNodeValue].getParent().removeChild(treeNodeList[currNodeValue]);
 
-                                updateDisplaySize();
-                                nodeChoiceBottomSheetDialog.dismiss();
-                            }
-                        });
+                        updateDisplaySize();
+                        nodeChoiceBottomSheetDialog.dismiss();
                     }
                     break;
                 case R.id.LL3:
@@ -293,10 +286,6 @@ public class Fragment2 extends Fragment {
                     sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
                         @Override
                         public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
-//                            Log.e("###", "수강정보 : " + isTakenClass + ", 수강학기 : " + TakenSemester);
-//                            Log.e("###", "현재 Viewholder값 : " + curViewHolder.mTextView.getText());
-//                            Log.e("###", "수정 이전 내부 값 : " + curViewHolder.semesterTv.getText());
-
                             String currSubjectName = (String) curViewHolder.mTextView.getText();
 
                             for(TreeNode tn : treeNodeList)
@@ -312,15 +301,8 @@ public class Fragment2 extends Fragment {
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
                                         userTableInfo.setRoot(currSubjectName+"."+TakenSemester+".1");
                                     }
-                                    docRef = db.collection("user").document(mAuth.getUid());
-                                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                            userAccount.getTables().set(tableLoc, userTableInfo);
-                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                        }
-                                    });
+                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     break;
                                 }
 
@@ -387,15 +369,8 @@ public class Fragment2 extends Fragment {
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
                                         userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
                                     }
-                                    docRef = db.collection("user").document(mAuth.getUid());
-                                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                            userAccount.getTables().set(tableLoc, userTableInfo);
-                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                        }
-                                    });
+                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     break;
                                 }
                             }
@@ -521,7 +496,7 @@ public class Fragment2 extends Fragment {
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
+                userAccount = documentSnapshot.toObject(UserAccount.class);
                 tableNames = userAccount.getTableNames();
                 tables = userAccount.getTables();
                 for(int i = 0; i < tableNames.size(); i++){
@@ -563,22 +538,15 @@ public class Fragment2 extends Fragment {
                             }
                             Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
 
-                            docRef = db.collection("user").document(mAuth.getUid());
-                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                    userAccount.getTableNames().add(tableName);
-                                    userAccount.getTables().add(table);
+                            userAccount.getTableNames().add(tableName);
+                            userAccount.getTables().add(table);
 
-                                    Log.e("###", "트리 추가 " + tableName);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            Log.e("###", "트리 추가 " + tableName);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                                    //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                            //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
 
-                                    getTableFromFB();
-                                }
-                            });
+                            getTableFromFB();
 
                             subjectChoiceBottomSheetDialog.dismiss();
                         }
@@ -617,22 +585,16 @@ public class Fragment2 extends Fragment {
                                         }
                                         Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
 
-                                        docRef = db.collection("user").document(mAuth.getUid());
-                                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                                userAccount.getTableNames().add(tableName);
-                                                userAccount.getTables().add(table);
 
-                                                Log.e("###", "트리 추가 " + tableName);
-                                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                        userAccount.getTableNames().add(tableName);
+                                        userAccount.getTables().add(table);
 
-                                                //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                                        Log.e("###", "트리 추가 " + tableName);
+                                        db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                                                getTableFromFB();
-                                            }
-                                        });
+                                        //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+
+                                        getTableFromFB();
 
                                         subjectChoiceBottomSheetDialog.dismiss();
                                     }
@@ -742,15 +704,9 @@ public class Fragment2 extends Fragment {
                             //DBG
                             //UserAccount 정보 업데이트
                             userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                            docRef = db.collection("user").document(mAuth.getUid());
-                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                @Override
-                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                    userAccount.getTables().set(tableLoc, userTableInfo);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                }
-                            });
+                            userAccount.getTables().set(tableLoc, userTableInfo);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
                             int mappingPos = m.get(choosedSubjectName);
 
                             //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
@@ -807,15 +763,9 @@ public class Fragment2 extends Fragment {
                             {
                                 //UserAccount 정보 업데이트
                                 userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                                docRef = db.collection("user").document(mAuth.getUid());
-                                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                        userAccount.getTables().set(tableLoc, userTableInfo);
-                                        db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                    }
-                                });
+                                userAccount.getTables().set(tableLoc, userTableInfo);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
                                 int mappingPos = m.get(choosedSubjectName);
 
                                 //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
@@ -847,19 +797,12 @@ public class Fragment2 extends Fragment {
                         }
                         Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
 
-                        docRef = db.collection("user").document(mAuth.getUid());
-                        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                                userAccount.getTableNames().add(tableName);
-                                userAccount.getTables().add(table);
-                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                        userAccount.getTableNames().add(tableName);
+                        userAccount.getTables().add(table);
+                        db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                                //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
-                                getTableFromFB();
-                            }
-                        });
+                        //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                        getTableFromFB();
                     }
 
                     subjectChoiceBottomSheetDialog.dismiss();
@@ -903,22 +846,16 @@ public class Fragment2 extends Fragment {
                     }
                     Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
 
-                    docRef = db.collection("user").document(mAuth.getUid());
-                    docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                            userAccount.getTableNames().add(tableName);
-                            userAccount.getTables().add(table);
 
-                            Log.e("###", "트리 추가 " + tableName);
-                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                    userAccount.getTableNames().add(tableName);
+                    userAccount.getTables().add(table);
 
-                            //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                    Log.e("###", "트리 추가 " + tableName);
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                            getTableFromFB();
-                        }
-                    });
+                    //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+
+                    getTableFromFB();
 
                     subjectChoiceBottomSheetDialog.dismiss();
                 }
@@ -950,15 +887,9 @@ public class Fragment2 extends Fragment {
 
             //UserAccount 정보 업데이트
             userTableInfo.getTable().get(currNode).remove(nextNode);
-            docRef = db.collection("user").document(mAuth.getUid());
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-                    userAccount.getTables().set(tableLoc, userTableInfo);
-                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-                }
-            });
+
+            userAccount.getTables().set(tableLoc, userTableInfo);
+            db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
     }
 }

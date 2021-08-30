@@ -149,14 +149,14 @@
                             android:id="@+id/tv_userTotalPoint"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="전체학점"
+                            android:text="전공학점"
                             android:textColor="@color/black"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toTopOf="@+id/tv_userMajorPoint"
                             app:layout_constraintStart_toStartOf="parent" />
 
                         <EditText
-                            android:id="@+id/et_total_GPA"
+                            android:id="@+id/et_major_GPA"
                             android:layout_width="0dp"
                             android:layout_height="27sp"
                             android:inputType="number"
@@ -164,12 +164,12 @@
                             android:paddingRight="20px"
                             android:gravity="right"
                             android:background="@android:color/transparent"
-                            app:layout_constraintBottom_toTopOf="@+id/et_major_GPA"
+                            app:layout_constraintBottom_toTopOf="@+id/tv_taked_GPA"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/tv_userTotalPoint" />
 
-                        <EditText
-                            android:id="@+id/et_major_GPA"
+                        <TextView
+                            android:id="@+id/tv_taked_GPA"
                             android:layout_width="0dp"
                             android:layout_height="27sp"
                             android:textSize="20sp"
@@ -185,7 +185,7 @@
                             android:id="@+id/tv_userMajorPoint"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="전공학점"
+                            android:text="수강학점"
                             android:textColor="@color/black"
                             android:textSize="20sp"
                             app:layout_constraintBottom_toBottomOf="parent"

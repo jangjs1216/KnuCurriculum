@@ -154,7 +154,6 @@ public class Fragment1 extends Fragment {
     }
 
     public void setProfile(View view){
-        tv_total.setText(userAccount.getTotal());
         tv_major.setText(userAccount.getMajor());
        tv_username.setText(userAccount.getNickname());
     }
