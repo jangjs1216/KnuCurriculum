@@ -321,7 +321,18 @@ public class Fragment2 extends Fragment {
                                     {
                                         if(!isChecked)
                                         {
-                                            // 수강 한다고 되어있을 때 수강 안 하는 경우
+                                            // 수강 안한다 -> 수강 한다
+
+                                            //수강 학점 서버에 변경
+                                            int currTaked = Integer.parseInt(userAccount.getTaked());
+                                            Log.e("###", "currTaked : " + currTaked);
+                                            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
+                                            currTaked += Integer.parseInt(currSubject_.getScore());
+                                            Log.e("###", "currTaked : " + currTaked);
+                                            userAccount.setTaked(Integer.toString(currTaked));
+                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+
                                             docRef = db.collection("UsersTableInfo").document("Matrix");
                                             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
@@ -346,7 +357,18 @@ public class Fragment2 extends Fragment {
                                     }else{
                                         if(isChecked)
                                         {
-                                            // 수강 안할때 수강하는 경우
+                                            // 수강 한다 -> 수강 안한다
+
+                                            //수강 학점 서버에 변경
+                                            int currTaked = Integer.parseInt(userAccount.getTaked());
+                                            Log.e("###", "currTaked : " + currTaked);
+                                            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
+                                            currTaked -= Integer.parseInt(currSubject_.getScore());
+                                            Log.e("###", "currTaked : " + currTaked);
+                                            userAccount.setTaked(Integer.toString(currTaked));
+                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+
                                             docRef = db.collection("UsersTableInfo").document("Matrix");
                                             docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override

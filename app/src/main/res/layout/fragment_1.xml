@@ -126,27 +126,27 @@
                     android:gravity="bottom|right">
 
                     <TextView
-                        android:id="@+id/tv_userTotalPoint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="전체학점"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_userMajorPoint"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <TextView
                         android:id="@+id/tv_userMajorPoint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="전공학점"
                         android:textColor="@color/black"
                         android:textSize="20sp"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_userTakedPoint"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_userTakedPoint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="수강학점"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_major"
+                        android:id="@+id/tv_taked"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
@@ -159,7 +159,7 @@
                         app:layout_constraintStart_toEndOf="@+id/tv_userMajorPoint" />
 
                     <TextView
-                        android:id="@+id/tv_total"
+                        android:id="@+id/tv_major"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
@@ -167,9 +167,9 @@
                         android:text=""
                         android:gravity="right"
                         android:textColor="@color/black"
-                        app:layout_constraintBottom_toTopOf="@+id/tv_major"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_taked"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/tv_userTotalPoint" />
+                        app:layout_constraintStart_toEndOf="@+id/tv_userTakedPoint" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -52,7 +52,7 @@ public class Fragment1 extends Fragment {
     private LinearLayoutManager specs_linearLayoutManager;
     private Recycler_Adapter curi_adapter;
     private Adapter_User_Info spec_adapter;
-    private TextView tv_username,tv_total,tv_major;
+    private TextView tv_username, tv_taked, tv_major;
     private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -62,7 +62,7 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_1, container, false);
-        tv_total = view.findViewById(R.id.tv_total);
+        tv_taked = view.findViewById(R.id.tv_taked);
         tv_major = view.findViewById(R.id.tv_major);
         userAccount = ((MainActivity)getActivity()).getUserAccount();
 
@@ -155,7 +155,8 @@ public class Fragment1 extends Fragment {
 
     public void setProfile(View view){
         tv_major.setText(userAccount.getMajor());
-       tv_username.setText(userAccount.getNickname());
+        tv_taked.setText(userAccount.getTaked());
+        tv_username.setText(userAccount.getNickname());
     }
     public ArrayList<String> specs_to_str_specs(ArrayList<User_Info_Data> specs){
         ArrayList<String> list_ret=new ArrayList<>();
