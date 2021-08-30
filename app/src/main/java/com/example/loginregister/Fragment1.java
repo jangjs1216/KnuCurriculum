@@ -145,6 +145,7 @@ public class Fragment1 extends Fragment {
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_btn_setting:
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.addToBackStack(null);
                 ft.commit();
