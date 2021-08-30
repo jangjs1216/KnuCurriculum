@@ -239,7 +239,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("forumID", forum_sort);
                 intent.putExtra("postID", post_id);
                 intent.putExtra("writerNickname", com_nick.getText().toString());
-                startActivity(intent); //게시글 수정`
+                startActivity(intent); //게시글 수정
             }
         });
 
@@ -389,7 +389,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         return true;
     }
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         Cdata=new ArrayList<Comment>();
@@ -400,11 +400,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 Post post = documentSnapshot.toObject(Post.class);
                 com_nick.setText(post.getP_nickname());          //본문 작성자
                 com_title.setText(post.getTitle());            //제목
-                com_text.setText(post.getContents());              //본문
+                com_text.setText(post.getContents());             //본문
 
                 Cdata.clear();
                 Cdata = post.getComments();
-                contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this);//mDatas라는 생성자를 넣어줌
+                contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this, docRef);//mDatas라는 생성자를 넣어줌
                 mCommentRecyclerView.setAdapter(contentAdapter);
             }
         });

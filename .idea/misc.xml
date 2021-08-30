@@ -16,8 +16,19 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_notice_board.xml" value="0.32760416666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_post__comment.xml" value="0.32760416666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/activity_subjectinfo.xml" value="0.32760416666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/c_comment_item.xml" value="0.3307291666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/comment_item.xml" value="0.5" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/dialog_subjectcomment.xml" value="0.32760416666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/layout/item_post.xml" value="0.4432291666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_curi_list.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_edit_user_info.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_frag2.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_notice_board.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_post_comment.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/actionbar_settings.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/menu/bottom_menu.xml" value="0.33125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/xml/file_paths.xml" value="0.3296875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KnuCurriculum/app/src/main/res/xml/provider_paths.xml" value="0.5446153846153846" />
         <entry key="..\:/Users/ruddd/AndroidStudioProjects/KnuCurriculum/app/src/main/res/drawable/btn_shape.xml" value="0.3171875" />
         <entry key="..\:/Users/ruddd/AndroidStudioProjects/KnuCurriculum/app/src/main/res/drawable/custom_edittext.xml" value="0.3171875" />
         <entry key="..\:/Users/ruddd/AndroidStudioProjects/KnuCurriculum/app/src/main/res/drawable/custon_button.xml" value="0.3171875" />
