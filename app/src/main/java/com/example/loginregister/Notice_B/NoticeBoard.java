@@ -56,7 +56,7 @@ public class NoticeBoard extends AppCompatActivity {
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
-
+    int forum_num;
     private Toolbar toolbar;
     private RecyclerView mPostRecyclerView;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -83,7 +83,7 @@ public class NoticeBoard extends AppCompatActivity {
 
         // 게시판 컬렉션 지정
         Intent intent=getIntent();
-        int forum_num=intent.getExtras().getInt("게시판");
+        forum_num=intent.getExtras().getInt("게시판");
 
         if(forum_num==8){
             forum_sort="내가 누른 좋아요 글";
@@ -136,6 +136,7 @@ public class NoticeBoard extends AppCompatActivity {
             }
         });
 
+        if(forum_num>7){likesort_btn.setVisibility(View.INVISIBLE);}
         likesort_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,6 +159,8 @@ public class NoticeBoard extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbar_notice_board,menu);
+        MenuItem item = menu.findItem(R.id.action_btn_create);
+       if(forum_num>7){ item.setVisible(false);}
         return true;
     }
 //          툴바 작동설정

@@ -9,6 +9,7 @@
 
     <item android:id="@+id/action_btn_create"
     android:title="추가"
+        android:visible="true"
     android:icon="@drawable/ic_baseline_create_24"
     app:showAsAction ="always"/>
 </menu>
