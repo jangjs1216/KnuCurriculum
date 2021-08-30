@@ -53,8 +53,6 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private Timestamp timestamp;
     private ImageView post_imageView;
     private String forum_sort;
-    private int server;
-    private int cur_commnet;
     private String image_url;
     private Table table;
     private Boolean state;
@@ -73,8 +71,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         findViewById(R.id.Post_save).setOnClickListener(this);
 
         Intent intent=getIntent();
-        post_id=intent.getStringExtra("Postid");
-        forum_sort=intent.getStringExtra("게시판");
+        post_id=intent.getStringExtra("post_id");
+        forum_sort=intent.getStringExtra("forum_sort");
         Log.d("확인","여기는 게시글 작성위:"+post_num);
 
         if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서

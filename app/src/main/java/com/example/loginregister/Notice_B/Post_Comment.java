@@ -69,8 +69,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private EditText com_edit;
     private String comment_p, post_t, post_num, comment_post;//
     String sub_pos;//코멘트에 들어가있는 게시글의 위치
-    int com_pos = 0;//게시글의 등록된 위치
-    int like = 0;
     private Button treeButton; //[ 장준승 ] 트리 보여주기 버튼
     private ImageView likeButton; //좋아요 버튼
     private TextView likeText; //좋아요 갯수보여주는 텍스트 이번엔 다르다
@@ -104,16 +102,19 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
-        forum_sort=getIntent().getExtras().getString("게시판");
+        forum_sort=getIntent().getExtras().getString("forum_sort");
         post_id = intent.getStringExtra("post_id");
-
+        Log.e("dkstmdwo",forum_sort+post_id);
         mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 post = task.getResult().toObject(Post.class);
                 Log.e("postcomment1", String.valueOf(post)+subs);
+
+                post_t = post.getTitle();
                 subs = post.getSubscriber();
                 Log.e("postcomment2", String.valueOf(post)+subs);
+
                 if(subs.contains(mAuth.getUid())){
                     subscribe.setIcon(R.drawable.ic_baseline_notifications_active_24);
                     isChecked = true;
@@ -122,59 +123,49 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                     subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
                     isChecked= false;
                 }
+
+                if(post.getTable() == null){
+                    isTreeExist = "no";
+                }
+                else isTreeExist = "yes";
+
+                likeText.setText(post.getLike());
+
+                writer_id_post = post.getWriter_id();
+                image_url=post.getImage_url();
+                if(image_url!=null)
+                {
+                    Log.d("###","image_url : "+image_url);
+                    FirebaseStorage storage=FirebaseStorage.getInstance();
+                    StorageReference storageReference=storage.getReference();
+                    StorageReference pathReference=storageReference.child("post_image");
+                    if(pathReference==null) {
+                        Toast.makeText(Post_Comment.this,"해당 사진이 없습니다",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.d("###","최종 사진 주소 : "+"post_image/"+image_url+".jpg");
+                        StorageReference submitImage=storageReference.child("post_image/"+image_url+".jpg");
+                        submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Log.d("###", String.valueOf(uri));
+                                Glide.with(Post_Comment.this).load(uri).into(url_image);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // 실패
+                            }
+                        });
+                    }
+                }
+
+                if(isTreeExist.equals("yes")){
+                    treeButton.setVisibility(View.VISIBLE);
+                }
+
             }
         });
-        com_pos = intent.getExtras().getInt("position");
-        com_nick.setText(intent.getStringExtra("nickname"));
-        com_text.setText(intent.getStringExtra("content"));
-        com_title.setText(intent.getStringExtra("title"));
 
-        isTreeExist=getIntent().getExtras().getString("isTreeExist");
-        //likeText.setText(intent.getStringExtra("like").toString());
-        like = Integer.parseInt(intent.getStringExtra("like"));
-        likeText.setText(intent.getStringExtra("like").toString());
-        uid = intent.getStringExtra("uid");//게시글 작성자의 uid를 받아옴
-
-        writer_id_post = intent.getStringExtra("writer_id");
-        post_num = intent.getStringExtra("number");
-        image_url=getIntent().getExtras().getString("image_url");
-        if(image_url!=null)
-        {
-            Log.d("###","image_url : "+image_url);
-            FirebaseStorage storage=FirebaseStorage.getInstance();
-            StorageReference storageReference=storage.getReference();
-            StorageReference pathReference=storageReference.child("post_image");
-            if(pathReference==null) {
-                Toast.makeText(Post_Comment.this,"해당 사진이 없습니다",Toast.LENGTH_SHORT).show();
-            } else {
-                Log.d("###","최종 사진 주소 : "+"post_image/"+image_url+".jpg");
-                StorageReference submitImage=storageReference.child("post_image/"+image_url+".jpg");
-                submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("###", String.valueOf(uri));
-                        Glide.with(Post_Comment.this).load(uri).into(url_image);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // 실패
-                    }
-                });
-            }
-        }
-
-        if(isTreeExist.equals("yes")){
-            treeButton.setVisibility(View.VISIBLE);
-        }
-
-//        Bitmap bitmap=GetImageFromUrl(image_url);
-//        url_image.setImageBitmap(bitmap);
-//        Log.d("###","image_url : "+image_url);
-//        if(bitmap==null)
-//        {
-//            Log.d("###","bitmap은 null값");
-//        }
 
 
         swipeRefreshLayout=findViewById(R.id.refresh_commnet);
@@ -193,7 +184,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         user = mAuth.getCurrentUser();
         Liked = new ArrayList<>();
 
-        post_t = intent.getStringExtra("title");//게시글의 위치
+
         //time=(String)intent.getSerializableExtra("time");//해당 게시글의 등록 시간
 
        findViewById(R.id.btn_comment).setOnClickListener(this);//댓글 입력 버튼
@@ -345,9 +336,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             case R.id.action_btn_modify:
                 if (writer_id_post.equals(mAuth.getCurrentUser().getUid())) {
                     Intent intent = new Intent(this, Post_Update.class);
-                    intent.putExtra("게시판",forum_sort);
-                    intent.putExtra("Postid", post_id);
-                    intent.putExtra("number", post_num);
+                    intent.putExtra("forum_sort",forum_sort);
+                    intent.putExtra("post_id", post_id);
                     startActivity(intent);//게시글 수정
                 } else {
                     Toast.makeText(this, "작성자가 아닙니다.", Toast.LENGTH_SHORT).show();
@@ -389,6 +379,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         }
                     });
                 }
+                break;
+
             case android.R.id.home:
                 finish();
                 break;
@@ -406,6 +398,10 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Post post = documentSnapshot.toObject(Post.class);
+                com_nick.setText(post.getP_nickname());          //본문 작성자
+                com_title.setText(post.getTitle());            //제목
+                com_text.setText(post.getContents());              //본문
+
                 Cdata.clear();
                 Cdata = post.getComments();
                 contentAdapter = new PostCommentAdapter(Cdata, Post_Comment.this);//mDatas라는 생성자를 넣어줌
@@ -450,7 +446,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
                             return;
                         }
-
+                        post.setcoment_Num(Csize+1);
                         data.add(cur_comment);
                         Collections.sort(data);
                         post.setComments(data);
@@ -483,8 +479,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         Intent intent = getIntent();//데이터 전달받기
 
-                        comment_post = intent.getStringExtra("post_id");
-                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
                         finish();
                         startActivity(intent);
                     }
@@ -507,7 +501,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             for(int i=0;i<data.size();++i){
                                 Log.e("&&&",data.get(i).getComment_id());
                                 if((data.get(i).getComment_id()).equals(P_comment_id)){
-                                    Csize=+1+data.get(i).getCcoment_Num();
+                                    Csize=1+data.get(i).getCcoment_Num();
                                     Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
                                 }
                                 data.get(i).setCcoment_Num(Csize);
@@ -559,8 +553,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         Intent intent = getIntent();//데이터 전달받기
 
-                        comment_post = intent.getStringExtra("post_id");
-                        com_pos = intent.getExtras().getInt("position");//Post 콜렉션의 게시글 등록위치를 전달받아옴
+
                         finish();
                         startActivity(intent);
                     }

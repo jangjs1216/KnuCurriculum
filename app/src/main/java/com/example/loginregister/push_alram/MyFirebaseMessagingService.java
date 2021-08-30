@@ -19,6 +19,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
 import com.example.loginregister.MainActivity;
+import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -107,7 +108,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
      */
     private void sendNotification(Map message) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, Post_Comment.class);
+        intent.putExtra("forum_sort",message.get("forum_sort").toString());
+        intent.putExtra("post_id",message.get("post_id").toString());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

@@ -64,15 +64,8 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             public void onClick(View v) {
                 if(posi!= RecyclerView.NO_POSITION){
                     Intent intent=new Intent(v.getContext(), Post_Comment.class);
-                    intent.putExtra("게시판", datas.get(posi).getForum());
-                    intent.putExtra("title",datas.get(posi).getTitle());
-                    intent.putExtra("content",datas.get(posi).getContents());
-                    intent.putExtra("nickname",datas.get(posi).getP_nickname());
-                    intent.putExtra("post_id",datas.get(posi).getPost_id());
-                    intent.putExtra("position",posi);//게시글의 위치를 넘겨줌
-                    intent.putExtra("like",datas.get(posi).getLike());
-                    intent.putExtra("writer_id",datas.get(posi).getWriter_id());//사용자의 uid
-                    intent.putExtra("image_url",datas.get(posi).getImage_url());
+                    putData(intent,datas,posi);
+
                     if(datas.get(posi).getTable() == null){
                         intent.putExtra("isTreeExist", "no");
                     }
@@ -107,5 +100,12 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
             p_nickname=itemView.findViewById(R.id.post_writer);
             post_like_text = itemView.findViewById(R.id.post_liketext);
         }
+    }
+    public Intent putData(Intent intent,List<Post> datas,int posi){
+        intent.putExtra("forum_sort", datas.get(posi).getForum());
+        intent.putExtra("post_id",datas.get(posi).getPost_id());
+
+        return intent;
+
     }
 }
