@@ -137,12 +137,11 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("revise")){
-                            Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
                             if(subject_.getComments().get(pos).getUser_id().equals(mAuth.getUid())){
                                 showReviseDialog(pos);
                             }
                             else{
-                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }
                         else{
@@ -152,7 +151,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
                                 subjectCommentAdapter.notifyDataSetChanged();
                             }
                             else{
-                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -274,12 +273,11 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("revise")){
-                            Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
                             if(subject_.getComments().get(pos).getUser_id().equals(mAuth.getUid())){
                                 showReviseDialog(pos);
                             }
                             else{
-                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }
                         else{
@@ -289,7 +287,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
                                 subjectCommentAdapter.notifyDataSetChanged();
                             }
                             else{
-                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
