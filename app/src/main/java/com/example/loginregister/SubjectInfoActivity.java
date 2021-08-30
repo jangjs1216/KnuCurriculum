@@ -394,6 +394,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
             String Totalstring = String.format("%.2f", totalsum / num);
             totalsc.setText("전체평점: " + Totalstring);
             Totalrating.setRating(totalsum / num);
+            Log.e("%%%%",Float.toString(totalsum / num));
         }
     }
 }
