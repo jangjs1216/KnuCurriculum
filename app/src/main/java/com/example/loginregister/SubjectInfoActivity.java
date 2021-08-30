@@ -48,7 +48,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     DocumentReference docRef;
     SubjectCommentAdapter subjectCommentAdapter;
     RecyclerView subjectCommentRecyclerView,picksubjectList;
-    Dialog commentDialog;
+    Dialog commentAddDialog, commentReviseDialog;
     Subject_ subject_;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
@@ -78,8 +78,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
         subjectCommentRecyclerView = (RecyclerView) findViewById(R.id.subjectCommentRecyclerView);
         Trating = (RatingBar)findViewById(R.id.Totalrating);
         tabLayout = (TabLayout)findViewById(R.id.tabBar);
-         scrollView = (NestedScrollView)findViewById(R.id.scrollId);
-         picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
+        scrollView = (NestedScrollView)findViewById(R.id.scrollId);
+        picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
         Pickname = (TextView) findViewById(R.id.Pick_title);
 
 
@@ -138,6 +138,12 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("revise")){
                             Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
+                            if(subject_.getComments().get(pos).getUser_id().equals(mAuth.getUid())){
+                                showReviseDialog(pos);
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else{
                             if(subjectComments.get(pos).getUser_id().equals(mAuth.getUid())){
@@ -154,9 +160,13 @@ public class SubjectInfoActivity extends AppCompatActivity {
             }
         });
 
-        commentDialog = new Dialog(SubjectInfoActivity.this);
-        commentDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        commentDialog.setContentView(R.layout.dialog_subjectcomment);
+        commentAddDialog = new Dialog(SubjectInfoActivity.this);
+        commentAddDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        commentAddDialog.setContentView(R.layout.dialog_subjectcomment);
+
+        commentReviseDialog = new Dialog(SubjectInfoActivity.this);
+        commentReviseDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        commentReviseDialog.setContentView(R.layout.dialog_subjectcomment);
 
         Pick();
     }
@@ -175,29 +185,29 @@ public class SubjectInfoActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "이미 수강평을 작성한 과목입니다.", Toast.LENGTH_LONG).show();
                     }
                     else{
-                        showDialog();
+                        showAddDialog();
                         break;
                     }
             }
         }
     };
 
-    // dialog01을 디자인하는 함수
-    public void showDialog() {
-        commentDialog.show();
-        RatingBar commentRB = commentDialog.findViewById(R.id.commentRB);
-        EditText contentET = commentDialog.findViewById(R.id.contentET);
+    // comment 추가하는 다이얼로그
+    public void showAddDialog() {
+        commentAddDialog.show();
+        RatingBar commentRB = commentAddDialog.findViewById(R.id.commentRB);
+        EditText contentET = commentAddDialog.findViewById(R.id.contentET);
         commentRB.setRating(0);
         contentET.setText("");
 
-        Button noBtn = commentDialog.findViewById(R.id.noBtn);
+        Button noBtn = commentAddDialog.findViewById(R.id.noBtn);
         noBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                commentDialog.dismiss();
+                commentAddDialog.dismiss();
             }
         });
-        commentDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
+        commentAddDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 원하는 기능 구현
@@ -207,7 +217,39 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 SubjectComment subjectComment = new SubjectComment(content, mAuth.getUid(), Float.toString(rating));
                 subject_.getComments().add(subjectComment);
                 db.collection("Subject").document(subjectName).set(subject_);
-                commentDialog.dismiss();
+                commentAddDialog.dismiss();
+                makeComment();
+            }
+        });
+    }
+
+    public void showReviseDialog(int pos) {
+        commentReviseDialog.show();
+        RatingBar commentRB = commentReviseDialog.findViewById(R.id.commentRB);
+        EditText contentET = commentReviseDialog.findViewById(R.id.contentET);
+        commentRB.setRating(Float.parseFloat(subject_.getComments().get(pos).getRating()));
+        contentET.setText(subject_.getComments().get(pos).getContent());
+
+        Button noBtn = commentReviseDialog.findViewById(R.id.noBtn);
+        noBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentReviseDialog.dismiss();
+            }
+        });
+        commentReviseDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 원하는 기능 구현
+                float rating = commentRB.getRating();
+                String content = contentET.getText().toString();
+
+                subject_.getComments().get(pos).setContent(content);
+                subject_.getComments().get(pos).setRating(Float.toString(rating));
+                subject_.getComments().get(pos).setUser_id(mAuth.getUid());
+
+                db.collection("Subject").document(subjectName).set(subject_);
+                commentReviseDialog.dismiss();
                 makeComment();
             }
         });
@@ -233,6 +275,12 @@ public class SubjectInfoActivity extends AppCompatActivity {
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("revise")){
                             Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
+                            if(subject_.getComments().get(pos).getUser_id().equals(mAuth.getUid())){
+                                showReviseDialog(pos);
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 수정할 수 있습니다.", Toast.LENGTH_LONG).show();
+                            }
                         }
                         else{
                             if(subjectComments.get(pos).getUser_id().equals(mAuth.getUid())){
