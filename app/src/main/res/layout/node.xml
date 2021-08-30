@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_margin="5dp"
     android:background="#000000"
     card_view:cardElevation="16dp"
     card_view:contentPadding="10dp">
