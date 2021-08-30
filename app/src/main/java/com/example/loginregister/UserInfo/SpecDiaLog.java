@@ -15,7 +15,7 @@ import com.example.loginregister.R;
 public class SpecDiaLog extends Dialog  {
 
    private SpecDiaLog specDiaLog;
-   private User_Info_Data user_info_data;
+   private User_Info_Data user_info_data=null;
    private EditText et_spec_title;
    private EditText et_spec_content;
    private TextView tv_confirm;
@@ -32,9 +32,11 @@ public class SpecDiaLog extends Dialog  {
         setContentView(R.layout.dialog_edit_spec);
 
         et_spec_title = findViewById(R.id.et_spec_title);
-        et_spec_title.setText(user_info_data.getUser_info_title());
         et_spec_content = findViewById(R.id.et_spec_content);
-        et_spec_content.setText(user_info_data.getUser_info_content());
+        if(user_info_data!=null) {
+            et_spec_title.setText(user_info_data.getUser_info_title());
+            et_spec_content.setText(user_info_data.getUser_info_content());
+        }
         tv_confirm = findViewById(R.id.tv_confirm);
         tv_cancle = findViewById(R.id.tv_cancle);
 
