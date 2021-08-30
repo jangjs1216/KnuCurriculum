@@ -10,8 +10,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Path;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -85,7 +89,6 @@ public class Post_write extends AppCompatActivity {
     private Uri uriProfileImage;
     private ImageView post_imageView;
     private File tempFile;
-    private static final int CHOOSE_IMAGE = 101;
     private static final int FROM_CAMERA = 1;
     private static final int FROM_GALLERY = 2;
     private Table choosedTable=null;
@@ -94,7 +97,7 @@ public class Post_write extends AppCompatActivity {
     private String image_url;
     private ArrayList<String> subscriber;
     private FirebaseStorage storage;
-    private String currentPhotoPath;
+    private String imageFilePath;
     private Dialog addTreeDialog;
     private RecyclerView postAddTreeRV;
     private LinearLayoutManager linearLayoutManager;
@@ -118,6 +121,13 @@ public class Post_write extends AppCompatActivity {
         forum_sort = intent.getExtras().getString("게시판");
         storage=FirebaseStorage.getInstance();
 
+        TedPermission.with(getApplicationContext())
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage("카메라 권한이 필요합니다")
+                .setDeniedMessage("거부하셨습니다")
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .check();
+
         if (mAuth.getCurrentUser() != null) {
             mStore.collection("user").document(mAuth.getCurrentUser().getUid())
                     .get()
@@ -133,11 +143,6 @@ public class Post_write extends AppCompatActivity {
         }
         // 사진올리기
         post_photo.setOnClickListener(view -> {
-            Log.e("###","권한요청");
-            TedPermission.with(getApplicationContext())
-                    .setPermissionListener(permissionListener)
-                    .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                    .check();
             Log.e("###","선택");
             AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_write.this)
                     .setTitle("사진 첨부")
@@ -184,57 +189,34 @@ public class Post_write extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        String state = Environment.getExternalStorageState();
-        Log.d("###", "들어옴 takephoto");
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Log.e("###","takePhoto");
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if(intent.resolveActivity(getPackageManager())!=null) {
+            File photoFile=null;
+            try{
+                photoFile=createImageFile();
+            } catch (IOException e) {
 
-            if(intent.resolveActivity(getPackageManager())!=null) {
-                File photoFile=null;
-                try {
-                    photoFile=createImageFile();
-                } catch (IOException e) {
-                    // 실패
-                }
-                if (photoFile != null) {
-                    Uri providerURI = FileProvider.getUriForFile(this, getPackageName(), photoFile);
-                    imageUri = providerURI;
-
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
-                    startActivityForResult(intent, FROM_CAMERA);
-                }
             }
-        } else {
-            Toast.makeText(this, "접근이 불가합니다", Toast.LENGTH_SHORT).show();
-            return;
+            if(photoFile!=null) {
+                uri=FileProvider.getUriForFile(getApplicationContext(),getPackageName(),photoFile);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
+                startActivityForResult(intent,FROM_CAMERA);
+            }
         }
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + ".jpg";
-        File imageFile = null;
-        File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "picture");
-
-        if (!storageDir.exists()) {
-            Log.i("mCurrentPhotoPath1", storageDir.toString());
-            storageDir.mkdirs();
-        }
-
-        imageFile = new File(storageDir, imageFileName);
-        currentPhotoPath = imageFile.getAbsolutePath();
-
-        return imageFile;
-    }
-
-    private void galleryAddPic(){
-        Log.i("galleryAddPic", "Call");
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        sendBroadcast(mediaScanIntent);
-        Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        String timestamp=new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName="TEST_"+timestamp+"_";
+        File storageDir=getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image=File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        imageFilePath=image.getAbsolutePath();
+        return image;
     }
 
     public void SavePost(View view)
@@ -283,17 +265,8 @@ public class Post_write extends AppCompatActivity {
         }
     }
 
-    public String getPath(Uri uri){
-        String [] proj={MediaStore.Images.Media.DATA};
-        CursorLoader cursorLoader=new CursorLoader(this,uri,proj,null,null,null);
-        Cursor cursor=cursorLoader.loadInBackground();
-        int index=cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(index);
-    }
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode!=RESULT_OK) {
             return;
@@ -318,20 +291,30 @@ public class Post_write extends AppCompatActivity {
             }
             setImage();
         } else if (requestCode == FROM_CAMERA) {
-            try {
-                Log.i("REQUEST_TAKE_PHOTO", "OK");
-                galleryAddPic();
-                post_imageView.setImageURI(imageUri);
-            } catch (Exception e) {
-                Log.e("REQUEST_TAKE_PHOTO", e.toString());
+            if(resultCode==RESULT_OK) {
+                Bitmap bitmap=BitmapFactory.decodeFile(imageFilePath);
+                ExifInterface exif=null;
+                try {
+                    exif=new ExifInterface(imageFilePath);
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                int exifOrientation;
+                int exifDegree;
+                if(exif!=null) {
+                    exifOrientation=exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+                    exifDegree=exifOrientationDegrees(exifOrientation);
+                } else {
+                    exifDegree=0;
+                }
+                post_imageView.setImageBitmap(rotate(bitmap,exifDegree));
+                post_imageView.setVisibility(View.VISIBLE);
+            } else {
+                Toast.makeText(this,"취소되었습니다",Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(Post_write.this, "취소하였습니다", Toast.LENGTH_SHORT).show();
         }
         StorageReference storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
         Log.d("###", "Uri 는: "+uri);
-        Uri file=Uri.fromFile(new File(getPath(uri)));
-        Log.d("###", "Uri file은: "+file);
         String filename=mAuth.getUid()+"_"+System.currentTimeMillis();
         StorageReference ref=storageReference.child("post_image/"+filename+".jpg");
         image_url=filename;
@@ -341,11 +324,26 @@ public class Post_write extends AppCompatActivity {
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 final Task<Uri> imageUrl=task.getResult().getStorage().getDownloadUrl();
                 while(!imageUrl.isComplete());
-//                image_url=imageUrl.getResult().toString();
-//                Log.d("###","image_url : " + image_url);
-//                Log.d("###","imageUrl : " + imageUrl);
+                image_url=imageUrl.getResult().toString();
             }
         });
+    }
+
+    private int exifOrientationDegrees(int exifOrientation) {
+        if(exifOrientation==ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if(exifOrientation==ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if(exifOrientation==ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    private Bitmap rotate(Bitmap bitmap,float degree) {
+        Matrix matrix=new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
     }
 
     PermissionListener permissionListener=new PermissionListener() {
