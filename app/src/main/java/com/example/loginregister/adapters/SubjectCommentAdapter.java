@@ -1,8 +1,10 @@
 package com.example.loginregister.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -47,23 +49,38 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
     }
 
     public class SubjectCommentViewHolder extends RecyclerView.ViewHolder {
-        private RatingBar ratingBar;
-        private TextView writerTV;
-        private TextView contentTV;
+        RatingBar ratingBar;
+        TextView writerTV;
+        TextView contentTV;
+        Button reviseBtn, deleteBtn;
 
         public SubjectCommentViewHolder(@NonNull View itemView) {
             super(itemView);
-            ratingBar = itemView.findViewById(R.id.ratingBar);
-            writerTV = itemView.findViewById(R.id.writerTV);
-            contentTV = itemView.findViewById(R.id.contentTV);
+            this.ratingBar = itemView.findViewById(R.id.ratingBar);
+            this.writerTV = itemView.findViewById(R.id.writerTV);
+            this.contentTV = itemView.findViewById(R.id.contentTV);
+            this.reviseBtn = (Button) itemView.findViewById(R.id.reviseBtn);
+            this.deleteBtn = (Button) itemView.findViewById(R.id.deleteBtn);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            reviseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         if(mListener != null){
-                            mListener.onItemClick(v, pos);
+                            mListener.onItemClick(v, pos, "revise");
+                        }
+                    }
+                }
+            });
+
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition() ;
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null){
+                            mListener.onItemClick(v, pos, "delete");
                         }
                     }
                 }
@@ -95,7 +112,7 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
     }
 
     public interface OnItemClickListener{
-        void onItemClick(View v, int pos);
+        void onItemClick(View v, int pos, String option);
     }
 
     public void setOnItemListener(OnItemClickListener listener){

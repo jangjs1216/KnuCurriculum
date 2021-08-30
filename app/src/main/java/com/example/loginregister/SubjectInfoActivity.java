@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,14 +43,15 @@ import java.util.List;
 import java.util.Map;
 
 public class SubjectInfoActivity extends AppCompatActivity {
-    private FirebaseUser user;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference docRef;
     SubjectCommentAdapter subjectCommentAdapter;
     RecyclerView subjectCommentRecyclerView,picksubjectList;
     Dialog commentDialog;
+    Subject_ subject_;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
-    int curNum;
-    float totalScore;
     RatingBar Trating;
     TabLayout tabLayout;
     NestedScrollView scrollView;
@@ -113,13 +115,11 @@ public class SubjectInfoActivity extends AppCompatActivity {
             }
         });
 
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Subject").document(subjectName);
+        docRef = db.collection("Subject").document(subjectName);
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
+                subject_ = documentSnapshot.toObject(Subject_.class);
 
                 nameTV.setText("과목명 : " + subject_.getName());
                 codeTV.setText("과목 코드 : " + subject_.getCode());
@@ -128,20 +128,29 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 if(subject_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
                 else openTV.setText("이번 학기 개설 여부 : NO");
 
-                //전체평점 나타내기 박경무
-                curNum = subject_.getVoteNum();
-                totalScore = subject_.getTotalScore();
-
-                String averse = String.format("%.2f", totalScore/curNum);
-                totalsc.setText("전체 평정: "+averse);
-                Trating.setRating(totalScore/curNum);
-
-
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
                 subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
+                subjectCommentAdapter.setOnItemListener(new SubjectCommentAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int pos, String option) {
+                        if(option.equals("revise")){
+                            Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            if(subjectComments.get(pos).getUser_id().equals(mAuth.getUid())){
+                                subject_.getComments().remove(pos);
+                                db.collection("Subject").document(subjectName).set(subject_);
+                                subjectCommentAdapter.notifyDataSetChanged();
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
             }
         });
 
@@ -157,8 +166,18 @@ public class SubjectInfoActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.addButton:
-                    showDialog();
-                    break;
+                    boolean alreadyCommented = false;
+                    for(SubjectComment subjectComment : subject_.getComments()){
+                        if(subjectComment.getUser_id().equals(mAuth.getUid())) alreadyCommented = true;
+                    }
+
+                    if(alreadyCommented == true){
+                        Toast.makeText(getApplicationContext(), "이미 수강평을 작성한 과목입니다.", Toast.LENGTH_LONG).show();
+                    }
+                    else{
+                        showDialog();
+                        break;
+                    }
             }
         }
     };
@@ -166,6 +185,10 @@ public class SubjectInfoActivity extends AppCompatActivity {
     // dialog01을 디자인하는 함수
     public void showDialog() {
         commentDialog.show();
+        RatingBar commentRB = commentDialog.findViewById(R.id.commentRB);
+        EditText contentET = commentDialog.findViewById(R.id.contentET);
+        commentRB.setRating(0);
+        contentET.setText("");
 
         Button noBtn = commentDialog.findViewById(R.id.noBtn);
         noBtn.setOnClickListener(new View.OnClickListener() {
@@ -178,41 +201,14 @@ public class SubjectInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // 원하는 기능 구현
-                RatingBar commentRB = commentDialog.findViewById(R.id.commentRB);
-                EditText contentET = commentDialog.findViewById(R.id.contentET);
                 float rating = commentRB.getRating();
                 String content = contentET.getText().toString();
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                DocumentReference docRef = db.collection("Subject").document(subjectName);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Subject_ subject_ = documentSnapshot.toObject(Subject_.class);
-
-                        ArrayList<SubjectComment> subjectComments = subject_.getComments();
-                        curNum = subject_.getVoteNum();
-                        totalScore = subject_.getTotalScore();
-                        ++curNum;
-                        totalScore+=rating;
-                        subject_.setVoteNum(curNum);
-                        subject_.setTotalScore(totalScore);
-
-                        SubjectComment subjectComment = new SubjectComment(content, user.getUid(), Float.toString(rating));
-                        subjectComments.add(subjectComment);
-
-                        db.collection("Subject").document(subjectName).set(subject_);
-                        commentDialog.dismiss();
-                        makeComment();
-
-
-                        String averse = String.format("%.2f", totalScore/curNum);
-                        totalsc.setText("전체 평점점: "+averse);
-                       Trating.setRating(totalScore/curNum);
-
-                    }
-                });
+                SubjectComment subjectComment = new SubjectComment(content, mAuth.getUid(), Float.toString(rating));
+                subject_.getComments().add(subjectComment);
+                db.collection("Subject").document(subjectName).set(subject_);
+                commentDialog.dismiss();
+                makeComment();
             }
         });
     }
@@ -232,6 +228,24 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
+                subjectCommentAdapter.setOnItemListener(new SubjectCommentAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int pos, String option) {
+                        if(option.equals("revise")){
+                            Toast.makeText(getApplicationContext(), "수정", Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            if(subjectComments.get(pos).getUser_id().equals(mAuth.getUid())){
+                                subject_.getComments().remove(pos);
+                                db.collection("Subject").document(subjectName).set(subject_);
+                                subjectCommentAdapter.notifyDataSetChanged();
+                            }
+                            else{
+                                Toast.makeText(getApplicationContext(), "자신이 작성한 수강평만 삭제할 수 있습니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
             }
         });
 
