@@ -23,13 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.UserInfo.Adapter_User_Info;
 import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.example.loginregister.UserInfo.User_Info_Data;
+import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -52,12 +55,14 @@ public class Fragment1 extends Fragment {
     private LinearLayoutManager specs_linearLayoutManager;
     private Recycler_Adapter curi_adapter;
     private Adapter_User_Info spec_adapter;
-    private TextView tv_username, tv_taked, tv_major;
+    private TextView tv_username, tv_taked, tv_major, specMore, treeMore;
     private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     DocumentReference docRef;
     private ArrayList<User_Info_Data> specs;
+    BottomNavigationView bottomNavigationView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,6 +70,8 @@ public class Fragment1 extends Fragment {
         tv_taked = view.findViewById(R.id.tv_taked);
         tv_major = view.findViewById(R.id.tv_major);
         userAccount = ((MainActivity)getActivity()).getUserAccount();
+        specMore=view.findViewById(R.id.specMore);
+        treeMore=view.findViewById(R.id.treeMore);
 
         //리싸이클러뷰
         specs_recyclerView=(RecyclerView)view.findViewById(R.id.layout_frag1_specs_recyclerview);
@@ -73,7 +80,7 @@ public class Fragment1 extends Fragment {
         specs = str_specs_to_specs(userAccount.getSpecs());
         spec_adapter = new Adapter_User_Info(specs);
         specs_recyclerView.setAdapter(spec_adapter);
-
+        bottomNavigationView = view.findViewById(R.id.bottomNavi);
 
         docRef = mStore.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -90,6 +97,10 @@ public class Fragment1 extends Fragment {
                 for(String tableName : userAccount.getTableNames()){
                     Recycler_Data recycler_data = new Recycler_Data(tableName);
                     curi_List.add(recycler_data);
+
+                    if(curi_List.size()>4){
+                        break;
+                    }
                     Log.e("###", "item : " + tableName);
                 }
                 curi_adapter = new Recycler_Adapter(curi_List);
@@ -114,7 +125,28 @@ public class Fragment1 extends Fragment {
             }
         });
 
+        specMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
+                ft.commit();
 
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
+
+        treeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Curl_List_Fragment());
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
 
 
         fm=getActivity().getSupportFragmentManager();
@@ -146,9 +178,10 @@ public class Fragment1 extends Fragment {
         switch (item.getItemId()){
             case R.id.action_btn_setting:
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -176,6 +209,10 @@ public class Fragment1 extends Fragment {
             String [] temp = spec.split(",");
             User_Info_Data uid = new User_Info_Data(temp[0],temp[1]);
             user_info_data.add(uid);
+
+            if(user_info_data.size()>4){
+                break;
+            }
         }
         return user_info_data;
     }

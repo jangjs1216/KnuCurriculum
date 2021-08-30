@@ -34,6 +34,7 @@ import com.example.loginregister.SubjectComment;
 import com.example.loginregister.SubjectInfoActivity;
 import com.example.loginregister.Subject_;
 import com.example.loginregister.Table;
+import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -154,6 +155,7 @@ public class Curl_List_Fragment extends Fragment {
             case android.R.id.home:
                 getActivity().getSupportFragmentManager().beginTransaction().remove(Curl_List_Fragment.this).commit();
                 getActivity().getSupportFragmentManager().popBackStack();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -221,4 +223,7 @@ public class Curl_List_Fragment extends Fragment {
             }
         });
     }
+
+
+
 }

@@ -114,9 +114,10 @@ public class Fragment4 extends Fragment {
         switch (item.getItemId()){
             case R.id.action_btn_setting:
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
                 ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
                 break;
             case android.R.id.home:
                 //뒷프래그먼트로 이동;

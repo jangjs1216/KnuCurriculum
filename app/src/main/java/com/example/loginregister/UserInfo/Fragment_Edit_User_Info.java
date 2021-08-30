@@ -185,6 +185,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
             case android.R.id.home:
                 ft.remove(Fragment_Edit_User_Info.this).commit();
                 fm.popBackStack();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
 
 
@@ -257,6 +258,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
     public void onBackPressed() {
         ft.remove(Fragment_Edit_User_Info.this).commit();
         fm.popBackStack();
+        ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
     }
 
     @Override

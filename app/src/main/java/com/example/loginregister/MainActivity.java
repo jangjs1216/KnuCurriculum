@@ -1,6 +1,7 @@
 package com.example.loginregister;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
-
+    public static Context maincontext;
 
     public void setBackPressedlistener(IOnBackPressed backPressedlistener) {
         this.backPressedlistener = backPressedlistener;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        maincontext = this;
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
                     @Override
@@ -154,6 +155,12 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
     }
+
+    public void setvisibleNavi(boolean bottom){
+        if(bottom){bottomNavigationView.setVisibility(View.INVISIBLE);}
+        else{bottomNavigationView.setVisibility(View.VISIBLE);}
+    }
+
 
     //과목코드 받아오기 함수
     private void  readFromAssets(String filename) throws Exception {
