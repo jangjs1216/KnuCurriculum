@@ -67,7 +67,7 @@ public class SpecDiaLog extends Dialog  {
 
 
 
-    public void setDialogListener(SpecDiaLogListener specDiaLogListener){
+    public void setSpecDialogListener(SpecDiaLogListener specDiaLogListener){
         this.specDiaLogListener = specDiaLogListener;
     }
 

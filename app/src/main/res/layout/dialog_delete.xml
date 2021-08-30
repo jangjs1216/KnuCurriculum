@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="600px"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     tools:context=".UserInfo.DeleteDialog"
     android:background="@drawable/custon_button">
 
@@ -12,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="정말 삭제하시겠습니까?"
+        android:layout_marginTop="125px"
         android:textColor="@color/black"
         android:textSize="23sp"
         app:layout_constraintVertical_bias="0.3"
@@ -21,14 +23,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_comfirm"
+        android:id="@+id/tv_confirm"
         android:layout_width="200px"
         android:layout_height="wrap_content"
         android:background="@drawable/custon_button"
         android:padding="5sp"
         android:text="확인"
+        android:clickable="true"
         android:textAlignment="center"
         android:textColor="@color/btn_theme"
+        android:layout_marginVertical="125px"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,6 +47,7 @@
         android:background="@drawable/custon_button"
         android:padding="5sp"
         android:text="취소"
+        android:clickable="true"
         android:textAlignment="center"
         android:textColor="@color/btn_theme"
         android:textSize="18sp"

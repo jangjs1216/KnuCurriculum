@@ -1,6 +1,5 @@
 package com.example.loginregister.UserInfo;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,6 +9,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,12 +32,9 @@ import com.example.loginregister.login.UserAccount;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 
-import org.apache.log4j.chainsaw.Main;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IOnBackPressed {
@@ -62,6 +59,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
     private TextView tv_taked;
     private ArrayList<User_Info_Data> specs;
     private ArrayList<String> str_specs;
+    private ItemTouchHelper itemTouchHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,8 +109,11 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
+
         specs = str_specs_to_specs(userAccount.getSpecs());
         adapter_user_info = new Adapter_User_Info(specs);
+        itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(adapter_user_info));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
         Log.e("spec","what?");
 
         recyclerView.setAdapter(adapter_user_info);
@@ -124,7 +125,22 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
                showEditDialog(pos);
             }
         });
+        adapter_user_info.setOnItemSwipeListener(new Adapter_User_Info.OnItemSwipeListener() {
+            @Override
+            public void onItemSwipe(int position) {
+                DeleteDialog.OnDeleteDialoglickListener onDeleteDialoglickListener = new DeleteDialog.OnDeleteDialoglickListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        specs.remove(position);
+                        adapter_user_info.notifyItemRemoved(position);
+                        Toast.makeText(getContext(),"삭제되었습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                };
+                DeleteDialog deleteDialog = new DeleteDialog(getContext(),onDeleteDialoglickListener);
 
+                deleteDialog.show();
+            }
+        });
         btn_add_user_info = (TextView) view.findViewById(R.id.btn_add_user_info);
         btn_add_user_info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +216,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
     public void showAddDialog(){
         SpecDiaLog specdialog = new SpecDiaLog(getContext());
         specdialog.setContentView(R.layout.dialog_edit_spec);
-        specdialog.setDialogListener(new SpecDiaLog.SpecDiaLogListener() {
+        specdialog.setSpecDialogListener(new SpecDiaLog.SpecDiaLogListener() {
             @Override
             public void onPositiveClicked(User_Info_Data user_info_data) {
                 specs.add(user_info_data);
@@ -220,7 +236,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
     public void showEditDialog(int pos){
         SpecDiaLog specdialog = new SpecDiaLog(getContext(), specs.get(pos));
         specdialog.setContentView(R.layout.dialog_edit_spec);
-        specdialog.setDialogListener(new SpecDiaLog.SpecDiaLogListener() {
+        specdialog.setSpecDialogListener(new SpecDiaLog.SpecDiaLogListener() {
             @Override
             public void onPositiveClicked(User_Info_Data user_info_data) {
                 specs.set(pos,user_info_data);
