@@ -1,5 +1,6 @@
 package com.example.loginregister.push_alram;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -66,7 +68,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated. See sendNotification method below.
-        sendNotification(remoteMessage.getData());
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notification",true)){
+            sendNotification(remoteMessage.getData());
+        }
+
     }
     // [END receive_message]
 
@@ -117,12 +122,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
+        @SuppressLint("ResourceAsColor") NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.ic_stat_ic_notification)
                         .setContentTitle((CharSequence) message.get("title"))
                         .setContentText((CharSequence) message.get("body"))
                         .setAutoCancel(true)
+                        .setWhen(System.currentTimeMillis())
+                        .setColor(R.color.btn_theme)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
