@@ -44,13 +44,17 @@ public class DeleteDialog extends Dialog {
         tv_cancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                onDeleteDialoglickListener.onNegativeClick();
                 dismiss();
             }
+
         });
     }
 
     public interface OnDeleteDialoglickListener {
         void onPositiveClick();
+        void onNegativeClick();
     }
 
     public void setOnDeleteDialogClickListener(OnDeleteDialoglickListener onDeleteDialoglickListener){

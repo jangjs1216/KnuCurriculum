@@ -134,7 +134,13 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
                         specs.remove(position);
                         adapter_user_info.notifyItemRemoved(position);
                         Toast.makeText(getContext(),"삭제되었습니다.",Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    @Override
+                    public void onNegativeClick(){
+                        adapter_user_info.notifyDataSetChanged();
+                    }
+
                 };
                 DeleteDialog deleteDialog = new DeleteDialog(getContext(),onDeleteDialoglickListener);
 
