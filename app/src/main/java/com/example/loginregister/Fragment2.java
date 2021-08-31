@@ -1,5 +1,7 @@
 package com.example.loginregister;
 
+import static com.google.common.primitives.Ints.max;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -39,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.database.core.utilities.Tree;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -72,20 +75,13 @@ public class Fragment2 extends Fragment {
     private FragmentTransaction ft;
 
     TreeNode[] treeNodeList;
-    /*
-    [ 장준승 ]
-    treeNodeDepth : treeNodeList에 매핑된 각 노드의 Depth정보를 저장합니다.
-    treeLevel : 위에서 구한 treeNodeDepth를 이용해서, 각 Depth에 노드가 몇 개 있는지를 저장합니다.
-     */
-    int[] treeNodeDepth;
-    int[] treeLevel;
 
     ZoomLayout zoomLayout;
     ArrayList<Subject_> subjectList = new ArrayList<>();
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     EditText searchET;
-    Button searchBtn, addTreeBtn;
+    Button searchBtn, addTreeBtn, checkerBtn;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -100,9 +96,12 @@ public class Fragment2 extends Fragment {
     Boolean treeResisted = false;
 
     //크기 유동적 변화 구현
+    ViewHolder[] viewHolderList;
     private int displaySize = 500;
-    private int displayHeight = 0;
-    private int displayWidth = 0;
+    private float displayHeight = 0;
+    private float displayWidth = 0;
+    private int displayWidthMargin = 1200;
+    private int displayHeightMargin = 600;
 
     //과목 이름 매핑
     HashMap<String, Integer> m;
@@ -129,8 +128,7 @@ public class Fragment2 extends Fragment {
 
         //과목 갯수
         int subjectNumber = 200;
-        treeNodeDepth = new int[subjectNumber];
-        treeLevel = new int[subjectNumber];
+        viewHolderList = new ViewHolder[subjectNumber];
 
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
@@ -143,6 +141,11 @@ public class Fragment2 extends Fragment {
             @Override
             public boolean onScroll(MotionEvent downEvent, MotionEvent event, float distanceX, float distanceY) {
                 return false;
+            }
+
+            @Override
+            protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             }
         };
         treeView.setLevelSeparation(50);
@@ -185,6 +188,8 @@ public class Fragment2 extends Fragment {
                 //Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
                 viewHolder.mTextView.setText(nodeData[0]);
 
+                viewHolderList[m.get(nodeData[0])] = viewHolder;
+
                 if(nodeData[2].equals("1") && nodeData[2] != null)
                 {
                     viewHolder.setViewHolderSelected();
@@ -208,6 +213,8 @@ public class Fragment2 extends Fragment {
                     @Override
                     public void onClick(View v) {
                         curViewHolder = viewHolder;
+
+                        Log.e("###", "ViewHolder Position : "+viewHolder.tn_layout.getX());
 
                         Log.e("###", viewHolder.mTextView.getText().toString());
                         curData = viewHolder.mTextView.getText().toString();
@@ -426,46 +433,39 @@ public class Fragment2 extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+
     public void updateDisplaySize()
     {
-        for(int nodeHeight : treeNodeDepth)
-        {
-            if(displayHeight < nodeHeight)
-                displayHeight = nodeHeight;
-        }
+        treeView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                for(ViewHolder viewHolder : viewHolderList)
+                {
+                    if(viewHolder != null) {
+                        if (displayHeight < viewHolder.tn_layout.getY()) {
+                            displayHeight = viewHolder.tn_layout.getY();
+                        }
+                        if (displayWidth < viewHolder.tn_layout.getX()) {
+                            displayWidth = viewHolder.tn_layout.getX();
+                        }
+                    }
+                }
+                treeView.setMinimumWidth((int) displayWidth + displayWidthMargin);
+                treeView.setMinimumHeight((int) displayHeight + displayHeightMargin);
 
-        for(int nodeWidth : treeLevel)
-        {
-            if(displayWidth < nodeWidth)
-                displayWidth = nodeWidth;
-        }
-        displayHeight += 1;
+                treeView.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
 
-        //Log.e("###", "트리의 가로 갯수 : " + displayWidth + " 트리의 세로 갯수 : " + displayHeight);
-
-        //트리 전체 세로길이, 트리 전체 가로길이
-        int displayHeightSize, displayWidthSize;
-
-        //노드 가로 길이, 노드 세로 길이, 노드 가로 마진, 노드 세로 마진
-        int nodeWidthSize, nodeHeightSize, nodeWidthMargin, nodeHeightMargin;
-        nodeWidthSize = 700;
-        nodeHeightSize = 150;
-        nodeWidthMargin = 100;
-        nodeHeightMargin = 100;
-
-        displayHeightSize = (nodeHeightSize + nodeHeightMargin) * displayHeight + 300;
-        displayWidthSize = (nodeWidthSize + nodeWidthMargin) * displayWidth;
-
-        //Log.e("###", "트리의 가로 크기 : " + displayWidthSize + " 트리의 세로 크기 : " + displayHeightSize);
-
-        treeView.setMinimumWidth(displayWidthSize);
-        treeView.setMinimumHeight(displayHeightSize);
         zoomLayout.moveTo((float)1.0, 0, 0, false);
         zoomLayout.zoomBy((float)1.0, false);
         zoomLayout.zoomOut();
 
         return;
     }
+
+
 
     /* [최정인] 기능 함수화 */
 
@@ -647,9 +647,6 @@ public class Fragment2 extends Fragment {
 
         //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
         rootNode = new TreeNode(table.getRoot());
-        treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
-        treeNodeDepth[m.get(table.getRoot().split("\\.")[0])] = 0;
-        treeLevel[0] = 1;
 
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
@@ -669,12 +666,6 @@ public class Fragment2 extends Fragment {
             String nextSubjectName = subjectList.get(nextMappingPos).getName();
             final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
             treeNodeList[nextMappingPos] = newChild;
-
-            // [ 장준승 ] : 전체 트리의 세로, 가로길이 구하기
-            treeNodeDepth[nextMappingPos] = treeNodeDepth[currMappingPos]+1;
-
-            int currDepth = treeNodeDepth[nextMappingPos];
-            treeLevel[currDepth] += 1;
 
             currNode.addChild(newChild);
             makeTreeByAdj(newChild);
@@ -735,13 +726,6 @@ public class Fragment2 extends Fragment {
                             String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
                             final TreeNode newChild = new TreeNode(convertedSubjectName);
 
-                            // [ 장준승 ] 화면 사이즈 node 개수에 비례하여 변화
-                            // [ 장준승 ] : 전체 트리의 세로, 가로길이 구하기
-                            int nextMappingPos = m.get(choosedSubjectName);
-                            int currMappingPos = m.get(curData);
-                            treeNodeDepth[nextMappingPos] = treeNodeDepth[currMappingPos]+1;
-                            int currDepth = treeNodeDepth[nextMappingPos];
-                            treeLevel[currDepth] += 1;
                             updateDisplaySize();
                             Log.e("###", "Current displaySize : "+displaySize);
 
@@ -914,4 +898,6 @@ public class Fragment2 extends Fragment {
             db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
     }
+
+
 }
