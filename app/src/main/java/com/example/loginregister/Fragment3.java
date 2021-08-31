@@ -18,8 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.loginregister.Notice_B.NoticeBoard;
+import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.google.firebase.database.annotations.NotNull;
 
 
@@ -28,11 +31,15 @@ public class Fragment3 extends Fragment {
     private Toolbar toolbar;
     private final static String TAG ="Frag3";
     private LinearLayout layout_like, layout_ranking, layout_mypost;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_3, container, false);
+        fm = getActivity().getSupportFragmentManager();
+        ft= fm.beginTransaction();
         toolbar = (androidx.appcompat.widget.Toolbar)view.findViewById(R.id.tb_frag3);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
@@ -133,11 +140,12 @@ public class Fragment3 extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_btn_search:
-                //검색프래그먼트 오픈
-                break;
-            case R.id.action_btn_create:
-                //글쓰기 프래그먼트로 이동;
+            case R.id.action_btn_setting:
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
                 break;
         }
         return super.onOptionsItemSelected(item);
