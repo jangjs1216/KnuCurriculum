@@ -23,23 +23,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.loginregister.Fragment2;
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.R;
-import com.example.loginregister.Setting_Container_Fragment;
-import com.example.loginregister.SubjectComment;
-import com.example.loginregister.SubjectInfoActivity;
-import com.example.loginregister.Subject_;
-import com.example.loginregister.Table;
 import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
-import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 
-public class Curl_List_Fragment extends Fragment {
+public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBackPressed {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
@@ -62,12 +54,16 @@ public class Curl_List_Fragment extends Fragment {
     private Toolbar toolbar;
     Dialog addTreeDialog;
     Dialog deleteTreeDialog;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_curl__list_, container, false);
+        fm = getActivity().getSupportFragmentManager();
+        ft = fm.beginTransaction();
         //////////툴바///////////
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         toolbar = (Toolbar)view.findViewById(R.id.tb_curi_list);
@@ -79,6 +75,9 @@ public class Curl_List_Fragment extends Fragment {
         setHasOptionsMenu(true);
         actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         /////////툴바끝///////////////
+
+        //뒤로가기
+        ((MainActivity) getActivity()).setBackPressedlistener(this);
 
 
         docRef = db.collection("user").document(mAuth.getUid());
@@ -224,6 +223,18 @@ public class Curl_List_Fragment extends Fragment {
         });
     }
 
+    //뒤로가기
+    @Override
+    public void onBackPressed() {
+        ft.remove(Curl_List_Fragment.this).commit();
+        fm.popBackStack();
+        ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity) getActivity()).setBackPressedlistener(null);
+    }
 
 }
