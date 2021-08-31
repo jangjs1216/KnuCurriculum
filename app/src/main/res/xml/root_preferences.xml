@@ -3,13 +3,13 @@
 <!--설정창 xml파일-->
 
     <PreferenceCategory
-        android:title="알람"
+        android:title="notification"
         android:layout="@layout/custom_preference_alarm_text"
         >
 
         <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="게시글 알람"
+            app:key="notification"
+            app:title="알람"
             app:summaryOff="게시글 알람을 받지않습니다."
             app:summaryOn="게시글 알람을 받습니다."
             />

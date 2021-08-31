@@ -2,6 +2,7 @@ package com.example.loginregister;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -33,8 +34,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SharedPreferences.OnSharedPreferenceChangeListener listner = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if(key.equals("message")){
-                boolean b= pref.getBoolean("message",false);
+            Log.e("settings", key);
+            if(key.equals("notification")){
+                Log.e("settings", key);
+                boolean b= pref.getBoolean("notification",false);
                 //여기에 알람 안받도록 구현해야함
 
             }
