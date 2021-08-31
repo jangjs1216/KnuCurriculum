@@ -19,6 +19,7 @@ import com.example.loginregister.Notice_B.Comment;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
 import com.example.loginregister.login.FirebaseID;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -34,6 +35,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
     private int prePosition=-1;
     private DocumentReference docRef;
     Activity activity;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
@@ -80,6 +82,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             iv_point=itemView.findViewById(R.id.iv_point);
             ccbtn = itemView.findViewById(R.id.btn_c_comment);
             btn_delete=itemView.findViewById(R.id.btn_delete);
+
 
             ccbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -151,6 +154,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
             c_nickname.setText(mcontent_data.get(position).getC_nickname());
             comment.setText(mcontent_data.get(position).getComment());
+
+            //댓글이 자기것이 아니면 안보이게 하기
+            if(!mAuth.getUid().equals(mcontent_data.get(position).getDocumentId())){
+                btn_delete.setVisibility(View.INVISIBLE);
+            }
 
             int judge = Integer.parseInt(mcontent_data.get(position).getComment_id());
             Log.e("%%%",Integer.toString(judge));

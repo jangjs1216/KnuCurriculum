@@ -76,22 +76,24 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Comment> Cdata;
     private Integer ll;
     SwipeRefreshLayout swipeRefreshLayout;
+    DocumentReference docRef;
 
     public static Context mcontext;
     public boolean Compared_c = true;
-    private ArrayList<String> subs,Liked = new ArrayList<>();
+    private ArrayList<String> subs, Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
     private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist;
-    private Boolean isChecked,isLiked;
+    private Boolean isChecked, isLiked;
     private Post post;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post__comment);
         mcontext = this;
-        ll= new Integer(0);
-        btn_comment = (ImageView)findViewById(R.id.btn_comment);
+        ll = new Integer(0);
+        btn_comment = (ImageView) findViewById(R.id.btn_comment);
         com_nick = (TextView) findViewById(R.id.Comment_nickname);          //본문 작성자
         com_title = (TextView) findViewById(R.id.Comment_title);            //제목
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
@@ -102,48 +104,48 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
         Intent intent = getIntent();//데이터 전달받기
-        forum_sort=getIntent().getExtras().getString("forum_sort");
+        forum_sort = getIntent().getExtras().getString("forum_sort");
         post_id = intent.getStringExtra("post_id");
-        Log.e("dkstmdwo",forum_sort+post_id);
+        Log.e("dkstmdwo", forum_sort + post_id);
+
+        docRef = mStore.collection(forum_sort).document(post_id);
+
         mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 post = task.getResult().toObject(Post.class);
-                Log.e("postcomment1", String.valueOf(post)+subs);
+                Log.e("postcomment1", String.valueOf(post) + subs);
 
                 post_t = post.getTitle();
                 subs = post.getSubscriber();
-                Log.e("postcomment2", String.valueOf(post)+subs);
+                Log.e("postcomment2", String.valueOf(post) + subs);
 
-                if(subs.contains(mAuth.getUid())){
+                if (subs.contains(mAuth.getUid())) {
                     subscribe.setIcon(R.drawable.ic_baseline_notifications_active_24);
                     isChecked = true;
-                }
-                else{
+                } else {
                     subscribe.setIcon(R.drawable.ic_baseline_notifications_off_24);
-                    isChecked= false;
+                    isChecked = false;
                 }
 
-                if(post.getTable() == null){
+                if (post.getTable() == null) {
                     isTreeExist = "no";
-                }
-                else isTreeExist = "yes";
+                } else isTreeExist = "yes";
 
                 likeText.setText(post.getLike());
 
                 writer_id_post = post.getWriter_id();
-                image_url=post.getImage_url();
-                if(image_url!=null)
-                {
-                    Log.d("###","image_url : "+image_url);
-                    FirebaseStorage storage=FirebaseStorage.getInstance();
-                    StorageReference storageReference=storage.getReference();
-                    StorageReference pathReference=storageReference.child("post_image");
-                    if(pathReference==null) {
-                        Toast.makeText(Post_Comment.this,"해당 사진이 없습니다",Toast.LENGTH_SHORT).show();
+                image_url = post.getImage_url();
+                if (image_url != null) {
+                    Log.d("###", "image_url : " + image_url);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageReference = storage.getReference();
+                    StorageReference pathReference = storageReference.child("post_image");
+                    if (pathReference == null) {
+                        Toast.makeText(Post_Comment.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.d("###","최종 사진 주소 : "+"post_image/"+image_url+".jpg");
-                        StorageReference submitImage=storageReference.child("post_image/"+image_url+".jpg");
+                        Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
+                        StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
                         submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
@@ -159,7 +161,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                     }
                 }
 
-                if(isTreeExist.equals("yes")){
+                if (isTreeExist.equals("yes")) {
                     treeButton.setVisibility(View.VISIBLE);
                 }
 
@@ -167,12 +169,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
-        swipeRefreshLayout=findViewById(R.id.refresh_commnet);
+        swipeRefreshLayout = findViewById(R.id.refresh_commnet);
 
         Toolbar toolbar = findViewById(R.id.tb_post_comment);
         setSupportActionBar(toolbar);
-        ActionBar actionBar =getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -187,16 +188,15 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
         //time=(String)intent.getSerializableExtra("time");//해당 게시글의 등록 시간
 
-       findViewById(R.id.btn_comment).setOnClickListener(this);//댓글 입력 버튼
+        findViewById(R.id.btn_comment).setOnClickListener(this);//댓글 입력 버튼
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               onStart();
-               swipeRefreshLayout.setRefreshing(false);
+                onStart();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
-
 
 
         if (mAuth.getCurrentUser() != null) {//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
@@ -212,15 +212,14 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                                 Liked = (ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked);
 
-                                if(Liked!=null) {
+                                if (Liked != null) {
 
                                     isLiked = Liked.contains(post_id);
                                     if (isLiked)
                                         likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
                                     else
                                         likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                                }
-                                else {
+                                } else {
                                     likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
                                     isLiked = false;
                                 }
@@ -246,34 +245,33 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            ll = Integer.parseInt(task.getResult().get("like").toString());
+                mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        ll = Integer.parseInt(task.getResult().get("like").toString());
 
-                            if(isLiked){
-                                Liked.remove(post_id);
-                                likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                                ll--;
-                            }
-                            else{
-                                Liked.add(post_id);
-                                likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
-                                ll++;
-                            }
-                            isLiked= !isLiked;
-                            likeText.setText(Integer.toString(ll));
-                            Map map1 = new HashMap<String, ArrayList<String>>();
-                            map1.put(FirebaseID.Liked,Liked);
-                            mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
-                            Map map2 = new HashMap<String,String>();
-                            map2.put(FirebaseID.like,Integer.toString(ll));
-                            Log.e("Post_Comment",Integer.toString(ll));
-                            mStore.collection(forum_sort).document(post_id).set(map2, SetOptions.merge());
+                        if (isLiked) {
+                            Liked.remove(post_id);
+                            likeButton.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                            ll--;
+                        } else {
+                            Liked.add(post_id);
+                            likeButton.setImageResource(R.drawable.ic_baseline_favorite_24);
+                            ll++;
                         }
-                    });
+                        isLiked = !isLiked;
+                        likeText.setText(Integer.toString(ll));
+                        Map map1 = new HashMap<String, ArrayList<String>>();
+                        map1.put(FirebaseID.Liked, Liked);
+                        mStore.collection("user").document(mAuth.getUid()).set(map1, SetOptions.merge());
+                        Map map2 = new HashMap<String, String>();
+                        map2.put(FirebaseID.like, Integer.toString(ll));
+                        Log.e("Post_Comment", Integer.toString(ll));
+                        mStore.collection(forum_sort).document(post_id).set(map2, SetOptions.merge());
+                    }
+                });
 
-                }
+            }
         });
     }
 
@@ -308,7 +306,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.actionbar_post_comment, menu);
-        subscribe=menu.findItem(R.id.action_btn_notification);
+        subscribe = menu.findItem(R.id.action_btn_notification);
         return true;
     }
 
@@ -336,7 +334,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             case R.id.action_btn_modify:
                 if (writer_id_post.equals(mAuth.getCurrentUser().getUid())) {
                     Intent intent = new Intent(this, Post_Update.class);
-                    intent.putExtra("forum_sort",forum_sort);
+                    intent.putExtra("forum_sort", forum_sort);
                     intent.putExtra("post_id", post_id);
                     startActivity(intent);//게시글 수정
                 } else {
@@ -344,15 +342,15 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_btn_notification:
-                if(isChecked){
-                    Log.e("Post_Comment","알람해제");
-                    isChecked=!isChecked;
+                if (isChecked) {
+                    Log.e("Post_Comment", "알람해제");
+                    isChecked = !isChecked;
                     item.setIcon(R.drawable.ic_baseline_notifications_off_24);
 
                     mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 post = task.getResult().toObject(Post.class);
                                 subs = post.getSubscriber();
                                 subs.remove(mAuth.getUid());
@@ -361,15 +359,14 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     });
-                }
-                else{
-                    Log.e("Post_Comment","알람설정");
-                    isChecked=!isChecked;
+                } else {
+                    Log.e("Post_Comment", "알람설정");
+                    isChecked = !isChecked;
                     item.setIcon(R.drawable.ic_baseline_notifications_active_24);
                     mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if(task.isSuccessful()){
+                            if (task.isSuccessful()) {
                                 post = task.getResult().toObject(Post.class);
                                 subs = post.getSubscriber();
                                 subs.add(mAuth.getUid());
@@ -388,12 +385,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
+
     @Override
     public void onStart() {
         super.onStart();
 
-        Cdata=new ArrayList<Comment>();
-        DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
+        Cdata = new ArrayList<Comment>();
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -416,19 +413,19 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         P_comment_id = comment_id;
     }
 
+    //댓글 대댓글 작성 함수
     @Override
     public void onClick(View v) {
-        if (Compared_c) { // 댓글
-            if (mAuth.getCurrentUser() != null) {
-                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (Compared_c) { // 댓글
+                    if (mAuth.getCurrentUser() != null) {
                         post = documentSnapshot.toObject(Post.class);
                         Log.e("TLqkf", String.valueOf(post.getSubscriber()));
                         ArrayList<Comment> data = new ArrayList<>();
 
-                        if(post.getComments() !=null) {
+                        if (post.getComments() != null) {
                             data = post.getComments();
                         }
 
@@ -439,33 +436,31 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         cur_comment.setComment(com_edit.getText().toString());
                         cur_comment.setC_nickname(comment_p);
                         cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                        cur_comment.setComment_id(Integer.toString( (1+Csize)*100 ));
+                        cur_comment.setComment_id(Integer.toString((1 + Csize) * 100));
 
-                        if(Csize+1 >=100)
-                        {
-                            Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                        if (Csize + 1 >= 100) {
+                            Toast.makeText(Post_Comment.this, "댓글수 제한 100개을 넘었습니다", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        post.setcoment_Num(Csize+1);
+                        post.setcoment_Num(Csize + 1);
                         data.add(cur_comment);
                         Collections.sort(data);
                         post.setComments(data);
                         subs = post.getSubscriber();
 
-                        if(!subs.contains(mAuth.getUid())){
+                        if (!subs.contains(mAuth.getUid())) {
                             subs.add(mAuth.getUid());
                             post.setSubscriber(subs);
                         }
-                        Log.e("TLqkf",post.getSubscriber().toString());
+                        Log.e("TLqkf", post.getSubscriber().toString());
                         mStore.collection(forum_sort).document(post_id).set(post);
                         String mId = mStore.collection("message").document().getId();
 
                         long datetime = System.currentTimeMillis();
                         Date date = new Date(datetime);
                         Timestamp timestamp = new Timestamp(date);
-                        Msg msg = new Msg(forum_sort,post_id,mAuth.getUid(),timestamp);
+                        Msg msg = new Msg(forum_sort, post_id, mAuth.getUid(), timestamp);
                         mStore.collection("message").document(mId).set(msg);
-
 
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
@@ -482,35 +477,31 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         finish();
                         startActivity(intent);
                     }
-                });
-            }
-        }
-        else if(P_comment_id != null) { // 대댓글
-            if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
-                DocumentReference docRef = mStore.collection(forum_sort).document(post_id);
-                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                }
+                // 대댓글
+                else if (P_comment_id != null) {
+                    if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
+
                         Post post = documentSnapshot.toObject(Post.class);
                         ArrayList<Comment> data = new ArrayList<>();
                         int Csize = 1;
 
-                        if(post.getComments() !=null) {
+                        if (post.getComments() != null) {
                             data = post.getComments();
 
-                            for(int i=0;i<data.size();++i){
-                                Log.e("&&&",data.get(i).getComment_id());
-                                if((data.get(i).getComment_id()).equals(P_comment_id)){
-                                    Csize=1+data.get(i).getCcoment_Num();
-                                    Log.e("&&&",P_comment_id+' '+Integer.toString(Csize));
+                            for (int i = 0; i < data.size(); ++i) {
+                                Log.e("&&&", data.get(i).getComment_id());
+                                if ((data.get(i).getComment_id()).equals(P_comment_id)) {
+                                    Csize = 1 + data.get(i).getCcoment_Num();
+                                    Log.e("&&&", P_comment_id + ' ' + Integer.toString(Csize));
                                 }
                                 data.get(i).setCcoment_Num(Csize);
                             }
                         }
 
-                        if(Csize >=100)
-                        {
-                            Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다",Toast.LENGTH_LONG).show();
+                        if (Csize >= 100) {
+                            Toast.makeText(Post_Comment.this, "대댓글수 제한 100개을 넘었습니다", Toast.LENGTH_LONG).show();
                             return;
                         }
                         Comment cur_comment = new Comment();
@@ -519,15 +510,13 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         cur_comment.setComment(com_edit.getText().toString());
                         cur_comment.setC_nickname(comment_p);
                         cur_comment.setDocumentId(mAuth.getCurrentUser().getUid());
-                        cur_comment.setComment_id(Integer.toString( (Integer.parseInt(P_comment_id)) + Csize  ));
-
-
+                        cur_comment.setComment_id(Integer.toString((Integer.parseInt(P_comment_id)) + Csize));
 
                         data.add(cur_comment);
                         Collections.sort(data);
 
                         post.setComments(data);
-                        if(!subs.contains(mAuth.getUid())){
+                        if (!subs.contains(mAuth.getUid())) {
                             subs.add(mAuth.getUid());
                             post.setSubscriber(subs);
                         }
@@ -538,9 +527,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         long datetime = System.currentTimeMillis();
                         Date date = new Date(datetime);
                         Timestamp timestamp = new Timestamp(date);
-                        Msg msg = new Msg( forum_sort,post_id,mAuth.getUid(),timestamp);
+                        Msg msg = new Msg(forum_sort, post_id, mAuth.getUid(), timestamp);
                         mStore.collection("message").document(mId).set(msg);
-
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기
 
@@ -553,14 +541,13 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         Intent intent = getIntent();//데이터 전달받기
 
-
                         finish();
                         startActivity(intent);
-                    }
-                });
-            }
-            Compared_c=true;
-        }
-    }
 
+                    }
+                    Compared_c = true;
+                }
+            }
+        });
+    }
 }
