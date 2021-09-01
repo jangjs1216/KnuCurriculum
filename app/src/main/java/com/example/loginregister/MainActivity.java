@@ -1,16 +1,25 @@
 package com.example.loginregister;
 
+import static com.example.loginregister.R.drawable.ic_baseline_notifications_24;
+import static com.example.loginregister.R.drawable.ic_baseline_notifications_active_24;
+import static com.example.loginregister.R.drawable.ic_baseline_notifications_red_24;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +28,9 @@ import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.UserAccount;
+import com.example.loginregister.push_alram.Alarm;
+import com.example.loginregister.push_alram.Alarms;
+import com.example.loginregister.push_alram.Fragment_Alarm;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -27,7 +39,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.BufferedReader;
@@ -43,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     [ 2021-08-06 장준승 Fragment 추가 ]
      */
     BottomNavigationView bottomNavigationView;
-
+    MenuItem bottom_alarm;
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
     public static Context maincontext;
@@ -117,9 +132,22 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setVisibility(View.INVISIBLE);
 
+
         check_nickname();
 
+        bottom_alarm = bottomNavigationView.getMenu().findItem(R.id.item_fragment5);
+
+        mStore.collection("Alarm").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                Log.e("alarm", "감지");
+                bottom_alarm.setIcon(ic_baseline_notifications_active_24);
+            }
+        });
+
+
         arrayList_curiList = new ArrayList<>();
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -137,10 +165,14 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.item_fragment4:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment4()).commit();
                         break;
+                    case R.id.item_fragment5:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new Fragment_Alarm()).commit();
                 }
                 return true;
             }
         });
+
+
 
 
 
@@ -245,4 +277,11 @@ public class MainActivity extends AppCompatActivity {
     public void setUser_nick(String user_nick) {
         this.user_nick = user_nick;
     }
+
+    public void setBottom_alarm(){
+        bottom_alarm.setIcon(ic_baseline_notifications_24);
+    }
+
+
+
 }

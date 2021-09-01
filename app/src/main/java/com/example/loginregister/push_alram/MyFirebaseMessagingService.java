@@ -1,12 +1,14 @@
 package com.example.loginregister.push_alram;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
@@ -24,16 +27,30 @@ import com.example.loginregister.MainActivity;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
+    private NotificationManager pushManager;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private Alarms data;
+    private ArrayList<Alarm> alarms;
 
     @Override
     public void onNewToken(String token) {
@@ -45,7 +62,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
          Log.e(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
@@ -66,84 +82,100 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notification",true)){
-            sendNotification(remoteMessage.getData());
+         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notification",true)){
+             Log.e("notification","received");
+             pushManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+             sendNotification(remoteMessage.getData());
+
         }
 
     }
     // [END receive_message]
 
-
-
-    /**
-     * Schedule async work using WorkManager.
-     */
-//    private void scheduleJob() {
-//        // [START dispatch_job]
-//        OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(MyWorker.class)
-//                .build();
-//        WorkManager.getInstance(this).beginWith(work).enqueue();
-//        // [END dispatch_job]
-//    }
-
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
     private void handleNow() {
         Log.e(TAG, "Short lived task is done.");
     }
 
-    /**
-     * Persist token to third-party servers.
-     *
-     * Modify this method to associate the user's FCM registration token with any
-     * server-side account maintained by your application.
-     *
-     * @param token The new token.
-     */
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-    }
 
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-
-     */
     private void sendNotification(Map message) {
-        Intent intent = new Intent(this, Post_Comment.class);
-        intent.putExtra("forum_sort",message.get("forum_sort").toString());
-        intent.putExtra("post_id",message.get("post_id").toString());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
 
-        String channelId = getString(R.string.default_notification_channel_id);
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        @SuppressLint("ResourceAsColor") NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
-                        .setContentTitle((CharSequence) message.get("title"))
-                        .setContentText((CharSequence) message.get("body"))
-                        .setAutoCancel(true)
-                        .setWhen(System.currentTimeMillis())
-                        .setColor(R.color.btn_theme)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentIntent(pendingIntent);
+        NotificationChannel pushChannel = null;
+        NotificationChannel nonChannel = null;
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
-        // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
+            pushChannel = new NotificationChannel("push_channel", "푸쉬 알림", NotificationManager.IMPORTANCE_HIGH);
+            pushChannel.enableLights(true);
+            pushChannel.setLightColor((getColor(R.color.colorAccent)));
+            pushChannel.setDescription("푸쉬 알림");
+            pushManager.createNotificationChannel(pushChannel);
+            Log.e("notification","channel");
+
+            nonChannel = new NotificationChannel("non_channel","상단바 알림",NotificationManager.IMPORTANCE_DEFAULT);
+            nonChannel.enableLights(true);
+            nonChannel.setLightColor((getColor(R.color.colorAccent)));
+            nonChannel.setDescription("상단바 알림");
+            pushManager.createNotificationChannel(nonChannel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        Intent intent = new Intent(this, Post_Comment.class);
+
+        intent.putExtra("forum_sort",message.get("forum_sort").toString());
+        intent.putExtra("post_id",message.get("post_id").toString());
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0/* Request code */, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        String channelId;
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("push",true)) {
+            channelId = "push_channel";
+        }
+        else {
+            channelId = "non_channel";
+        }
+
+        @SuppressLint("ResourceAsColor") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_baseline_build_24   ) // 아이콘
+                .setContentTitle(message.get("title").toString()) // 제목
+                .setContentText(message.get("body").toString()) // 내용
+                .setAutoCancel(true)//누르면사라짐
+                .setColor((ContextCompat.getColor(this, R.color.btn_theme))) //상단바 아이콘이랑 이름 색
+                .setColorized(true)
+                .setContentIntent(pendingIntent)//클릭하면 이동할 곳
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+
+            pushManager.notify(createID(), builder.build());
+            addToAlarm(message);
+
     }
+
+    public int createID(){
+        Date now = new Date();
+        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.KOREA).format(now));
+        return id;
+    }
+
+    public void addToAlarm(Map message){
+        long datetime = System.currentTimeMillis();
+        Date date = new Date(datetime);
+        Timestamp timestamp = new Timestamp(date);
+        mStore.collection("Alarm").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                data = documentSnapshot.toObject(Alarms.class);
+                alarms = data.getAlarms();
+                Alarm alarm = new Alarm(message.get("title").toString(),timestamp,message.get("forum_sort").toString(),message.get("post_id").toString(),false);
+                alarms.add(alarm);
+                data.setAlarms(alarms);
+                mStore.collection("Alarm").document(mAuth.getUid()).set(data);
+
+            }
+        });
+
+    }
+
+
 }

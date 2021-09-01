@@ -39,8 +39,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 Log.e("settings", key);
                 boolean b= pref.getBoolean("notification",false);
                 //여기에 알람 안받도록 구현해야함
-
             }
+            if(key.equals("push")){
+                Log.e("settings",key);
+                boolean b= pref.getBoolean("notification",false);
+            }
+
         }
     };
 

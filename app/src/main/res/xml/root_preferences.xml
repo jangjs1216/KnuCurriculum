@@ -11,8 +11,17 @@
             app:key="notification"
             app:title="알람"
             app:summaryOff="게시글 알람을 받지않습니다."
-            app:summaryOn="게시글 알람을 받습니다."
+            app:summaryOn="게시글 알람을 받습니다.">
+        </SwitchPreferenceCompat>
+
+        <SwitchPreferenceCompat
+            app:key ="push"
+            app:title="푸쉬 알람"
+            app:summaryOn="푸쉬 알람을 받습니다."
+            app:summaryOff="상단바 알람이 표시됩니다."
+            app:dependency="notification"
             />
+
     </PreferenceCategory>
 
 
