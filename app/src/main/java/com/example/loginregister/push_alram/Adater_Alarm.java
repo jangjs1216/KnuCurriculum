@@ -50,6 +50,7 @@ public class Adater_Alarm extends RecyclerView.Adapter<Adater_Alarm.CustomViewHo
             @Override
             public void onClick(View v) {
                 listener.onAlarmCLick(v,position);
+                notifyDataSetChanged();
             }
         });
 
