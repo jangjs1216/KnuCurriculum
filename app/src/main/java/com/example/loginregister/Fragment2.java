@@ -266,7 +266,7 @@ public class Fragment2 extends Fragment {
                         Toast.makeText(getContext(),"루트 노드는 삭제할 수 없습니다.", Toast.LENGTH_LONG).show();
                     }else{
                         String[] nodeData = parent.getData().toString().split("\\.");
-                        userTableInfo.getTable().get(nodeData[0]).put(curData, "0");
+                        userTableInfo.getTable().get(nodeData[0]).remove(curData);
 
                         userAccount.getTables().set(tableLoc, userTableInfo);
                         db.collection("user").document(mAuth.getUid()).set(userAccount);
@@ -276,6 +276,7 @@ public class Fragment2 extends Fragment {
                         // 자신 노드 삭제
                         int currNodeValue = m.get(curData);
                         treeNodeList[currNodeValue].getParent().removeChild(treeNodeList[currNodeValue]);
+                        treeNodeList[currNodeValue] = null;
 
                         updateDisplaySize();
                         nodeChoiceBottomSheetDialog.dismiss();
@@ -713,11 +714,6 @@ public class Fragment2 extends Fragment {
                 {
                     for(TreeNode tn : treeNodeList)
                     {
-                        if(tn != null)
-                        {
-                            Log.e("###", "현재 tn 정보 "+tn.getData()+", 접근 정보 : "+curData.equals(tn.getData().toString().split("\\.")[0]));
-                        }
-
                         if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                         {
                             //DBG
@@ -768,32 +764,44 @@ public class Fragment2 extends Fragment {
                 public void onItemClick(View v, int pos) {
                     if(userTableInfo != null){
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
+                        Boolean isSubjectOverlapped = false;
+
                         Log.e("###", choosedSubjectName + " 선택 됨..");
 
-                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+                        // [ 장준승 ] 노드 중복 방지
                         for(TreeNode tn : treeNodeList)
                         {
-                            if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                            if(tn != null && choosedSubjectName.equals(tn.getData().toString().split("\\.")[0]))
                             {
-                                //UserAccount 정보 업데이트
-                                userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                                userAccount.getTables().set(tableLoc, userTableInfo);
-                                db.collection("user").document(mAuth.getUid()).set(userAccount);
-
-                                int mappingPos = m.get(choosedSubjectName);
-
-                                //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                                String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
-                                final TreeNode newChild = new TreeNode(convertedSubjectName);
-
-                                //[장준승] 화면 사이즈 node 개수에 비례하여 변화
-                                updateDisplaySize();
-                                Log.e("###", "Current displaySize : "+displaySize);
-
-                                adj[m.get(curData)].add(mappingPos);
-                                treeNodeList[mappingPos] = newChild;
-                                tn.addChild(newChild);
+                                Toast.makeText(getContext(), "이미 선택된 과목입니다",Toast.LENGTH_LONG).show();
+                                isSubjectOverlapped = true;
                                 break;
+                            }
+                        }
+
+                        if(!isSubjectOverlapped) {
+                            for (TreeNode tn : treeNodeList) {
+                                if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
+                                    //UserAccount 정보 업데이트
+                                    userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                                    int mappingPos = m.get(choosedSubjectName);
+
+                                    //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                                    String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                                    final TreeNode newChild = new TreeNode(convertedSubjectName);
+
+                                    //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                                    updateDisplaySize();
+                                    Log.e("###", "Current displaySize : " + displaySize);
+
+                                    adj[m.get(curData)].add(mappingPos);
+                                    treeNodeList[mappingPos] = newChild;
+                                    tn.addChild(newChild);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -895,8 +903,7 @@ public class Fragment2 extends Fragment {
             String nextNode = subjectList.get(nextNodeValue).getName();
             deleteTreeFromDB(nextNode);
 
-            Log.e("###", currNode+"에 대한 삭제를 진행합니다.");
-            adj[currNodeValue].remove(Integer.valueOf(nextNodeValue));
+            Log.e("###", nextNode+"에 대한 삭제를 진행합니다.");
             treeNodeList[nextNodeValue] = null;
 
             //UserAccount 정보 업데이트
@@ -905,5 +912,6 @@ public class Fragment2 extends Fragment {
             userAccount.getTables().set(tableLoc, userTableInfo);
             db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
+        adj[currNodeValue].clear();
     }
 }
