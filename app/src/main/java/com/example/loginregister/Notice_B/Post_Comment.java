@@ -168,6 +168,15 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        url_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
+                intent.putExtra("url",image_url);
+                startActivity(intent);
+            }
+        });
+
 
         swipeRefreshLayout = findViewById(R.id.refresh_commnet);
 

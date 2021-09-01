@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginRegister">
-
+        <activity
+            android:name=".Notice_B.Image_zoom"
+            android:exported="true" />
         <activity
             android:name=".Notice_B.Post_Search"
             android:exported="true" />
@@ -59,11 +61,10 @@
             android:resource="@color/colorAccent" />
 
         <provider
-            android:authorities="com.example.loginregister"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.loginregister"
             android:exported="false"
-            android:grantUriPermissions="true" >
-
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
