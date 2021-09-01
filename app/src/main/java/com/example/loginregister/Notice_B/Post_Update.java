@@ -49,7 +49,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private FirebaseFirestore mStore= FirebaseFirestore.getInstance();
     private EditText mTitle,mContents;//제목, 내용
     private String p_nickname;//게시판에 표기할 닉네잉 //이게 가져온 값을 저장하는 임시 변수
-    private String post_num,post_id,writer_id,comment_post,like;
+    private String post_num,post_id,writer_id,comment_post,like,title,content;
     private Timestamp timestamp;
     private ImageView post_imageView;
     private String forum_sort;
@@ -91,6 +91,11 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                                                        image_url=post.getImage_url();
                                                        table = post.getTable();
                                                        subscriber = post.getSubscriber();
+                                                        title=post.getTitle();
+                                                        content=post.getContents();
+
+                                                       mTitle.setText(title);
+                                                        mContents.setText(content);
                                                    }
                                                });
         }
