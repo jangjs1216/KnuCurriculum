@@ -15,7 +15,7 @@ public class PreferencesManager {
 
     public static void storeAccount(Context ctx, String id) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(Account_Id,"id");
+        editor.putString(Account_Id,id);
         editor.commit();
     }
 

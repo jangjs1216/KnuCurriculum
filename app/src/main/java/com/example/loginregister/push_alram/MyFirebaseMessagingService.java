@@ -26,6 +26,7 @@ import androidx.work.WorkManager;
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
+import com.example.loginregister.login.PreferencesManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -82,11 +83,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-         if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notification",true)){
-             Log.e("notification","received");
-             pushManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-             sendNotification(remoteMessage.getData());
+        if(PreferencesManager.getAccount(getApplicationContext()).equals(mAuth.getUid())) {
+            if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("notification", true)) {
+                Log.e("notification", "received");
+                pushManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                sendNotification(remoteMessage.getData());
+                addToAlarm(remoteMessage.getData());
 
+            }
         }
 
     }
@@ -118,6 +122,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             pushManager.createNotificationChannel(nonChannel);
         }
 
+
         Intent intent = new Intent(this, Post_Comment.class);
 
         intent.putExtra("forum_sort",message.get("forum_sort").toString());
@@ -145,10 +150,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent)//클릭하면 이동할 곳
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setDefaults(NotificationCompat.DEFAULT_ALL);
+            Log.e("alarm",PreferencesManager.getAccount(getApplicationContext()));
+            Log.e("alarm",mAuth.getUid());
+            if(PreferencesManager.getAccount(getApplicationContext()).equals(mAuth.getUid())) {
+                Log.e("alarm","일치");
+                pushManager.notify(createID(), builder.build());
 
-
-            pushManager.notify(createID(), builder.build());
-            addToAlarm(message);
+            }
 
     }
 

@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.loginregister.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutActivity extends AppCompatActivity {
-
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +18,7 @@ public class LogoutActivity extends AppCompatActivity {
 
         PreferencesManager.removeAccount(LogoutActivity.this);
         Log.e("###","로그아웃");
+        mAuth.signOut();
         Intent intent=new Intent(LogoutActivity.this,LoginActivity.class);
         startActivity(intent);
     }

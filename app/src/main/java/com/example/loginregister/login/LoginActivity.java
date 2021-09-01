@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         // 자동로그인 버튼을 눌렀을 때
                         if(automatic_login.isChecked()) {
                             Log.e("###","자동로그인 버튼 눌림");
-                            PreferencesManager.storeAccount(LoginActivity.this,strEmail);
+                            PreferencesManager.storeAccount(LoginActivity.this,mAuth.getUid());
                         }
                         Log.e("Login","로그인성공");
                         Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();

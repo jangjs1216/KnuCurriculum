@@ -48,12 +48,10 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
     private LinearLayoutManager linearLayoutManager;
     private Adapter_User_Info adapter_user_info;
     private TextView btn_add_user_info;
-    private FragmentManager fm2;
-    private FragmentTransaction ft2;
+
     private EditText et_userName;
     private TextView tv_userUniv;
     private TextView tv_userMajor;
-    private TextView btn_logout;
     private UserAccount userAccount;
     private EditText et_major;
     private TextView tv_taked;
@@ -67,8 +65,7 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
         view =inflater.inflate(R.layout.fragment__edit__user__info, container, false);
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
-        fm2 = getChildFragmentManager();
-        ft2=fm.beginTransaction();
+
         et_userName = view.findViewById(R.id.et_userName);
 
 
@@ -80,7 +77,6 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
         tv_taked=view.findViewById(R.id.tv_taked_GPA);
         et_major.setText(userAccount.getMajor());
         tv_taked.setText(userAccount.getTaked());
-        ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
          //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         toolbar = (Toolbar)view.findViewById(R.id.tb_edit_user_info);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
@@ -90,19 +86,6 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
         setHasOptionsMenu(true);
         actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         //툴바 끝
-
-        //로그아웃
-        btn_logout=view.findViewById(R.id.btn_logout);
-//        SharedPreferences account_info= getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor=account_info.edit();
-
-        btn_logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), LogoutActivity.class);
-                startActivity(intent);
-            }
-        });
 
         //      리싸이클러뷰
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_edit_user_info);
@@ -185,13 +168,15 @@ public class Fragment_Edit_User_Info extends Fragment implements MainActivity.IO
                     mStore.collection("user").document(mAuth.getUid()).set(userAccount);
                     ((MainActivity)getActivity()).setUserAccount(userAccount);
                     Toast.makeText(getContext(),"회원정보가 저장되었습니다.",Toast.LENGTH_LONG).show();
+
+                    ft.remove(Fragment_Edit_User_Info.this).commit();
+                    fm.popBackStack();
                 }
                 break;
 
             case android.R.id.home:
                 ft.remove(Fragment_Edit_User_Info.this).commit();
                 fm.popBackStack();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
 
 

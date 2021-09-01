@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.UserInfo.Adapter_User_Info;
 import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
+import com.example.loginregister.UserInfo.Fragment_User_Info;
 import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.curiList.Recycler_Adapter;
@@ -179,7 +180,7 @@ public class Fragment1 extends Fragment {
             case R.id.action_btn_setting:
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
+                ft.replace(R.id.main_frame, new Fragment_User_Info());
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
                 break;
