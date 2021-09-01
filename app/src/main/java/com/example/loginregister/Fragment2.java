@@ -275,6 +275,12 @@ public class Fragment2 extends Fragment {
 
                         // 자신 노드 삭제
                         int currNodeValue = m.get(curData);
+                        String[] curNodeData = treeNodeList[currNodeValue].getData().toString().split("\\.");
+                        Log.e("###", "노드 자신의 수강결과 : "+curNodeData[2].equals("1"));
+                        if(curNodeData[2].equals("1"))
+                        {
+                            ChangeMatrixToServer(nodeData[0], curData, true);
+                        }
                         treeNodeList[currNodeValue].getParent().removeChild(treeNodeList[currNodeValue]);
                         treeNodeList[currNodeValue] = null;
 
@@ -295,6 +301,7 @@ public class Fragment2 extends Fragment {
                         @Override
                         public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
                             String currSubjectName = (String) curViewHolder.mTextView.getText();
+                            Log.e("###", "버튼 클릭됨");
 
                             for(TreeNode tn : treeNodeList)
                             {
@@ -327,37 +334,8 @@ public class Fragment2 extends Fragment {
 
                                     if(isTakenClass)
                                     {
-                                        if(!isChecked)
-                                        {
-                                            // 수강 안한다 -> 수강 한다
-
-                                            //수강 학점 서버에 변경
-                                            int currTaked = Integer.parseInt(userAccount.getTaked());
-                                            Log.e("###", "currTaked : " + currTaked);
-                                            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
-                                            currTaked += Integer.parseInt(currSubject_.getScore());
-                                            Log.e("###", "currTaked : " + currTaked);
-                                            userAccount.setTaked(Integer.toString(currTaked));
-                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
-
-
-                                            docRef = db.collection("UsersTableInfo").document("Matrix");
-                                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
-                                                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                    currCount += 1;
-                                                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-                                                    currParentCount += 1;
-
-                                                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-                                                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-                                                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
-                                                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                }
-                                            });
+                                        if(!isChecked) {
+                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
                                         }
 
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
@@ -365,37 +343,8 @@ public class Fragment2 extends Fragment {
                                     }else{
                                         if(isChecked)
                                         {
-                                            // 수강 한다 -> 수강 안한다
-
-                                            //수강 학점 서버에 변경
-                                            int currTaked = Integer.parseInt(userAccount.getTaked());
-                                            Log.e("###", "currTaked : " + currTaked);
-                                            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
-                                            currTaked -= Integer.parseInt(currSubject_.getScore());
-                                            Log.e("###", "currTaked : " + currTaked);
-                                            userAccount.setTaked(Integer.toString(currTaked));
-                                            db.collection("user").document(mAuth.getUid()).set(userAccount);
-
-
-                                            docRef = db.collection("UsersTableInfo").document("Matrix");
-                                            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
-                                                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                    currCount -= 1;
-                                                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-                                                    currParentCount -= 1;
-
-                                                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-                                                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-                                                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
-                                                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                                                }
-                                            });
+                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
                                         }
-
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
                                         userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
                                     }
@@ -904,7 +853,15 @@ public class Fragment2 extends Fragment {
             deleteTreeFromDB(nextNode);
 
             Log.e("###", nextNode+"에 대한 삭제를 진행합니다.");
+            TreeNode deleteTn = treeNodeList[nextNodeValue];
+            String[] deleteTnData = deleteTn.getData().toString().split("\\.");
+            Log.e("###", "삭제하려는 노드의 수강정보 : "+deleteTnData[2]);
+
             treeNodeList[nextNodeValue] = null;
+            if(deleteTnData[2].equals("1"))
+            {
+                ChangeMatrixToServer(currNode, nextNode, true);
+            }
 
             //UserAccount 정보 업데이트
             userTableInfo.getTable().get(currNode).remove(nextNode);
@@ -913,5 +870,85 @@ public class Fragment2 extends Fragment {
             db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
         adj[currNodeValue].clear();
+    }
+
+    /*
+    [ 장준승 ]
+    ChangeMatrixToServer(String parentSubjectName, String currSubjectName, Boolean currentTaken)
+    : 픽률 계산하는 내용을 isTaken 정보에 따라 업데이트를 진행해줍니다.
+
+    parentSubjectName -> currSubjectName 으로 업데이트를 진행해줍니다.
+
+    currentTaken이 True라면, 듣고 있는데 안듣는 경우를 의미합니다. ( 정보 제거 )
+    currentTaken이 False라면, 안듣고 있는데 듣는 경우를 의미합니다. ( 정보 추가 )
+     */
+    public void ChangeMatrixToServer(String parentSubjectName, String currSubjectName, Boolean currentTaken)
+    {
+        if(currentTaken)
+        {
+            Log.e("###", parentSubjectName+" -> "+currSubjectName+" 으로 픽률 정보 제거를 진행합니다. ");
+            //듣고 있는데 안 듣는 것으로 수정하는 경우
+            // 수강 한다 -> 수강 안한다
+            //수강 학점 서버에 변경
+            int currTaked = Integer.parseInt(userAccount.getTaked());
+            Log.e("###", "currTaked : " + currTaked);
+            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
+            currTaked -= Integer.parseInt(currSubject_.getScore());
+            Log.e("###", "currTaked : " + currTaked);
+            userAccount.setTaked(Integer.toString(currTaked));
+            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+
+            docRef = db.collection("UsersTableInfo").document("Matrix");
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
+                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                    currCount -= 1;
+                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+                    currParentCount -= 1;
+
+                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
+                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                }
+            });
+        }else{
+            //안 듣고 있는데 듣는 것으로 수정하는 경우
+
+            // 수강 한다 -> 수강 안한다
+
+            Log.e("###", parentSubjectName+" -> "+currSubjectName+" 으로 픽률 정보 추가를 진행합니다. ");
+            //수강 학점 서버에 변경
+            int currTaked = Integer.parseInt(userAccount.getTaked());
+            Log.e("###", "currTaked : " + currTaked);
+            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
+            currTaked += Integer.parseInt(currSubject_.getScore());
+            Log.e("###", "currTaked : " + currTaked);
+            userAccount.setTaked(Integer.toString(currTaked));
+            db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+
+            docRef = db.collection("UsersTableInfo").document("Matrix");
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
+                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                    currCount += 1;
+                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+                    currParentCount += 1;
+
+                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
+                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+                }
+            });
+        }
     }
 }
