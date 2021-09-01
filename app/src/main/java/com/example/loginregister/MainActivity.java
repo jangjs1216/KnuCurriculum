@@ -2,7 +2,7 @@ package com.example.loginregister;
 
 import static com.example.loginregister.R.drawable.ic_baseline_notifications_24;
 import static com.example.loginregister.R.drawable.ic_baseline_notifications_active_24;
-import static com.example.loginregister.R.drawable.ic_baseline_notifications_red_24;
+
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         check_nickname();
 
+        //알람생기면 바텀아이콘 변경
         bottom_alarm = bottomNavigationView.getMenu().findItem(R.id.item_fragment5);
 
         mStore.collection("Alarm").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
