@@ -49,6 +49,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -237,38 +238,71 @@ public class NoticeBoard extends AppCompatActivity {
 
     public void Search_mypost()
     {
+
+
+        mDatas = new ArrayList<>();
+        mDatas.clear();
+
+        if(preLiked.size() > 0) {
+
+            int listsize = preLiked.size();
+            int num = listsize/10;
+            int remainder = listsize%10;
+
+            ArrayList<String> remainlist = new ArrayList<>();
+
+
+            if(num>0){
+                for(int i=0;i<num;++i){
+                    ArrayList<String> numlist = new ArrayList<>( preLiked.subList(i*10,10+i*10));
+                    searchInFB(numlist);
+                }
+            }
+            for(int i=0;i<remainder;++i){
+                remainlist.add(preLiked.get(i+num*10));
+            }
+            searchInFB(remainlist);
+        }
+
+    }
+    public void searchInFB(ArrayList<String> sslist){
         String [] strings = new String[7];
 
         for(int i=0;i<strings.length;++i){
             strings[i]="Post"+(i+1);
         }
 
-        mDatas = new ArrayList<>();
-        mDatas.clear();
-        if(preLiked.size() > 0) {
-            for (String data : strings) {
-                mStore.collection(data)
-                        .whereIn("post_id", preLiked)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Post post = document.toObject(Post.class);
-                                        mDatas.add(post);
-                                    }
-                                } else {
+        for (String data : strings) {
 
+            mStore.collection(data)
+                    .whereIn("post_id", sslist)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Post post = document.toObject(Post.class);
+                                    mDatas.add(post);
                                 }
-                                mAdapter = new PostAdapter(NoticeBoard.this, mDatas);
-                                mPostRecyclerView.setAdapter(mAdapter);
+                            } else {
+
                             }
-                        });
 
-            }
+                            Collections.sort(mDatas, new Comparator<Post>() {
+                                @Override
+                                public int compare(Post o1, Post o2) {
+
+                                    return o1.getTimestamp().compareTo(o2.getTimestamp());
+                                }
+                            });
+
+                            mAdapter = new PostAdapter(NoticeBoard.this, mDatas);
+                            mPostRecyclerView.setAdapter(mAdapter);
+                        }
+                    });
+
         }
-
     }
 
     public void User_like_postlist(){
