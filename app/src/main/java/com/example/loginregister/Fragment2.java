@@ -647,6 +647,7 @@ public class Fragment2 extends Fragment {
 
         //Table의 root 값으로 루트노드 설정 후 adj로 트리 만들기
         rootNode = new TreeNode(table.getRoot());
+        treeNodeList[m.get(table.getRoot().split("\\.")[0])] = rootNode;
 
         makeTreeByAdj(rootNode);
         adapter.setRootNode(rootNode);
@@ -694,7 +695,7 @@ public class Fragment2 extends Fragment {
                 String choosedSubjectName = subjectList.get(pos).getName();
                 Boolean isSubjectOverlapped = false;
 
-                Log.e("###", choosedSubjectName + " 선택 됨");
+                Log.e("###", choosedSubjectName + " 선택 됨!");
 
                 // [ 장준승 ] 노드 중복 방지
                 for(TreeNode tn : treeNodeList)
@@ -712,6 +713,11 @@ public class Fragment2 extends Fragment {
                 {
                     for(TreeNode tn : treeNodeList)
                     {
+                        if(tn != null)
+                        {
+                            Log.e("###", "현재 tn 정보 "+tn.getData()+", 접근 정보 : "+curData.equals(tn.getData().toString().split("\\.")[0]));
+                        }
+
                         if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                         {
                             //DBG
@@ -719,6 +725,8 @@ public class Fragment2 extends Fragment {
                             userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
                             userAccount.getTables().set(tableLoc, userTableInfo);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                            Log.e("###", "현재 선택된 DB정보 : "+db.toString());
 
                             int mappingPos = m.get(choosedSubjectName);
 
@@ -760,7 +768,7 @@ public class Fragment2 extends Fragment {
                 public void onItemClick(View v, int pos) {
                     if(userTableInfo != null){
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
-                        Log.e("###", choosedSubjectName + " 선택 됨");
+                        Log.e("###", choosedSubjectName + " 선택 됨..");
 
                         Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
                         for(TreeNode tn : treeNodeList)
@@ -898,6 +906,4 @@ public class Fragment2 extends Fragment {
             db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
     }
-
-
 }
