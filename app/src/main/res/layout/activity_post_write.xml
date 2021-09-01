@@ -37,6 +37,7 @@
         android:textColor="@android:color/black"
         android:textSize="15sp" />
 
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -48,7 +49,7 @@
             android:id="@+id/post_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@android:drawable/alert_dark_frame"/>
+            app:srcCompat="@android:drawable/alert_dark_frame" />
 
         <ProgressBar
             android:id="@+id/post_progressbar"
@@ -59,8 +60,6 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -68,7 +67,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/Post_photo"
+            android:id="@+id/post_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

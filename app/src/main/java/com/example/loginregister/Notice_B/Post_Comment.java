@@ -98,7 +98,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_title = (TextView) findViewById(R.id.Comment_title);            //제목
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
         com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
-        url_image = (ImageView) findViewById(R.id.url_image);               //작성자가 올린 이미지
+        url_image = (ImageView) findViewById(R.id.linear_layout);               //작성자가 올린 이미지
         treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
         likeButton = (ImageView) findViewById(R.id.like_button);            //좋아요 버튼
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트

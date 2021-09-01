@@ -142,7 +142,7 @@
                         tools:text="본문내용입니다" />
 
                     <ImageView
-                        android:id="@+id/url_image"
+                        android:id="@+id/linear_layout"
                         android:layout_width="200sp"
                         android:layout_height="200sp"
                         android:layout_gravity="center"

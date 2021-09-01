@@ -1,26 +1,19 @@
 package com.example.loginregister.Notice_B;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Path;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -31,15 +24,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.loginregister.MainActivity;
 import com.example.loginregister.Table;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
@@ -47,15 +36,12 @@ import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.R;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -65,8 +51,6 @@ import com.google.firebase.storage.UploadTask;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -86,14 +70,13 @@ public class Post_write extends AppCompatActivity {
     private Button post_photo;
     private ProgressBar post_progressBar;
     private String writer_id;
-    private Uri uriProfileImage;
     private ImageView post_imageView;
     private File tempFile;
     private static final int FROM_CAMERA = 1;
     private static final int FROM_GALLERY = 2;
     private Table choosedTable=null;
     private String forum_sort;
-    private Uri uri, imageUri;
+    private Uri uri;
     private String image_url;
     private ArrayList<String> subscriber;
     private FirebaseStorage storage;
@@ -112,7 +95,7 @@ public class Post_write extends AppCompatActivity {
 
         mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents = findViewById(R.id.Post_write_contents);
-        post_photo = findViewById(R.id.Post_photo);
+        post_photo = findViewById(R.id.post_photo);
         post_imageView = findViewById(R.id.post_imageview);
         post_imageView.setVisibility(View.INVISIBLE);
         post_progressBar = findViewById(R.id.post_progressbar);
