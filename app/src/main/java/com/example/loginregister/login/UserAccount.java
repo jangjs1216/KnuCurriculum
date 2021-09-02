@@ -19,11 +19,12 @@ public class UserAccount {
     private ArrayList<String> specs;
     private String Major;
     private String taked;
+    private String basicTableName;
 
     public UserAccount() {
     }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String major, String taked) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String major, String taked, String basicTableName) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -36,6 +37,7 @@ public class UserAccount {
         this.specs = specs;
         Major = major;
         this.taked = taked;
+        this.basicTableName = basicTableName;
     }
 
     public String getIdToken() {
@@ -132,5 +134,13 @@ public class UserAccount {
 
     public void setTaked(String taked) {
         this.taked = taked;
+    }
+
+    public String getBasicTableName() {
+        return basicTableName;
+    }
+
+    public void setBasicTableName(String basicTableName) {
+        this.basicTableName = basicTableName;
     }
 }

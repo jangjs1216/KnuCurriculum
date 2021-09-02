@@ -164,22 +164,14 @@ public class Fragment2 extends Fragment {
                 UsersTableInfo = documentSnapshot.toObject(Table.class);
             }
         });
-
-        /* 테이블 이름 받아오고 해당 테이블 서버에서 받아와서 출력 */
-        if (getArguments() != null)
-        {
-            if(currTable == null){
-                Log.e("###", "currTable : null");
+        docRef = db.collection("user").document(mAuth.getUid());
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userAccount = documentSnapshot.toObject(UserAccount.class);
+                init();
             }
-            tableName = getArguments().getString("tableName");
-            TextView tableNameTV = v.findViewById(R.id.tableNameTV);
-            tableNameTV.setText("테이블 이름 : " + tableName);
-            treeResisted = false;
-            getSubjectListFromFB();
-        }
-        else{
-            Toast.makeText(getContext(), "테이블을 선택해주세요", Toast.LENGTH_LONG).show();
-        }
+        });
 
         /* TreeAdapter 선언 */
         adapter = new BaseTreeAdapter<ViewHolder>(container.getContext(), R.layout.node) {
@@ -385,7 +377,6 @@ public class Fragment2 extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_btn_curiList:
                 ft.replace(R.id.main_frame, new Curl_List_Fragment());
-                ft.addToBackStack(null);
                 ft.commit();
                 break;
         }
@@ -428,6 +419,31 @@ public class Fragment2 extends Fragment {
 
 
     /* [최정인] 기능 함수화 */
+
+    public void init() {
+        /* 테이블 이름 받아오고 해당 테이블 서버에서 받아와서 출력 */
+        if (getArguments() != null)
+        {
+            if(currTable == null){
+                Log.e("###", "currTable : null");
+            }
+            tableName = getArguments().getString("tableName");
+            TextView tableNameTV = v.findViewById(R.id.tableNameTV);
+            tableNameTV.setText("테이블 이름 : " + tableName);
+            treeResisted = false;
+            getSubjectListFromFB();
+        }
+        else if(userAccount.getBasicTableName() != null){
+            tableName = userAccount.getBasicTableName();
+            TextView tableNameTV = v.findViewById(R.id.tableNameTV);
+            tableNameTV.setText("테이블 이름 : " + tableName + " (기본 테이블)");
+            treeResisted = false;
+            getSubjectListFromFB();
+        }
+        else{
+            Toast.makeText(getContext(), "테이블을 선택해주세요", Toast.LENGTH_LONG).show();
+        }
+    }
 
     // 서버에서 Subject 받아오기
     /* SubjectList 완성 -> 노드추가 리사이클러뷰 연결 -> SubjectList 매핑 -> FB로부터 테이블 받기 */ 

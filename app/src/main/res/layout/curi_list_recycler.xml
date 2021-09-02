@@ -20,7 +20,14 @@
         android:layout_margin="5dp"
         android:layout_weight="2"/>
 
+    <Button
+        android:id="@+id/basicTableBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기본"/>
+
     <FrameLayout
+        android:id="@+id/FL"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"

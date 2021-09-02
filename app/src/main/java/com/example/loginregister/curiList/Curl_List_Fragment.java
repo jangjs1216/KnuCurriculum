@@ -149,8 +149,19 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                             transaction.replace(R.id.main_frame, fragment2);
                             transaction.commit();
                         }
-                        else{
+                        else if(option.equals("delete")){
+                            if(userAccount.getBasicTableName().equals(arrayList.get(pos).getTv_title())){
+                                userAccount.setBasicTableName(null);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                                Toast.makeText(getContext(), "기본 테이블 " + arrayList.get(pos).getTv_title() + "를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+                            }
                             showDeleteTreeDialog(pos);
+                        }
+                        else{
+                            Log.e("###", "basic");
+                            userAccount.setBasicTableName(arrayList.get(pos).getTv_title());
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            Toast.makeText(getContext(), "기본 테이블이 " + arrayList.get(pos).getTv_title() + "로 설정됐습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -186,8 +197,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 break;
 
             case android.R.id.home:
-                getActivity().getSupportFragmentManager().beginTransaction().remove(Curl_List_Fragment.this).commit();
-                getActivity().getSupportFragmentManager().popBackStack();
+                ft.replace(R.id.main_frame,new Fragment2()).commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
         }
@@ -280,8 +290,9 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     //뒤로가기
     @Override
     public void onBackPressed() {
-        ft.remove(Curl_List_Fragment.this).commit();
-        fm.popBackStack();
+        ft.replace(R.id.main_frame, new Fragment2()).commit();
+
+
         ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
     }
 

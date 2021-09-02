@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 String major = "", taked = "";
                                 ArrayList<Alarm> alarms = new ArrayList<>();
                                 Alarms alarmdata = new Alarms(alarms);
-                                UserAccount userAccount = new UserAccount( user.getUid(),  strEmail, strPwd1, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0");
+                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, strPwd1, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null);
                                 mStore.collection("user").document(user.getUid()).set(userAccount);
                                 mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
                                 finish();
