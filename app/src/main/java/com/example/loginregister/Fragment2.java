@@ -47,6 +47,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.otaliastudios.zoom.ZoomLayout;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class Fragment2 extends Fragment {
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     EditText searchET;
-    Button searchBtn, addTreeBtn, checkerBtn;
+    Button searchBtn;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -92,8 +93,11 @@ public class Fragment2 extends Fragment {
     ArrayList<String> tableNames;
     ArrayList<Table> tables;
     int tableLoc;
-    Table userTableInfo;
+    Table currTable;
     Boolean treeResisted = false;
+
+    //UsersTableInfo
+    Table UsersTableInfo;
 
     //크기 유동적 변화 구현
     ViewHolder[] viewHolderList;
@@ -152,11 +156,20 @@ public class Fragment2 extends Fragment {
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
+        //UsersTableInfo 처음에만 받아오고 후에 변화할땐 저장만 해주면 됨.
+        docRef = db.collection("UsersTableInfo").document("Matrix");
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UsersTableInfo = documentSnapshot.toObject(Table.class);
+            }
+        });
+
         /* 테이블 이름 받아오고 해당 테이블 서버에서 받아와서 출력 */
         if (getArguments() != null)
         {
-            if(userTableInfo == null){
-                Log.e("###", "userTableInfo : null");
+            if(currTable == null){
+                Log.e("###", "currTable : null");
             }
             tableName = getArguments().getString("tableName");
             TextView tableNameTV = v.findViewById(R.id.tableNameTV);
@@ -238,9 +251,6 @@ public class Fragment2 extends Fragment {
         };
         treeView.setAdapter(adapter);
 
-        addTreeBtn = v.findViewById(R.id.addTreeBtn);
-        addTreeBtn.setOnClickListener(addTreeBtnOnClickListener);
-
         Log.e("###", "Treeview's parent is ... " + zoomLayout.getWidth());
 
         return v;
@@ -266,9 +276,9 @@ public class Fragment2 extends Fragment {
                         Toast.makeText(getContext(),"루트 노드는 삭제할 수 없습니다.", Toast.LENGTH_LONG).show();
                     }else{
                         String[] nodeData = parent.getData().toString().split("\\.");
-                        userTableInfo.getTable().get(nodeData[0]).remove(curData);
+                        currTable.getTable().get(nodeData[0]).remove(curData);
 
-                        userAccount.getTables().set(tableLoc, userTableInfo);
+                        userAccount.getTables().set(tableLoc, currTable);
                         db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                         deleteTreeFromDB(curData);
@@ -311,19 +321,19 @@ public class Fragment2 extends Fragment {
                                     if(isTakenClass)
                                     {
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
-                                        userTableInfo.setRoot(currSubjectName+"."+TakenSemester+".1");
+                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
                                     }else{
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
-                                        userTableInfo.setRoot(currSubjectName+"."+TakenSemester+".1");
+                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
                                     }
-                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    userAccount.getTables().set(tableLoc, currTable);
                                     db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     break;
                                 }
 
                                 if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
                                     String parentSubjectName = tn.getParent().getData().toString().split("\\.")[0];
-                                    String currLinkInfo = userTableInfo.getTable().get(parentSubjectName).get(currSubjectName);
+                                    String currLinkInfo = currTable.getTable().get(parentSubjectName).get(currSubjectName);
 
                                     Boolean isChecked = false;
 
@@ -339,16 +349,16 @@ public class Fragment2 extends Fragment {
                                         }
 
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
-                                        userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
+                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
                                     }else{
                                         if(isChecked)
                                         {
                                             ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
                                         }
                                         tn.setData(currSubjectName+"."+TakenSemester+".0");
-                                        userTableInfo.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
+                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
                                     }
-                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    userAccount.getTables().set(tableLoc, currTable);
                                     db.collection("user").document(mAuth.getUid()).set(userAccount);
                                     break;
                                 }
@@ -474,13 +484,13 @@ public class Fragment2 extends Fragment {
                 for(int i = 0; i < tableNames.size(); i++){
                     if(tableNames.get(i).equals(tableName)){
                         tableLoc = i;
-                        userTableInfo = tables.get(i);
-                        changeToAdj(userTableInfo);
+                        currTable = tables.get(i);
+                        changeToAdj(currTable);
                         break;
                     }
                 }
 
-                if(userTableInfo == null){
+                if(currTable == null){
                     Toast.makeText(getContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
 
                     subjectChoiceBottomSheetDialog.show();
@@ -615,7 +625,7 @@ public class Fragment2 extends Fragment {
         for(int nextMappingPos : adj[currMappingPos])
         {
             String nextSubjectName = subjectList.get(nextMappingPos).getName();
-            final TreeNode newChild = new TreeNode(nextSubjectName + userTableInfo.getTable().get(currSubjectName).get(nextSubjectName));
+            final TreeNode newChild = new TreeNode(nextSubjectName + currTable.getTable().get(currSubjectName).get(nextSubjectName));
             treeNodeList[nextMappingPos] = newChild;
 
             currNode.addChild(newChild);
@@ -667,8 +677,8 @@ public class Fragment2 extends Fragment {
                         {
                             //DBG
                             //UserAccount 정보 업데이트
-                            userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                            userAccount.getTables().set(tableLoc, userTableInfo);
+                            currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                            userAccount.getTables().set(tableLoc, currTable);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                             Log.e("###", "현재 선택된 DB정보 : "+db.toString());
@@ -711,7 +721,7 @@ public class Fragment2 extends Fragment {
             subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int pos) {
-                    if(userTableInfo != null){
+                    if(currTable != null){
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
                         Boolean isSubjectOverlapped = false;
 
@@ -732,8 +742,8 @@ public class Fragment2 extends Fragment {
                             for (TreeNode tn : treeNodeList) {
                                 if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
                                     //UserAccount 정보 업데이트
-                                    userTableInfo.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                                    userAccount.getTables().set(tableLoc, userTableInfo);
+                                    currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                                    userAccount.getTables().set(tableLoc, currTable);
                                     db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                                     int mappingPos = m.get(choosedSubjectName);
@@ -782,59 +792,6 @@ public class Fragment2 extends Fragment {
         }
     };
 
-    // 트리추가 버튼 클릭 리스너
-    View.OnClickListener addTreeBtnOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(userTableInfo != null){
-                Toast.makeText(getContext(), "이미 트리가 있습니다.", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            subjectChoiceBottomSheetDialog.show();
-            ArrayList<Subject_> searchSubjectList = new ArrayList<>();
-            for(Subject_ subject_ : subjectList){
-                if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
-            }
-            subjectAdapter = new SubjectAdapter(searchSubjectList);
-            subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            subjectRecyclerView.setAdapter(subjectAdapter);
-
-            //DBG
-            //RecyclerView에서 선택된 아이템에 접근
-            subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View v, int pos) {
-                    String choosedSubjectName = searchSubjectList.get(pos).getName();
-                    Log.e("###", choosedSubjectName + " 선택 됨");
-
-                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-
-                    Map<String, Map<String, String>> tb = new HashMap<>();
-                    for(Subject_ subject_ : subjectList){
-                        Map<String, String> line = new HashMap<>();
-                        tb.put(subject_.getName(), line);
-                    }
-                    Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
-
-
-                    userAccount.getTableNames().add(tableName);
-                    userAccount.getTables().add(table);
-
-                    Log.e("###", "트리 추가 " + tableName);
-                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-
-                    //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
-
-                    getTableFromFB();
-
-                    subjectChoiceBottomSheetDialog.dismiss();
-                }
-
-            });
-        }
-    };
-
     // DB 바탕으로 트리 노드 삭제
     public void deleteTreeFromDB(String currNode){
         int currNodeValue = m.get(currNode);
@@ -864,9 +821,9 @@ public class Fragment2 extends Fragment {
             }
 
             //UserAccount 정보 업데이트
-            userTableInfo.getTable().get(currNode).remove(nextNode);
+            currTable.getTable().get(currNode).remove(nextNode);
 
-            userAccount.getTables().set(tableLoc, userTableInfo);
+            userAccount.getTables().set(tableLoc, currTable);
             db.collection("user").document(mAuth.getUid()).set(userAccount);
         }
         adj[currNodeValue].clear();
@@ -898,24 +855,15 @@ public class Fragment2 extends Fragment {
             userAccount.setTaked(Integer.toString(currTaked));
             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
+            int currCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+            currCount -= 1;
+            int currParentCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+            currParentCount -= 1;
 
-            docRef = db.collection("UsersTableInfo").document("Matrix");
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
-                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                    currCount -= 1;
-                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-                    currParentCount -= 1;
+            UsersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+            UsersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+            db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
 
-                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
-                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                }
-            });
         }else{
             //안 듣고 있는데 듣는 것으로 수정하는 경우
 
@@ -932,23 +880,14 @@ public class Fragment2 extends Fragment {
             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
 
-            docRef = db.collection("UsersTableInfo").document("Matrix");
-            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                @Override
-                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    Table usersTableInfo = documentSnapshot.toObject(Table.class);
-                    Log.e("###", "바뀌기 전 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                    int currCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                    currCount += 1;
-                    int currParentCount = Integer.parseInt(usersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-                    currParentCount += 1;
+            int currCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
+            currCount += 1;
+            int currParentCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
+            currParentCount += 1;
 
-                    usersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-                    usersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-                    db.collection("UsersTableInfo").document("Matrix").set(usersTableInfo);
-                    Log.e("###", "바뀌고 난 후 : " + usersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-                }
-            });
+            UsersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
+            UsersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
+            db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
         }
     }
 }

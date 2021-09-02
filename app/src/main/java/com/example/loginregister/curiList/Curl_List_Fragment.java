@@ -28,17 +28,26 @@ import android.widget.Toast;
 import com.example.loginregister.Fragment2;
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.R;
+import com.example.loginregister.Subject_;
+import com.example.loginregister.Table;
 import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.example.loginregister.login.UserAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Map;
+
+import de.blox.treeview.TreeNode;
 
 
 public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBackPressed {
@@ -56,6 +65,8 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     Dialog deleteTreeDialog;
     private FragmentManager fm;
     private FragmentTransaction ft;
+    Table UsersTableInfo;
+    ArrayList<Subject_> subjectList = new ArrayList<>();
 
 
     @Override
@@ -79,6 +90,29 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
         //뒤로가기
         ((MainActivity) getActivity()).setBackPressedlistener(this);
 
+        //SubjectList 받아오기(테이블 삭제시 학점 정보 얻어오려고)
+        db.collection("Subject")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                subjectList.add(document.toObject(Subject_.class));
+                            }
+                        } else {
+                        }
+                    }
+                });
+
+        //UsersTableInfo 처음에만 받아오고 후에 변화할땐 저장만 해주면 됨.
+        docRef = db.collection("UsersTableInfo").document("Matrix");
+        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                UsersTableInfo = documentSnapshot.toObject(Table.class);
+            }
+        });
 
         docRef = db.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -210,6 +244,8 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
             @Override
             public void onClick(View view) {
                 String deleteTreeName = userAccount.getTableNames().get(pos);
+
+                deleteTreeFromServer(userAccount.getTables().get(pos));
                 userAccount.getTableNames().remove(pos);
                 userAccount.getTables().remove(pos);
                 db.collection("user").document(userAccount.getIdToken()).set(userAccount);
@@ -221,6 +257,24 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 deleteTreeDialog.dismiss();
             }
         });
+    }
+
+    public void deleteTreeFromServer(Table table){
+        for(String subjectName : table.getTable().keySet()){
+            Map<String, String> line = table.getTable().get(subjectName);
+            for(String lineSubjectName : line.keySet()){
+                if(line.get(lineSubjectName).split("\\.")[2].equals("1")){
+                    int currTaked = Integer.parseInt(userAccount.getTaked());
+                    for(Subject_ subject_ : subjectList){
+                        if(subject_.getName().equals(lineSubjectName)){
+                            currTaked -= Integer.parseInt(subject_.getScore());
+                            userAccount.setTaked(Integer.toString(currTaked));
+                        }
+                    }
+                }
+            }
+        }
+        db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
     }
 
     //뒤로가기
