@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -114,6 +116,8 @@ public class Fragment2 extends Fragment {
     HashMap<String, Integer> m;
     ArrayList<Integer> adj[];
 
+    InputMethodManager imm;
+
     /*
     [20210807] 장준승 Fragment2 시각화 구현
      */
@@ -133,6 +137,8 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         //툴바끝
+
+        imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
 
         //과목 갯수
         int subjectNumber = 200;
@@ -730,11 +736,20 @@ public class Fragment2 extends Fragment {
             }
         });
     }
+
+    public void hideKeyboard(View v){
+        InputMethodManager var10000 = imm;
+
+        if(var10000 != null){
+            var10000.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+    }
     
     //노드추가에서 검색 버튼 클릭 리스너
     View.OnClickListener searchTVOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            hideKeyboard(v);
             ArrayList<Subject_> searchSubjectList = new ArrayList<>();
             for(Subject_ subject_ : subjectList){
                 if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
