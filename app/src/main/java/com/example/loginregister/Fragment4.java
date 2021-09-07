@@ -1,6 +1,5 @@
 package com.example.loginregister;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -21,21 +20,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.example.loginregister.adapters.SubjectAdapter;
-import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -108,18 +100,7 @@ public class Fragment4 extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_btn_setting:
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
-                ft.commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
-                break;
-            case android.R.id.home:
-                //뒷프래그먼트로 이동;
-                break;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -34,6 +34,36 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/main_font_bold"
+            android:includeFontPadding="false"
+            android:text="전공 학점"
+            android:textColor="@color/white"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_major"
+            app:layout_constraintStart_toEndOf="@+id/line_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.42" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/main_font_bold"
+            android:includeFontPadding="false"
+            android:text="수강 학점"
+            android:textColor="@color/white"
+            android:textSize="19sp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_taked"
+            app:layout_constraintStart_toEndOf="@+id/line_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.725" />
+        <TextView
             android:id="@+id/tv_major"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +112,7 @@
             android:layout_marginLeft="50dp"
             app:layout_constraintVertical_bias="0.2"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

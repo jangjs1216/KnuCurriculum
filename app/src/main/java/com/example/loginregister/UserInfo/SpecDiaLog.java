@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,8 @@ public class SpecDiaLog extends Dialog  {
    private EditText et_spec_content;
    private TextView tv_confirm;
    private TextView tv_cancle;
+   private RadioGroup rg;
+   private RadioButton rb1,rb2,rb3,rb4;
    private SpecDiaLogListener specDiaLogListener;
 
     public SpecDiaLog(@NonNull Context context) {
@@ -39,13 +43,35 @@ public class SpecDiaLog extends Dialog  {
         }
         tv_confirm = findViewById(R.id.tv_confirm);
         tv_cancle = findViewById(R.id.tv_cancle);
+        rg= findViewById(R.id.rg);
+        rb1=findViewById(R.id.rb1);
+        rb2=findViewById(R.id.rb2);
+        rb3=findViewById(R.id.rb3);
+        rb4.findViewById(R.id.rb4);
+        rg.check(R.id.rb1);
 
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String type="";
+                switch(rg.getCheckedRadioButtonId()){
+                    case R.id.rb1:
+                        type="1";
+                        break;
+                    case R.id.rb2:
+                        type="2";
+                        break;
+                    case R.id.rb3:
+                        type="3";
+                        break;
+                    case R.id.rb4:
+                        type = "4";
+                        break;
+                }
+
                 String title = et_spec_title.getText().toString();
                 String content = et_spec_content.getText().toString();
-                User_Info_Data user_info_data = new User_Info_Data(title,content);
+                User_Info_Data user_info_data = new User_Info_Data(type,title,content);
                 specDiaLogListener.onPositiveClicked(user_info_data);
                 dismiss();
             }

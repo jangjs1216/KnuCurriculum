@@ -17,19 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.loginregister.MainActivity;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
-import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
-import com.example.loginregister.curiList.Curl_List_Fragment;
-import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 public class Fragment_Alarm extends Fragment {
@@ -139,20 +132,7 @@ public class Fragment_Alarm extends Fragment {
         inflater.inflate(R.menu.actionbar_alarm,menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
-        switch (item.getItemId()){
 
-            case R.id.action_btn_setting:
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
-                ft.commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onDestroyView() {

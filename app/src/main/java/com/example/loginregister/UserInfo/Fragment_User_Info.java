@@ -155,7 +155,7 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         ArrayList<User_Info_Data> user_info_data = new ArrayList<>();
         for(String spec : str_specs){
             String [] temp = spec.split(",");
-            User_Info_Data uid = new User_Info_Data(temp[0],temp[1]);
+            User_Info_Data uid = new User_Info_Data(temp[0],temp[1],temp[2]);
             user_info_data.add(uid);
         }
         return user_info_data;

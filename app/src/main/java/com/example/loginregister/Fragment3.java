@@ -2,7 +2,6 @@ package com.example.loginregister;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,9 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -22,7 +19,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.loginregister.Notice_B.NoticeBoard;
-import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
 import com.google.firebase.database.annotations.NotNull;
 
 
@@ -147,13 +143,7 @@ public class Fragment3 extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_btn_setting:
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
-                ft.commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
-                break;
+
         }
         return super.onOptionsItemSelected(item);
     }

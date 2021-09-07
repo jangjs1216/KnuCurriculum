@@ -141,7 +141,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         @SuppressLint("ResourceAsColor") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_baseline_build_24   ) // 아이콘
+                .setSmallIcon(R.drawable.dkdlzhs   ) // 아이콘
                 .setContentTitle(message.get("title").toString()) // 제목
                 .setContentText(message.get("body").toString()) // 내용
                 .setAutoCancel(true)//누르면사라짐
