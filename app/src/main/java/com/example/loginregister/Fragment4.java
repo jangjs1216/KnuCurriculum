@@ -49,13 +49,13 @@ public class Fragment4 extends Fragment {
     private FragmentManager fm;
     private FragmentTransaction ft;
     private final static  String TAG = "Frag4";
-    EditText searchText;
+    EditText searchET;
+    TextView searchTV;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<Subject_> subjectList = new ArrayList<>();
     ArrayList<Subject_> search_subjectList = new ArrayList<>();
     SubjectAdapter subjectAdapter;
     RecyclerView recyclerView;
-    ImageView delete_btt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,12 +71,10 @@ public class Fragment4 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         recyclerView = view.findViewById(R.id.F4_frag);
-        delete_btt=view.findViewById(R.id.delete_btt);
 
         //검색완료시 함수 박경무
-        searchText=view.findViewById(R.id.searcf_into);
-        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
+        searchET=view.findViewById(R.id.searchET);
+        searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
@@ -89,16 +87,15 @@ public class Fragment4 extends Fragment {
             }
         });
 
+        searchTV = view.findViewById(R.id.searchTV);
+        searchTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Searchinto();
+            }
+        });
+
        listSub();
-
-       delete_btt.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               listSub();
-               searchText.setText(null);
-           }
-       });
-
 
         return view;
     }
@@ -161,9 +158,9 @@ public class Fragment4 extends Fragment {
 
     }
 
-    //검색학기
+    //검색하기
     public void Searchinto(){
-        String schtxt = searchText.getText().toString();
+        String schtxt = searchET.getText().toString();
         search_subjectList.clear();
         for(Subject_ ss: subjectList){
             if(ss.getName().contains(schtxt) ){
