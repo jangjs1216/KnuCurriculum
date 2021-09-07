@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserInfo.Fragment_UserSpec">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -39,33 +38,38 @@
 <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.tabs.TabItem
-            android:text="전체"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="전체" />
 
         <com.google.android.material.tabs.TabItem
-            android:text="어학"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="어학" />
 
         <com.google.android.material.tabs.TabItem
-            android:text="자격증"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="자격증" />
+
         <com.google.android.material.tabs.TabItem
-            android:text="대외활동"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="공모전" />
+
         <com.google.android.material.tabs.TabItem
-            android:text="공모전"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="대외활동" />
+
+
 
 
     </com.google.android.material.tabs.TabLayout>
@@ -74,6 +78,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/Recycler_View_Spec"
             android:layout_width="match_parent"
+            android:clickable="true"
             android:layout_height="match_parent" />
     </LinearLayout>
 

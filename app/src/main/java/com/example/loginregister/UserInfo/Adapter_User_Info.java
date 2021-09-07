@@ -49,6 +49,15 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
                 }
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(onItemClicklistner!=null){
+                    onItemClicklistner.onItemLongClick(v,position);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -91,6 +100,7 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
 
     public interface OnItemClickListner{
         void onItemClick(View v, int pos);
+        void onItemLongClick(View v,int pos);
     }
     public void setOnItemListener(OnItemClickListner onItemClicklistner){
         this.onItemClicklistner = onItemClicklistner;

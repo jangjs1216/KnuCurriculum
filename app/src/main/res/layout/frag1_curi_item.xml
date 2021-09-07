@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_curri_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="15dp"
+            android:text="커리큘럼 이름"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:layout_weight="6"/>
+
+        <ImageView
+            android:id="@+id/choiceIV"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:src="@drawable/pencil"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/deleteIV"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:src="@drawable/trashcan"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/line"/>
+
+</LinearLayout>

@@ -52,7 +52,6 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     private TextView tv_major;
     private TextView tv_taked;
 
-    private ItemTouchHelper itemTouchHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

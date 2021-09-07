@@ -2,8 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="350dp"
-    android:layout_height="500dp"
+    android:layout_width="match_parent"
+    android:layout_height="600dp"
     android:background="@color/white"
     >
 
@@ -19,8 +19,8 @@
         <RadioButton
             android:id="@+id/rb1"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="어학" />
 
         <RadioButton
@@ -73,31 +73,46 @@
 
     <TextView
         android:id="@+id/tv_confirm"
-        android:layout_width="70dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/custon_button"
-        android:clickable="true"
-        android:text="확인"
-        android:textColor="@color/btn_theme"
-        android:textAlignment="center"
-        android:padding="3dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="100dp"
+        android:background="@drawable/button_shape"
+        android:clickable="true"
+        android:fontFamily="@font/main_font_medium"
+        android:padding="3dp"
+        android:text="확인"
+        app:layout_constraintHorizontal_bias="0.2"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_cancle"
-        android:layout_width="70dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/custon_button"
-        android:padding="3dp"
-        android:clickable="true"
-        android:text="취소"
-        android:textAlignment="center"
-        android:textColor="@color/btn_theme"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="100dp"
+        android:background="@drawable/button_shape"
+        android:clickable="true"
+        android:fontFamily="@font/main_font_medium"
+        android:padding="3dp"
+        android:text="취소"
+        app:layout_constraintHorizontal_bias="0.8"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/trashcan"
+        app:tint="@color/main_color" />
 </androidx.constraintlayout.widget.ConstraintLayout>
