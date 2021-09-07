@@ -231,6 +231,7 @@ public class Fragment2 extends Fragment {
                         //노드선택 BottomSheetDialog 띄우기
                         nodeChoiceBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.NewDialog);
                         nodeChoiceBottomSheetDialog.setContentView(R.layout.dialog_nodechoicebottomsheet);
+                        nodeChoiceBottomSheetDialog.setCanceledOnTouchOutside(true);
                         nodeChoiceBottomSheetDialog.show();
 
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
