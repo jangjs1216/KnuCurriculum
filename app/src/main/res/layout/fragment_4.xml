@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Fragment4">
 
@@ -34,6 +35,53 @@
     </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/search_shape"
+            android:layout_margin="6dp"
+            android:gravity="center"
+            android:layout_weight="14">
+
+            <ImageView
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                app:srcCompat="@drawable/search"
+                android:layout_marginLeft="5dp"/>
+
+            <EditText
+                android:id="@+id/searchET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="과목명"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/searchTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:fontFamily="@font/main_font_medium"
+            android:includeFontPadding="false"/>
+
+    </LinearLayout>
+
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/search_background"
@@ -94,7 +142,7 @@
 
 
 
-    </LinearLayout>
+    </LinearLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

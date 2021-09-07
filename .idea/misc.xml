@@ -3,15 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/addtree_shape.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/btn_shape.xml" value="0.26979166666666665" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/button_shape.xml" value="0.26979166666666665" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/full_rounded_view.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/half_rounded_view.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/half_rounded_view_g.xml" value="0.14583333333333334" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/pencil.xml" value="0.26979166666666665" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/post_holder.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/search.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/search_shape.xml" value="0.28229166666666666" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/drawable/trashcan.xml" value="0.26979166666666665" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/curi_list_recycler.xml" value="0.15715579710144928" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_addtree.xml" value="0.15715579710144928" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_bottomsheet.xml" value="0.12604166666666666" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_delete.xml" value="0.25364583333333335" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_deletetree.xml" value="0.15715579710144928" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_nodechoicebottomsheet.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_postaddtree.xml" value="0.15715579710144928" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_subjectchoicebottomsheet.xml" value="0.25364583333333335" />
@@ -19,7 +26,9 @@
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment_1.xml" value="0.1296875" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment_2.xml" value="0.1296875" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment_3.xml" value="0.1296875" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment_4.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment__set_nick_name.xml" value="0.1296875" />
+        <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/fragment_curl__list_.xml" value="0.15715579710144928" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/item_post.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/item_subject.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/menu/actionbar_frag2.xml" value="0.1296875" />
