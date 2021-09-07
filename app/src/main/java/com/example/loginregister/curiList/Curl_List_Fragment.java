@@ -2,6 +2,8 @@ package com.example.loginregister.curiList;
 
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginregister.Fragment2;
@@ -139,7 +143,6 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("choice")){
                             String tableName = arrayList.get(pos).getTv_title().toString();
-                            Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 
                             Bundle bundle = new Bundle(); // 번들을 통해 값 전달
                             bundle.putString("tableName", tableName);//번들에 넘길 값 저장
@@ -150,11 +153,6 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                             transaction.commit();
                         }
                         if(option.equals("delete")){
-                            if(userAccount.getBasicTableName().equals(arrayList.get(pos).getTv_title())){
-                                userAccount.setBasicTableName(null);
-                                db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                Toast.makeText(getContext(), "기본 테이블 " + arrayList.get(pos).getTv_title() + "를 삭제했습니다.", Toast.LENGTH_SHORT).show();
-                            }
                             showDeleteTreeDialog(pos);
                         }
                     }
@@ -163,16 +161,18 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
         });
 
         //트리 추가 버튼 다이얼로그
-        addTreeDialog = new Dialog(getContext());
+        addTreeDialog = new Dialog(getContext(), R.style.AddTreeDialog);
         addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         addTreeDialog.setContentView(R.layout.dialog_addtree);
+        addTreeDialog.setCanceledOnTouchOutside(true);
+        addTreeDialog.getWindow().setGravity(Gravity.CENTER);
 
         //트리 삭제 다이얼로그
-        deleteTreeDialog = new Dialog(getContext());
+        deleteTreeDialog = new Dialog(getContext(), R.style.DeleteTreeDialog);
         deleteTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         deleteTreeDialog.setContentView(R.layout.dialog_deletetree);
-
-
+        deleteTreeDialog.setCanceledOnTouchOutside(true);
+        deleteTreeDialog.getWindow().setGravity(Gravity.CENTER);
 
         return view;
     }
@@ -201,15 +201,15 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     public void showAddTreeDialog() {
         addTreeDialog.show();
 
-        Button noBtn = addTreeDialog.findViewById(R.id.noBtn);
-        Button yesBtn = addTreeDialog.findViewById(R.id.yesBtn);
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        TextView noTV = addTreeDialog.findViewById(R.id.noTV);
+        TextView yesTV = addTreeDialog.findViewById(R.id.yesTV);
+        noTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addTreeDialog.dismiss();
             }
         });
-        yesBtn.setOnClickListener(new View.OnClickListener() {
+        yesTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText treeNameET = addTreeDialog.findViewById(R.id.treeNameET);
@@ -236,15 +236,15 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     public void showDeleteTreeDialog(int pos) {
         deleteTreeDialog.show();
 
-        Button noBtn = deleteTreeDialog.findViewById(R.id.noBtn);
-        Button yesBtn = deleteTreeDialog.findViewById(R.id.yesBtn);
-        noBtn.setOnClickListener(new View.OnClickListener() {
+        TextView noTV = deleteTreeDialog.findViewById(R.id.noTV);
+        TextView yesTV = deleteTreeDialog.findViewById(R.id.yesTV);
+        noTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deleteTreeDialog.dismiss();
             }
         });
-        yesBtn.setOnClickListener(new View.OnClickListener() {
+        yesTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String deleteTreeName = userAccount.getTableNames().get(pos);
@@ -253,7 +253,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 userAccount.getTableNames().remove(pos);
                 userAccount.getTables().remove(pos);
                 db.collection("user").document(userAccount.getIdToken()).set(userAccount);
-                Toast.makeText(getContext(), deleteTreeName + "을 삭제했습니다.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), deleteTreeName + "을 삭제했습니다.", Toast.LENGTH_SHORT).show();
 
                 arrayList.remove(pos);
                 ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
