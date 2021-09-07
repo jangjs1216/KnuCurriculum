@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
 
 
         <LinearLayout
@@ -11,20 +13,24 @@
 
 
             <LinearLayout
-                android:layout_margin="20dp"
+                android:padding="5dp"
+                android:gravity="center"
+                android:background="@drawable/pick_subject_retan"
+                android:minWidth="40dp"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="45dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="vertical">
 
-
                 <TextView
+                    android:fontFamily="@font/main_font_medium"
+                    android:includeFontPadding="false"
                     android:id="@+id/cur_subname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1123212"
-                    android:textSize="30sp"/>
+                    android:text=""
+                    android:textSize="10dp"/>
             </LinearLayout>
 
 
@@ -32,76 +38,131 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="20dp"
+                android:layout_margin="15dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/right_away" />
 
                 <TextView
                     android:id="@+id/first_pick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="TextView" />
+                    android:text="" />
+
+                <LinearLayout
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="3dp"
+                        android:layout_weight="1"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                    <ImageView
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                    <ImageView
+                        android:layout_width="3dp"
+                        android:layout_weight="1"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                </LinearLayout>
+
+
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="20dp"
+                android:padding="5dp"
+                android:gravity="center"
+                android:minWidth="40dp"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="45dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:background="@drawable/pick_subject_retan"
                 android:orientation="vertical">
+
                 <TextView
+                    android:fontFamily="@font/main_font_medium"
+                    android:includeFontPadding="false"
                     android:id="@+id/next_subname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="11232"
-                    android:textSize="30sp"/>
+                    android:text=""
+                    android:textSize="10dp"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="20dp"
+                android:layout_margin="15dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_gravity="center"
-                    android:src="@drawable/right_away"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"/>
                 <TextView
+                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:id="@+id/second_pick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="" />
+
+                <LinearLayout
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                    <ImageView
+                        android:layout_weight="1"
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/circle_pick" />
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_margin="20dp"
+                android:padding="5dp"
+                android:gravity="center"
+                android:background="@drawable/pick_subject_retan"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
+                android:layout_width="45dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="vertical">
 
                 <TextView
+                    android:fontFamily="@font/main_font_medium"
+                    android:includeFontPadding="false"
                     android:id="@+id/n_next_subname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="11232"
-                    android:textSize="30sp"/>
+                    android:text=""
+                    android:textSize="10dp"/>
             </LinearLayout>
 
 
