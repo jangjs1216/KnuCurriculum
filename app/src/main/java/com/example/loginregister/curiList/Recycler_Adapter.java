@@ -59,19 +59,12 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView tv_title;
-        protected LinearLayout optionLL, choiceLL, deleteLL;
-        protected ImageView imageView2;
-        protected Button basicTableBtn;
-        protected FrameLayout FL;
+        protected ImageView choiceIV, deleteIV;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.tv_title = (TextView) itemView.findViewById(R.id.tv_curri_name);
-            this.FL = (FrameLayout) itemView.findViewById(R.id.FL);
-            this.optionLL = (LinearLayout) itemView.findViewById(R.id.optionLL);
-            this.choiceLL = (LinearLayout) itemView.findViewById(R.id.choiceLL);
-            this.deleteLL = (LinearLayout) itemView.findViewById(R.id.deleteLL);
-            this.imageView2 = (ImageView) itemView.findViewById(R.id.imageView2);
-            this.basicTableBtn = (Button) itemView.findViewById(R.id.basicTableBtn);
+            this.choiceIV = (ImageView) itemView.findViewById(R.id.choiceIV);
+            this.deleteIV = (ImageView) itemView.findViewById(R.id.deleteIV);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,28 +72,16 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         if(mListener != null){
-                            if(imageView2.getVisibility() == View.VISIBLE){
-                                imageView2.setVisibility(View.INVISIBLE);
-                                optionLL.setVisibility(View.VISIBLE);
-                            }
-                            else{
-                                imageView2.setVisibility(View.VISIBLE);
-                                optionLL.setVisibility(View.INVISIBLE);
-                            }
-                            choiceLL.setOnClickListener(new View.OnClickListener() {
+                            choiceIV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    imageView2.setVisibility(View.VISIBLE);
-                                    optionLL.setVisibility(View.INVISIBLE);
                                     mListener.onItemClick(v, pos, "choice");
                                 }
                             });
 
-                            deleteLL.setOnClickListener(new View.OnClickListener() {
+                            deleteIV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    imageView2.setVisibility(View.VISIBLE);
-                                    optionLL.setVisibility(View.INVISIBLE);
                                     mListener.onItemClick(v, pos, "delete");
                                 }
                             });
@@ -118,18 +99,6 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
                         mLongListener.onItemLongClick(v, pos);
                     }
                     return true;
-                }
-            });
-
-            basicTableBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition() ;
-                    if (pos != RecyclerView.NO_POSITION) {
-                        if(mListener != null){
-                            mListener.onItemClick(v, pos, "basic");
-                        }
-                    }
                 }
             });
         }

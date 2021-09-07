@@ -16,19 +16,14 @@
             android:id="@+id/layout_frag2_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_gravity="center">
 
             <TextView
+                android:id="@+id/tableNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KNU Curricular"
-                android:textColor="#FD0000"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="수강 계획"
+                android:text="테이블 이름"
                 android:textColor="@color/black"
                 android:textSize="23sp" />
         </LinearLayout>
@@ -39,14 +34,6 @@
         android:layout_height="1px"
         android:background="@color/line"
         android:orientation="horizontal"></LinearLayout>
-
-    <TextView
-        android:id="@+id/tableNameTV"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="테이블 이름"
-        android:textSize="30sp"/>
-
 
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/layout_zoom"

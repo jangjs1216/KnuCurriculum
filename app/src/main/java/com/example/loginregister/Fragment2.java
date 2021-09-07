@@ -128,6 +128,7 @@ public class Fragment2 extends Fragment {
         actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
         //툴바끝
 
         //과목 갯수
@@ -379,6 +380,10 @@ public class Fragment2 extends Fragment {
                 ft.replace(R.id.main_frame, new Curl_List_Fragment());
                 ft.commit();
                 break;
+            case android.R.id.home:
+                ft.replace(R.id.main_frame, new Fragment1());
+                ft.commit();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -429,7 +434,7 @@ public class Fragment2 extends Fragment {
             }
             tableName = getArguments().getString("tableName");
             TextView tableNameTV = v.findViewById(R.id.tableNameTV);
-            tableNameTV.setText("테이블 이름 : " + tableName);
+            tableNameTV.setText(tableName);
             treeResisted = false;
             getSubjectListFromFB();
         }

@@ -5,79 +5,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_margin="10dp"
-    android:background="@drawable/curi_list_shape">
+    android:orientation="vertical"
+    android:layout_margin="10dp">
 
-    <TextView
-        android:id="@+id/tv_curri_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="과목이름"
-        android:textSize="25sp"
-        android:textColor="@color/black"
-        android:padding="15dp"
-        android:layout_margin="5dp"
-        android:layout_weight="2"/>
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/basicTableBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기본"/>
-
-    <FrameLayout
-        android:id="@+id/FL"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_gravity="center">
+        <TextView
+            android:id="@+id/tv_curri_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:padding="15dp"
+            android:text="커리큘럼 이름"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:layout_weight="6"/>
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            app:srcCompat="@drawable/ic_baseline_arrow_forward_ios_24"
-            tools:ignore="VectorDrawableCompat"
-            android:layout_gravity="center"/>
+            android:id="@+id/choiceIV"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:src="@drawable/pencil"
+            android:layout_weight="1"/>
 
-        <LinearLayout
-            android:id="@+id/optionLL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="invisible">
+        <ImageView
+            android:id="@+id/deleteIV"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:src="@drawable/trashcan"
+            android:layout_weight="1"/>
 
-            <LinearLayout
-                android:id="@+id/choiceLL"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:background="#FF0000">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="보기"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/deleteLL"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:background="#00FFFF">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="삭제"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-        </LinearLayout>
+    </LinearLayout>
 
-    </FrameLayout>
-
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/line"/>
 
 </LinearLayout>
