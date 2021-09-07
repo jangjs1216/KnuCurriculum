@@ -1,6 +1,7 @@
 package com.example.loginregister.Notice_B;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -67,11 +69,12 @@ public class Post_write extends AppCompatActivity {
     private DocumentReference docRef;
     private EditText mTitle, mContents;//제목, 내용
     private String p_nickname;//게시판에 표기할 닉네잉 //이게 가져온 값을 저장하는 임시 변수
-    private Button post_photo;
+    private TextView post_photo, post_tree;
     private ProgressBar post_progressBar;
     private String writer_id;
     private ImageView post_imageView;
     private File tempFile;
+    private TextView post_save, btn_back;
     private static final int FROM_CAMERA = 1;
     private static final int FROM_GALLERY = 2;
     private Table choosedTable=null;
@@ -95,10 +98,13 @@ public class Post_write extends AppCompatActivity {
 
         mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents = findViewById(R.id.Post_write_contents);
-        post_photo = findViewById(R.id.post_photo);
         post_imageView = findViewById(R.id.post_imageview);
         post_imageView.setVisibility(View.INVISIBLE);
         post_progressBar = findViewById(R.id.post_progressbar);
+        post_save=findViewById(R.id.post_save);
+        btn_back=findViewById(R.id.btn_back);
+        post_photo=findViewById(R.id.post_photo);
+        post_tree=findViewById(R.id.post_tree);
 
         Intent intent = getIntent();
         forum_sort = intent.getExtras().getString("게시판");
@@ -141,20 +147,34 @@ public class Post_write extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             useGallery();
                         }
-                    })
-                    .setNeutralButton("Tree", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // 트리 사진 올리기
-                            //트리 추가 버튼 다이얼로그
-                            addTreeDialog = new Dialog(Post_write.this);
-                            addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            addTreeDialog.setContentView(R.layout.dialog_postaddtree);
-                            showDialog();
-                        }
                     });
             AlertDialog alertDialog = picBuilder.create();
             alertDialog.show();
+        });
+
+        post_tree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTreeDialog = new Dialog(Post_write.this);
+                addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                addTreeDialog.setContentView(R.layout.dialog_postaddtree);
+                showDialog();
+            }
+        });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        // 게시글 올리기
+        post_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SavePost();
+            }
         });
     }
 
@@ -202,7 +222,7 @@ public class Post_write extends AppCompatActivity {
         return image;
     }
 
-    public void SavePost(View view)
+    public void SavePost()
     {
         Log.d("###", "SavePost진입");
         if(image_url==null && uri!=null)
