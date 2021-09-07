@@ -8,10 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="line">#6A6A6A</color>
-    <color name="btn_theme">#FF3D00</color>
-    <color name="colorAccent">#FF3D00</color>
+    <color name="btn_theme">@color/main_color</color>
+    <color name="colorAccent">@color/btn_theme</color>
     <color name="search_pre">#EDE4E4</color>
-    <color name="search_last">#FF4444</color>
+    <color name="search_last">@color/btn_theme</color>
     <color name="transparent">#00000000</color>
     <color name="alarm_checked">#EFECDD</color>
     <color name="main_color">#60A1E5</color>

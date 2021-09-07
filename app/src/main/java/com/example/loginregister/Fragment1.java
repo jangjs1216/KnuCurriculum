@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,23 +46,20 @@ import java.util.ArrayList;
 
 public class Fragment1 extends Fragment {
     private static  final String TAG = "Frag1";
-    private Toolbar toolbar;
     private FragmentManager fm;
-    private Button btn_add;
     private FragmentTransaction ft;
     private ArrayList<Recycler_Data> curi_List;
     private RecyclerView curi_recyclerView;
-    private RecyclerView specs_recyclerView;
     private LinearLayoutManager curi_linearLayoutManager;
-    private LinearLayoutManager specs_linearLayoutManager;
     private Recycler_Adapter curi_adapter;
-    private Adapter_User_Info spec_adapter;
-    private TextView tv_username, tv_taked, tv_major, specMore, treeMore;
+    private TextView tv_username, tv_taked, tv_major, treeMore,specMore;
     private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     DocumentReference docRef;
     private ArrayList<User_Info_Data> specs;
+    private View btn_lang,btn_cert,btn_award,btn_extra;
+    private ImageView setting;
     BottomNavigationView bottomNavigationView;
 
     @Override
@@ -71,16 +69,22 @@ public class Fragment1 extends Fragment {
         tv_taked = view.findViewById(R.id.tv_taked);
         tv_major = view.findViewById(R.id.tv_major);
         userAccount = ((MainActivity)getActivity()).getUserAccount();
-        specMore=view.findViewById(R.id.specMore);
         treeMore=view.findViewById(R.id.treeMore);
-
+        specMore = view.findViewById(R.id.tv_specmore);
+        btn_lang = view.findViewById(R.id.btn_frag1_lang);
+        btn_cert = view.findViewById(R.id.btn_frag1_cert);
+        btn_award = view.findViewById(R.id.btn_frag1_award);
+        btn_extra = view.findViewById(R.id.btn_frag1_extra);
+        setting = view.findViewById(R.id.frag1_setting);
+        curi_recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+        curi_linearLayoutManager = new LinearLayoutManager(getContext());
+        curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
         //리싸이클러뷰
-        specs_recyclerView=(RecyclerView)view.findViewById(R.id.layout_frag1_specs_recyclerview);
-        specs_linearLayoutManager = new LinearLayoutManager(getContext());
-        specs_recyclerView.setLayoutManager(specs_linearLayoutManager);
-        specs = str_specs_to_specs(userAccount.getSpecs());
-        spec_adapter = new Adapter_User_Info(specs);
-        specs_recyclerView.setAdapter(spec_adapter);
+//        specs_linearLayoutManager = new LinearLayoutManager(getContext());
+//        specs_recyclerView.setLayoutManager(specs_linearLayoutManager);
+//        specs = str_specs_to_specs(userAccount.getSpecs());
+//        spec_adapter = new Adapter_User_Info(specs);
+//        specs_recyclerView.setAdapter(spec_adapter);
         bottomNavigationView = view.findViewById(R.id.bottomNavi);
 
         docRef = mStore.collection("user").document(mAuth.getUid());
@@ -88,18 +92,13 @@ public class Fragment1 extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 UserAccount userAccount = documentSnapshot.toObject(UserAccount.class);
-
-                curi_recyclerView = (RecyclerView)view.findViewById(R.id.layout_frag1_curi_recyclerview);
-                curi_linearLayoutManager = new LinearLayoutManager(getContext());
-                curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
-
                 //      리싸이클러뷰
                 curi_List = new ArrayList<>();
                 for(String tableName : userAccount.getTableNames()){
                     Recycler_Data recycler_data = new Recycler_Data(tableName);
                     curi_List.add(recycler_data);
 
-                    if(curi_List.size()>4){
+                    if(curi_List.size()>2){
                         break;
                     }
                     Log.e("###", "item : " + tableName);
@@ -126,7 +125,8 @@ public class Fragment1 extends Fragment {
             }
         });
 
-        specMore.setOnClickListener(new View.OnClickListener() {
+        ///아직 덜함
+        btn_lang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
@@ -148,19 +148,54 @@ public class Fragment1 extends Fragment {
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_User_Info());
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
+        specMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+
+        btn_lang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btn_extra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btn_award.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btn_cert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
-        toolbar = (Toolbar)view.findViewById(R.id.tb_frag1);
-        ((MainActivity)getActivity()).setSupportActionBar(toolbar);
-        ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);//커스텀액션바사용
-        // actionBar.setLogo(getResources().getDrawable(R.drawable.knucurricular_app_icon));//앱아이콘
-        actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
-        setHasOptionsMenu(true);
-        // actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         // 프로필 설정
         tv_username = view.findViewById(R.id.tv_userName);
         setProfile(view);
@@ -168,25 +203,8 @@ public class Fragment1 extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.actionbar_frag1,menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_btn_setting:
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_User_Info());
-                ft.commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     public void setProfile(View view){
         tv_major.setText(userAccount.getMajor());

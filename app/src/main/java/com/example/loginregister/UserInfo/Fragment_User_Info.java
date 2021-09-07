@@ -44,21 +44,14 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     private FragmentTransaction ft;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
-    private RecyclerView recyclerView;
-    private LinearLayoutManager linearLayoutManager;
-    private Adapter_User_Info adapter_user_info;
-    private TextView btn_add_user_info;
     private FragmentManager fm2;
     private FragmentTransaction ft2;
     private TextView tv_userName;
-    private TextView tv_userUniv;
-    private TextView tv_userMajor;
-    private TextView btn_logout;
+    private TextView btn_logout,btn_nick,btn_major_gpa;
     private UserAccount userAccount;
     private TextView tv_major;
     private TextView tv_taked;
-    private ArrayList<User_Info_Data> specs;
-    private ArrayList<String> str_specs;
+
     private ItemTouchHelper itemTouchHelper;
 
     @Override
@@ -70,16 +63,33 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         fm2 = getChildFragmentManager();
         ft2=fm.beginTransaction();
         tv_userName = view.findViewById(R.id.tv_userName);
+        btn_nick=view.findViewById(R.id.tv_setUserName);
+        btn_major_gpa = view.findViewById(R.id.btn_major_gpa);
+
+        btn_nick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("user","nuck");
+                showNickDialog();
+            }
+        });
+
+        btn_major_gpa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.e("user","gpa");
+                showGpaDialog();
+            }
+        });
         //뒤로가기
         ((MainActivity) getActivity()).setBackPressedlistener(this);
 
 
         userAccount = ((MainActivity)getActivity()).getUserAccount();
         tv_userName.setText(userAccount.getNickname());
-        tv_userUniv = view.findViewById(R.id.tv_userUniv);
-        tv_userMajor = view.findViewById(R.id.tv_userMajor);
-        tv_major=view.findViewById(R.id.tv_major_GPA);
-        tv_taked=view.findViewById(R.id.tv_taked_GPA);
+        tv_major=view.findViewById(R.id.tv_major);
+        tv_taked=view.findViewById(R.id.tv_taked);
         tv_major.setText(userAccount.getMajor());
         tv_taked.setText(userAccount.getTaked());
         ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
@@ -95,8 +105,6 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
 
         //로그아웃
         btn_logout=view.findViewById(R.id.btn_logout);
-//        SharedPreferences account_info= getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor=account_info.edit();
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,18 +113,6 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
                 startActivity(intent);
             }
         });
-
-        //      리싸이클러뷰
-        recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view_user_info);
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-
-        specs = str_specs_to_specs(userAccount.getSpecs());
-        adapter_user_info = new Adapter_User_Info(specs);
-        Log.e("spec","what?");
-
-        recyclerView.setAdapter(adapter_user_info);
 
 
         //      리싸이클러뷰 끝
@@ -134,19 +130,12 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     @Override
     public boolean onOptionsItemSelected(@NonNull @org.jetbrains.annotations.NotNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.action_btn_edit:
-                    ft.replace(R.id.main_frame,new Fragment_Edit_User_Info());
-                    ft.addToBackStack(null);
-                    ft.commit();
-                break;
 
             case android.R.id.home:
                 ft.remove(Fragment_User_Info.this).commit();
                 fm.popBackStack();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
-
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -184,6 +173,31 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     public void onPause() {
         super.onPause();
         ((MainActivity) getActivity()).setBackPressedlistener(null);
+    }
+
+    public void showNickDialog(){
+        Dialog_setNick dialogSetNick= new Dialog_setNick(getContext());
+        dialogSetNick.setOnDialogClickListener(new Dialog_setNick.SetNickDialogListener() {
+            @Override
+            public void onPositiveClicked(String userNick) {
+                userAccount.setNickname(userNick);
+                mStore.collection("User").document(mAuth.getUid()).set(userAccount);
+                tv_userName.setText(userNick);
+            }
+        });
+        dialogSetNick.show();
+    }
+    public void showGpaDialog(){
+        Dialog_setgpa dialogSetgpa = new Dialog_setgpa(getContext());
+        dialogSetgpa.setOnDialogClickListener(new Dialog_setgpa.SetGpaDialogListener() {
+            @Override
+            public void onPositiveClicked(String userGpa) {
+                userAccount.setMajor(userGpa);
+                mStore.collection("user").document(mAuth.getUid()).set(userAccount);
+                tv_major.setText(userGpa);
+            }
+        });
+        dialogSetgpa.show();
     }
 }
 
