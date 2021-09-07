@@ -67,12 +67,11 @@ public class SubjectInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         subjectName = intent.getStringExtra("subjectName");
 
-        FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.addButton);
+        Button addButton = (Button) findViewById(R.id.addButton);
         addButton.setOnClickListener(onClickListener);
         nameTV = (TextView) findViewById(R.id.nameTV);
         codeTV = (TextView) findViewById(R.id.codeTV);
         semesterTV = (TextView) findViewById(R.id.semesterTV);
-        gradeTV = (TextView) findViewById(R.id.gradeTV);
         openTV = (TextView) findViewById(R.id.openTV);
         totalsc = (TextView)findViewById(R.id.totalSc);
         subjectCommentRecyclerView = (RecyclerView) findViewById(R.id.subjectCommentRecyclerView);
@@ -121,10 +120,9 @@ public class SubjectInfoActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 subject_ = documentSnapshot.toObject(Subject_.class);
 
-                nameTV.setText("과목명 : " + subject_.getName());
+                nameTV.setText( subject_.getName());
                 codeTV.setText("과목 코드 : " + subject_.getCode());
-                semesterTV.setText("학기 : " + subject_.getSemester());
-                gradeTV.setText("학년 : " + subject_.getGrade());
+                semesterTV.setText("개설학기 : " + subject_.getSemester()+"-"+ subject_.getGrade()+"학기");
                 if(subject_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
                 else openTV.setText("이번 학기 개설 여부 : NO");
 
@@ -392,7 +390,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
         if(num>0) {
             String Totalstring = String.format("%.2f", totalsum / num);
-            totalsc.setText("전체평점: " + Totalstring);
+            totalsc.setText(Totalstring);
             Totalrating.setRating(totalsum / num);
             Log.e("%%%%",Float.toString(totalsum / num));
         }
