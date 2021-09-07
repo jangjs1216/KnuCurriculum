@@ -5,77 +5,100 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/post_item_shape"
-    android:layout_margin="10sp"
     android:paddingLeft="10sp"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/line1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/post_title"
-            android:layout_width="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8sp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="Title" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/post_contents"
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8sp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"
+                android:fontFamily="@font/main_font_bold"
+                tools:text="Title" />
+
+            <TextView
+                android:id="@+id/post_contents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8sp"
+                android:singleLine="true"
+                android:textColor="@color/line"
+                android:textSize="12sp"
+                android:textStyle="normal"
+                tools:text="Contents" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <ImageView
+                    android:layout_width="18sp"
+                    android:layout_height="18sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginLeft="8sp"
+                    app:srcCompat="@drawable/ic_carbon_user_avatar_filled"/>
+                <TextView
+                    android:id="@+id/post_writer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginLeft="8sp"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:text="writer" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8sp"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            tools:text="Contents" />
+            android:layout_height="match_parent" >
 
-        <TextView
-            android:id="@+id/post_writer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8sp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            tools:text="writer"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10sp"
+                android:orientation="vertical">
 
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15sp"
+                    app:srcCompat="@drawable/ic_favorite"
+                    tools:ignore="VectorDrawableCompat" />
+
+                <TextView
+                    android:id="@+id/post_liketext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="10"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
-
     <View
-        android:id="@+id/view2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginRight="10sp"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_favorite"
-            tools:ignore="VectorDrawableCompat" />
-
-        <TextView
-            android:id="@+id/post_liketext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="10"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/post_holder"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line1" />
 </LinearLayout>
 
