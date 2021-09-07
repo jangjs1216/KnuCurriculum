@@ -152,7 +152,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_UserSpec(0));
+                ft.replace(R.id.main_frame, new Fragment_UserSpec("0"));
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
@@ -163,7 +163,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_UserSpec(1));
+                ft.replace(R.id.main_frame, new Fragment_UserSpec("1"));
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
@@ -173,7 +173,17 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_UserSpec(2));
+                ft.replace(R.id.main_frame, new Fragment_UserSpec("2"));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
+        btn_award.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec("3"));
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
@@ -183,22 +193,13 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_UserSpec(4));
+                ft.replace(R.id.main_frame, new Fragment_UserSpec("4"));
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
 
-        btn_award.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_UserSpec(3));
-                ft.commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
-            }
-        });
+
 
 
 
