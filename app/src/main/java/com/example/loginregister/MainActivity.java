@@ -138,13 +138,13 @@ public class MainActivity extends AppCompatActivity {
         //알람생기면 바텀아이콘 변경
         bottom_alarm = bottomNavigationView.getMenu().findItem(R.id.item_fragment5);
 
-        mStore.collection("Alarm").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                Log.e("alarm", "감지");
-                bottom_alarm.setIcon(ic_baseline_notifications_active_24);
-            }
-        });
+//        mStore.collection("Alarm").document(mAuth.getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+//                Log.e("alarm", "감지");
+//                bottom_alarm.setIcon(ic_baseline_notifications_active_24);
+//            }
+//        });
 
 
         arrayList_curiList = new ArrayList<>();

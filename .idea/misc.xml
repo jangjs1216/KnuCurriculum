@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/font/main_font_bold.xml" value="0.15989583333333332" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/font/main_font_light.xml" value="0.15989583333333332" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/font/main_font_regular.xml" value="0.15989583333333332" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/font/main_font_thin.xml" value="0.15989583333333332" />
+        <entry key="..\:/Androidstudio/KnuCurriculum/app/src/main/res/layout/fragment_2.xml" value="0.264" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_bottomsheet.xml" value="0.12604166666666666" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_nodechoicebottomsheet.xml" value="0.25364583333333335" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_subjectchoicebottomsheet.xml" value="0.25364583333333335" />
