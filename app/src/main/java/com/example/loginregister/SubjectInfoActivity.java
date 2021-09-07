@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -67,7 +68,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         subjectName = intent.getStringExtra("subjectName");
 
-        Button addButton = (Button) findViewById(R.id.addButton);
+        LinearLayout addButton = (LinearLayout) findViewById(R.id.addButton);
         addButton.setOnClickListener(onClickListener);
         nameTV = (TextView) findViewById(R.id.nameTV);
         codeTV = (TextView) findViewById(R.id.codeTV);
@@ -121,10 +122,10 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 subject_ = documentSnapshot.toObject(Subject_.class);
 
                 nameTV.setText( subject_.getName());
-                codeTV.setText("과목 코드 : " + subject_.getCode());
-                semesterTV.setText("개설학기 : " + subject_.getSemester()+"-"+ subject_.getGrade()+"학기");
-                if(subject_.getOpen() == true) openTV.setText("이번 학기 개설 여부 : YES");
-                else openTV.setText("이번 학기 개설 여부 : NO");
+                codeTV.setText( subject_.getCode());
+                semesterTV.setText( subject_.getSemester()+"-"+ subject_.getGrade()+"학기");
+                if(subject_.getOpen() == true) openTV.setText("YES");
+                else openTV.setText("NO");
 
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
