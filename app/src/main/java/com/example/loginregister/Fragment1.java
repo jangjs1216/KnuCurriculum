@@ -2,9 +2,6 @@ package com.example.loginregister;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -13,20 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.loginregister.Notice_B.Post_Comment;
-import com.example.loginregister.UserInfo.Adapter_User_Info;
-import com.example.loginregister.UserInfo.Fragment_Edit_User_Info;
+import com.example.loginregister.UserInfo.Fragment_UserSpec;
 import com.example.loginregister.UserInfo.Fragment_User_Info;
 import com.example.loginregister.UserInfo.User_Info_Data;
 import com.example.loginregister.curiList.Curl_List_Fragment;
@@ -39,8 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -129,10 +118,10 @@ public class Fragment1 extends Fragment {
         btn_lang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
-                ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
-                ft.commit();
+//                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+//                ft.addToBackStack(null);
+//                ft.replace(R.id.main_frame, new Fragment_Edit_User_Info());
+//                ft.commit();
 
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
@@ -161,37 +150,57 @@ public class Fragment1 extends Fragment {
         specMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec(0));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
 
         btn_lang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec(1));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
-
+        btn_cert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec(2));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
         btn_extra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec(4));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
 
         btn_award.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_UserSpec(3));
+                ft.commit();
+                ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
             }
         });
 
-        btn_cert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
 
         fm=getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
@@ -226,7 +235,7 @@ public class Fragment1 extends Fragment {
         ArrayList<User_Info_Data> user_info_data = new ArrayList<>();
         for(String spec : str_specs){
             String [] temp = spec.split(",");
-            User_Info_Data uid = new User_Info_Data(temp[0],temp[1]);
+            User_Info_Data uid = new User_Info_Data(temp[0],temp[1],temp[2]);
             user_info_data.add(uid);
 
             if(user_info_data.size()>4){

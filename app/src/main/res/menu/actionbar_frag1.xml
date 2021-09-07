@@ -3,9 +3,5 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item android:id="@+id/action_btn_setting"
-        android:title="설정"
-        android:icon="@drawable/ic_baseline_settings_24"
-        app:showAsAction ="always"
-        />
+
 </menu>
