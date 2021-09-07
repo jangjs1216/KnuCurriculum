@@ -15,5 +15,6 @@
     <color name="transparent">#00000000</color>
     <color name="alarm_checked">#EFECDD</color>
     <color name="main_color">#60A1E5</color>
+    <color name="separate">#F0F0F0</color>
 
 </resources>

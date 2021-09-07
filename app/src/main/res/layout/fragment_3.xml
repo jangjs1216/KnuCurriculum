@@ -38,7 +38,9 @@
     <LinearLayout
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:layout_width="340dp"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/forum_layout"
@@ -113,12 +115,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="340dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
         android:orientation="vertical"
         android:background="@drawable/forum_layout"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="3px"
         android:elevation="16dp">
 
         <LinearLayout
