@@ -14,6 +14,8 @@ public class ViewHolder {
     ViewHolder Class : Tree 시각화 하기 위한 Class
      */
 
+    String semester;
+    Boolean isTaken;
     CardView tn_layout;
     public TextView mTextView;
     public TextView semesterTv;
@@ -27,12 +29,14 @@ public class ViewHolder {
     {
         mTextView.setTextColor(Color.parseColor("#ffffff"));
 //        tn_layout.setBackgroundResource(R.drawable.not_selected_treenode);
+        isTaken = false;
     }
 
     public void setViewHolderSelected()
     {
         mTextView.setTextColor(Color.parseColor("#008000"));
 //        tn_layout.setBackgroundResource(R.drawable.selected_treenode);
+        isTaken = true;
     }
 
     public void setSemesterColored()
@@ -60,5 +64,6 @@ public class ViewHolder {
         }else if(semesterTv.getText().equals("5학년 1학기")){
             tn_layout.setCardBackgroundColor(Color.parseColor("#000000"));
         }
+        semester = semesterTv.getText().toString();
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
-import android.hardware.input.InputManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,10 +29,12 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.otaliastudios.zoom.ZoomLayout;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,8 +119,6 @@ public class Fragment2 extends Fragment {
     HashMap<String, Integer> m;
     ArrayList<Integer> adj[];
 
-    InputMethodManager imm;
-
     /*
     [20210807] 장준승 Fragment2 시각화 구현
      */
@@ -137,8 +138,6 @@ public class Fragment2 extends Fragment {
         setHasOptionsMenu(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         //툴바끝
-
-        imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
 
         //과목 갯수
         int subjectNumber = 200;
@@ -239,6 +238,130 @@ public class Fragment2 extends Fragment {
                         nodeChoiceBottomSheetDialog.setContentView(R.layout.dialog_nodechoicebottomsheet);
                         nodeChoiceBottomSheetDialog.setCanceledOnTouchOutside(true);
                         nodeChoiceBottomSheetDialog.show();
+
+                        TextView btn_isTaken = nodeChoiceBottomSheetDialog.findViewById(R.id.btn_isTaken);
+
+                        String[] spinnerItem =
+                                {"1학년 1학기", "1학년 2학기", "2학년 1학기", "2학년 2학기", "3학년 1학기",
+                                        "3학년 2학기", "4학년 1학기", "4학년 2학기", "5학년 1학기"};
+                        Spinner spinner = nodeChoiceBottomSheetDialog.findViewById(R.id.bottomSheetSpinner);
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                                getContext(), R.layout.spinner_item, spinnerItem
+                        );
+
+                        adapter.setDropDownViewResource(R.layout.spinner_item);
+                        spinner.setAdapter(adapter);
+
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                Log.e("###", "onItemSelected ... : "+spinnerItem[position]);
+
+                                TreeNode tn = treeNodeList[m.get(curData)];
+                                String[] nodeData = tn.getData().toString().split("\\.");
+
+                                tn.setData(nodeData[0]+"."+spinnerItem[position]+"."+nodeData[2]);
+                                if(tn != null && tn.getParent() == null) {
+                                    //루트노드인 경우
+                                    currTable.setRoot(nodeData[0]+"."+spinnerItem[position]+"."+nodeData[2]);
+                                }else{
+                                    String parentSubjectName = treeNodeList[m.get(curData)].getParent().getData().toString().split("\\.")[0];
+                                    currTable.getTable().get(parentSubjectName).put(nodeData[0], "."+spinnerItem[position]+"."+nodeData[2]);
+                                }
+                                userAccount.getTables().set(tableLoc, currTable);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            }
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+                        // 현재 선택된 노드의 값을 가져옵니다.
+                        String curNodeSemester = viewHolder.semesterTv.getText().toString();
+                        for(int position = 0; position < spinnerItem.length; position++)
+                        {
+                            if(spinnerItem[position].equals(curNodeSemester))
+                            {
+                                spinner.setSelection(position);
+                                break;
+                            }
+                        }
+
+                        Boolean curNodeTaken = viewHolder.isTaken;
+
+                        if(curNodeTaken)
+                        {
+                            //선택된 노드의 경우
+                            btn_isTaken.setBackgroundResource(R.drawable.button_shape);
+                            btn_isTaken.setText("수강 완료");
+                        }else{
+                            btn_isTaken.setBackgroundResource(R.drawable.ic_not_taken_class);
+                            btn_isTaken.setText("");
+                        }
+
+                        //수강 버튼 눌렀을 경우
+                        btn_isTaken.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TreeNode tn = treeNodeList[m.get(curData)];
+                                String[] nodeData = tn.getData().toString().split("\\.");
+                                String currentSemester = nodeData[1];
+                                String currSubjectName = curData;
+
+                                Log.e("###", "Viewholder semester : "+currentSemester);
+
+                                if(tn != null && tn.getParent() == null)
+                                {
+                                    //루트노드인 경우
+                                    if(viewHolder.isTaken)
+                                    {
+                                        //듣 -> 안듣
+                                        btn_isTaken.setBackgroundResource(R.drawable.ic_not_taken_class);
+                                        btn_isTaken.setText("");
+                                        viewHolder.setViewHoldernotSelected();
+
+                                        tn.setData(currSubjectName+"."+currentSemester+".0");
+                                        currTable.setRoot(currSubjectName+"."+currentSemester+".0");
+                                    }else{
+                                        //안듣 -> 듣
+                                        btn_isTaken.setBackgroundResource(R.drawable.button_shape);
+                                        btn_isTaken.setText("수강 완료");
+                                        viewHolder.setViewHolderSelected();
+
+                                        tn.setData(currSubjectName+"."+currentSemester+".1");
+                                        currTable.setRoot(currSubjectName+"."+currentSemester+".1");
+                                    }
+                                }else{
+                                    String parentSubjectName = treeNodeList[m.get(curData)].getParent().getData().toString().split("\\.")[0];
+
+                                    if(viewHolder.isTaken)
+                                    {
+                                        //듣 -> 안듣
+                                        btn_isTaken.setBackgroundResource(R.drawable.ic_not_taken_class);
+                                        btn_isTaken.setText("");
+                                        viewHolder.setViewHoldernotSelected();
+
+                                        ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
+                                        tn.setData(currSubjectName+"."+currentSemester+".0");
+                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+currentSemester+".0");
+                                    }else{
+                                        //안듣 -> 듣
+                                        btn_isTaken.setBackgroundResource(R.drawable.button_shape);
+                                        btn_isTaken.setText("수강 완료");
+                                        viewHolder.setViewHolderSelected();
+
+                                        ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
+                                        tn.setData(currSubjectName+"."+currentSemester+".1");
+                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+currentSemester+".1");
+                                    }
+                                }
+                                userAccount.getTables().set(tableLoc, currTable);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            }
+                        });
+
 
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
@@ -347,6 +470,7 @@ public class Fragment2 extends Fragment {
 
                                     if(isTakenClass)
                                     {
+                                        // 안듣 -> 듣
                                         if(!isChecked) {
                                             ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
                                         }
@@ -354,6 +478,7 @@ public class Fragment2 extends Fragment {
                                         tn.setData(currSubjectName+"."+TakenSemester+".1");
                                         currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
                                     }else{
+                                        //듣 -> 안듣
                                         if(isChecked)
                                         {
                                             ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
@@ -736,20 +861,11 @@ public class Fragment2 extends Fragment {
             }
         });
     }
-
-    public void hideKeyboard(View v){
-        InputMethodManager var10000 = imm;
-
-        if(var10000 != null){
-            var10000.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
-    }
     
     //노드추가에서 검색 버튼 클릭 리스너
     View.OnClickListener searchTVOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            hideKeyboard(v);
             ArrayList<Subject_> searchSubjectList = new ArrayList<>();
             for(Subject_ subject_ : subjectList){
                 if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
@@ -931,4 +1047,6 @@ public class Fragment2 extends Fragment {
             db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
         }
     }
+
+
 }

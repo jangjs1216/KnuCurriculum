@@ -8,23 +8,56 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:id="@+id/TopofBottomsheet"
         android:layout_width="match_parent"
         android:layout_height="50sp"
         android:background="@drawable/half_rounded_view_g"
-        >
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_classNameOnBottomSheet"
-            android:gravity="center"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="@color/black"
-            android:fontFamily="@font/main_font_medium"
-            android:includeFontPadding="false"
-            android:textSize="16sp"
-            android:text="과목 이름"/>
+            android:layout_weight="1">
 
+            <TextView
+                android:id="@+id/btn_isTaken"
+                android:layout_width="75sp"
+                android:layout_height="28sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="25sp"
+                android:background="@drawable/button_shape"
+                android:layout_marginRight="10sp"
+                android:textSize="10sp"
+                android:text="수강 예정"
+                android:fontFamily="@font/main_font_regular"
+                android:textColor="#ffffff"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:textAlignment="center"
+                />
+
+        </LinearLayout>
+            <TextView
+                android:layout_weight="3"
+                android:id="@+id/tv_classNameOnBottomSheet"
+                android:layout_width="150sp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/main_font_medium"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="과목 이름"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+            <Spinner
+                android:layout_weight="1"
+                android:id="@+id/bottomSheetSpinner"
+                android:layout_width="120sp"
+                android:layout_height="22sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="25sp"
+                />
     </LinearLayout>
 
     <LinearLayout
@@ -116,6 +149,12 @@
             android:includeFontPadding="false"
             android:text="과목 수강 정보"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp">
     </LinearLayout>
 
 </LinearLayout>
