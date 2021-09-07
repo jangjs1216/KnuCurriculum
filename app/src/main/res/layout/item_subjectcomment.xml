@@ -1,73 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+
     android:gravity="center_vertical"
     android:layout_marginBottom="8dp"
     android:background="@android:color/white">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="4">
+        android:background="@drawable/frag1_btn"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/writerTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="4">
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            style="?android:attr/ratingBarStyleSmall"
+            <TextView
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/main_font_bold"
+                android:includeFontPadding="false"
+                android:id="@+id/writerTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <RatingBar
+                android:layout_marginBottom="5dp"
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:isIndicator="true"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"
+                android:id="@+id/contentTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:isIndicator="true"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/contentTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_gravity="top"
-       >
-
-        <Button
-            android:id="@+id/reviseBtn"
-            android:backgroundTint="#DFDFDF"
-            android:fontFamily="@font/main_font_regular"
-            android:includeFontPadding="false"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_gravity="top"
-            android:textColor="#494949"
-            android:textSize="8dp"
-            android:layout_marginRight="5dp"
-            android:text="수정"/>
+            >
 
-        <Button
-            android:id="@+id/deleteBtn"
-            android:layout_marginRight="5dp"
-            android:backgroundTint="#DFDFDF"
-            android:layout_width="50dp"
-            android:layout_height="30dp"
-            android:textColor="#494949"
-            android:textSize="8dp"
-            android:fontFamily="@font/main_font_regular"
-            android:includeFontPadding="false"
-            android:text="삭제"/>
+            <Button
+                android:id="@+id/reviseBtn"
+                android:backgroundTint="#DFDFDF"
+                android:fontFamily="@font/main_font_regular"
+                android:includeFontPadding="false"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:layout_gravity="top"
+                android:textColor="#494949"
+                android:textSize="8dp"
+                android:layout_marginRight="5dp"
+                android:text="수정"/>
 
+            <Button
+                android:id="@+id/deleteBtn"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="#DFDFDF"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:textColor="#494949"
+                android:textSize="8dp"
+                android:fontFamily="@font/main_font_regular"
+                android:includeFontPadding="false"
+                android:text="삭제"/>
+
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <View
+        android:visibility="visible"
+        android:id="@+id/line_list"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="#F0F0F0"/>
 
 </LinearLayout>
 

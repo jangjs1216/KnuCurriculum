@@ -23,17 +23,12 @@
                 >
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="KNU Curricular"
-                    android:textColor="#FD0000"
-                    android:textSize="12sp" />
-
-                <TextView
+                    android:fontFamily="@font/main_font_bold"
+                    android:includeFontPadding="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="과목 분석"
-                    android:textColor="@color/black"
+                    android:textColor="@color/main_color"
                     android:textSize="23sp" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -45,16 +40,22 @@
 
             <com.google.android.material.tabs.TabItem
                 android:text="과목정보"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.tabs.TabItem
                 android:text="커리큘럼"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.tabs.TabItem
                 android:text="강의평"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -74,20 +75,23 @@
 
                     <LinearLayout
                         android:id="@+id/l1"
-                        android:background="@drawable/frag1_btn"
-                        android:layout_margin="15dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/frag1_btn"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/nameTV"
-                            android:gravity="center"
-                            android:textSize="20dp"
-                            android:fontFamily="@font/main_font_bold"
-                            android:text="프로그래밍"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/main_font_bold"
+                            android:gravity="center"
+                            android:text="프로그래밍"
+                            android:textSize="20dp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -96,31 +100,30 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
                                 android:id="@+id/totalSc"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="10dp"
                                 android:layout_weight="2"
+                                android:fontFamily="@font/main_font_regular"
                                 android:gravity="right"
+                                android:includeFontPadding="false"
                                 android:text="0.00" />
 
                             <RatingBar
                                 android:id="@+id/Totalrating"
-                                android:stepSize="0.01"
-                                android:gravity="left"
-                                android:numStars="5"
-
                                 style="?android:attr/ratingBarStyleIndicator"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:isIndicator="true" />
+                                android:gravity="left"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:stepSize="0.01" />
 
                             <TextView
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
 
                                 />
 
@@ -129,72 +132,72 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginRight="20dp"
-                            android:layout_marginLeft="20dp"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false"
                                 android:text="과목코드: " />
 
                             <TextView
                                 android:id="@+id/codeTV"
-                                android:fontFamily="@font/main_font_bold"
-                                android:includeFontPadding="false"
-                                android:layout_weight="1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:fontFamily="@font/main_font_bold"
+                                android:includeFontPadding="false" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false"
                                 android:text="개설학기: " />
 
                             <TextView
                                 android:id="@+id/semesterTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/main_font_bold"
-                                android:includeFontPadding="false"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:includeFontPadding="false" />
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="20dp"
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
 
                             <TextView
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false"
                                 android:text="개설학기: " />
 
                             <TextView
-                                android:layout_weight="1"
                                 android:id="@+id/openTV"
-                                android:fontFamily="@font/main_font_bold"
-                                android:includeFontPadding="false"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <TextView
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                 />
+                                android:fontFamily="@font/main_font_bold"
+                                android:includeFontPadding="false" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false" />
 
                         </LinearLayout>
 

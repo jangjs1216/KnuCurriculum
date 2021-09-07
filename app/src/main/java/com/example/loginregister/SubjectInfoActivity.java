@@ -1,5 +1,7 @@
 package com.example.loginregister;
 
+import static com.example.loginregister.R.style.NewDialog;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -29,6 +31,7 @@ import com.example.loginregister.adapters.PickAdapter;
 import com.example.loginregister.adapters.SubjectCommentAdapter;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +52,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     DocumentReference docRef;
     SubjectCommentAdapter subjectCommentAdapter;
     RecyclerView subjectCommentRecyclerView,picksubjectList;
-    Dialog commentAddDialog, commentReviseDialog;
+    Dialog commentAddDialog,commentReviseDialog;
     Subject_ subject_;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
@@ -160,13 +163,13 @@ public class SubjectInfoActivity extends AppCompatActivity {
             }
         });
 
-        commentAddDialog = new Dialog(SubjectInfoActivity.this);
-        commentAddDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        commentAddDialog= new Dialog(SubjectInfoActivity.this, R.style.NewDialog);
         commentAddDialog.setContentView(R.layout.dialog_subjectcomment);
+        commentAddDialog.setCanceledOnTouchOutside(true);
 
-        commentReviseDialog = new Dialog(SubjectInfoActivity.this);
-        commentReviseDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        commentReviseDialog = new BottomSheetDialog(SubjectInfoActivity.this, R.style.NewDialog);
         commentReviseDialog.setContentView(R.layout.dialog_subjectcomment);
+        commentReviseDialog.setCanceledOnTouchOutside(true);
 
         Pick();
     }
@@ -200,13 +203,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         commentRB.setRating(0);
         contentET.setText("");
 
-        Button noBtn = commentAddDialog.findViewById(R.id.noBtn);
-        noBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commentAddDialog.dismiss();
-            }
-        });
+
         commentAddDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,13 +227,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
         commentRB.setRating(Float.parseFloat(subject_.getComments().get(pos).getRating()));
         contentET.setText(subject_.getComments().get(pos).getContent());
 
-        Button noBtn = commentReviseDialog.findViewById(R.id.noBtn);
-        noBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                commentReviseDialog.dismiss();
-            }
-        });
+
         commentReviseDialog.findViewById(R.id.yesBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

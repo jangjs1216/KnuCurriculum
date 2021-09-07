@@ -9,28 +9,26 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_frag4"
+        android:background="@color/main_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+
             android:id="@+id/layout_frag4_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
+                android:fontFamily="@font/main_font_bold"
+                android:includeFontPadding="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" KNU Curricular"
-                android:textColor="#FD0000"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="분석"
-                android:textColor="@color/black"
+                android:text="과목 검색"
+                android:textColor="@color/white"
                 android:textSize="23sp" />
+
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

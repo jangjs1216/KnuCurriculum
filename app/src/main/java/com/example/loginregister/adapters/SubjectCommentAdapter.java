@@ -53,6 +53,7 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
         TextView writerTV;
         TextView contentTV;
         Button reviseBtn, deleteBtn;
+        View line;
 
         public SubjectCommentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +62,9 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
             this.contentTV = itemView.findViewById(R.id.contentTV);
             this.reviseBtn = (Button) itemView.findViewById(R.id.reviseBtn);
             this.deleteBtn = (Button) itemView.findViewById(R.id.deleteBtn);
+            this.line = (View)itemView.findViewById(R.id.line_list);
+
+
 
             reviseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,6 +94,9 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
         void onBind(SubjectComment subjectComment) {
             ratingBar.setRating(Float.parseFloat(subjectComment.getRating()));
             contentTV.setText(subjectComment.getContent());
+
+            int n = getAdapterPosition();
+            if(n==list.size()-1)line.setVisibility(View.INVISIBLE);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("user").document(subjectComment.getUser_id())// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서

@@ -1,43 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="300dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/half_rounded_view"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="수강평 작성"/>
-
-    <RatingBar
-        android:id="@+id/commentRB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <EditText
-        android:id="@+id/contentET"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/TopofBottomsheet"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:hint="수강평"/>
+        android:layout_height="50sp"
+        android:background="@drawable/half_rounded_view_g"
+        >
+
+        <TextView
+            android:layout_marginLeft="20dp"
+            android:fontFamily="@font/main_font_bold"
+            android:includeFontPadding="false"
+            android:id="@+id/tv_classNameOnBottomSheet"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:text="수강평 작성"/>
+
+
+    </LinearLayout>
 
     <LinearLayout
+        android:orientation="vertical"
+        android:backgroundTint="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/noBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="취소" />
+    <LinearLayout
+        android:backgroundTint="@color/white"
+        android:orientation="horizontal"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/yesBtn"
-            android:layout_width="0dp"
+        <TextView
+            android:textSize="18dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/main_font_bold"
+            android:includeFontPadding="false"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="작성" />
+            android:layout_marginRight="20dp"
+            android:text="과목 평점"/>
+
+        <RatingBar
+            android:isIndicator = "false"
+            style="?android:attr/ratingBarStyleIndicator"
+            android:id="@+id/commentRB"
+            android:numStars="5"
+           android:stepSize="0.5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
+
+
+    <LinearLayout
+        android:backgroundTint="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="18dp"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="left"
+            android:fontFamily="@font/main_font_bold"
+            android:includeFontPadding="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:text="과목평"/>
+
+        <EditText
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:background="@drawable/blank_retangle"
+            android:layout_margin="20dp"
+            android:id="@+id/contentET"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="220dp"
+            />
+
+    </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/yesBtn"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/session_acessment_btn"
+            android:backgroundTint="#1C599A"
+            android:clickable="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="작성 완료"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>
