@@ -85,7 +85,7 @@ public class Fragment2 extends Fragment {
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     EditText searchET;
-    Button searchBtn;
+    TextView searchTV;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -661,14 +661,15 @@ public class Fragment2 extends Fragment {
     // SubjectList로 리사이클러뷰 만들기
     public void makeRVBySubjectList(){
         //과목 리스트 볼 수 있는 BottomSheetDialog
-        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.NewDialog);
         subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+        subjectChoiceBottomSheetDialog.setCanceledOnTouchOutside(true);
 
         subjectAdapter = new SubjectAdapter(subjectList);
         subjectRecyclerView = subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
         searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
-        searchBtn = subjectChoiceBottomSheetDialog.findViewById(R.id.searchBtn);
-        searchBtn.setOnClickListener(searchBtnOnClickListener);
+        searchTV = subjectChoiceBottomSheetDialog.findViewById(R.id.searchTV);
+        searchTV.setOnClickListener(searchTVOnClickListener);
 
         subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         subjectRecyclerView.setAdapter(subjectAdapter);
@@ -731,7 +732,7 @@ public class Fragment2 extends Fragment {
     }
     
     //노드추가에서 검색 버튼 클릭 리스너
-    View.OnClickListener searchBtnOnClickListener = new View.OnClickListener() {
+    View.OnClickListener searchTVOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             ArrayList<Subject_> searchSubjectList = new ArrayList<>();
