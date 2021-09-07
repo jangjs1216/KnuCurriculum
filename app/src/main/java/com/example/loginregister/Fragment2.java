@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -226,7 +229,7 @@ public class Fragment2 extends Fragment {
                         curData = viewHolder.mTextView.getText().toString();
 
                         //노드선택 BottomSheetDialog 띄우기
-                        nodeChoiceBottomSheetDialog = new BottomSheetDialog(getActivity());
+                        nodeChoiceBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.NewDialog);
                         nodeChoiceBottomSheetDialog.setContentView(R.layout.dialog_nodechoicebottomsheet);
                         nodeChoiceBottomSheetDialog.show();
 

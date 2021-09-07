@@ -40,25 +40,25 @@ public class ViewHolder {
         //Log.e("###","현재 semester값 : "+semesterTv.getText());
         if(semesterTv.getText().equals("1학년 1학기"))
         {
-            tn_layout.setBackgroundColor(Color.parseColor("#EEAFAF"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#EEAFAF"));
         }else if(semesterTv.getText().equals("1학년 2학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#AFC4E7"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#AFC4E7"));
         }else if(semesterTv.getText().equals("1학년 2학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#BAE7AF"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#BAE7AF"));
         }else if(semesterTv.getText().equals("2학년 1학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#FFF77F"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#FFF77F"));
         }else if(semesterTv.getText().equals("2학년 2학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#FF7F7F"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#FF7F7F"));
         }else if(semesterTv.getText().equals("3학년 1학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#FDC4F6"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#FDC4F6"));
         }else if(semesterTv.getText().equals("3학년 2학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#CB9FFD"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#CB9FFD"));
         }else if(semesterTv.getText().equals("4학년 1학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#A9E1ED"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#A9E1ED"));
         }else if(semesterTv.getText().equals("4학년 2학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#F3CDAC"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#F3CDAC"));
         }else if(semesterTv.getText().equals("5학년 1학기")){
-            tn_layout.setBackgroundColor(Color.parseColor("#000000"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#000000"));
         }
     }
 }

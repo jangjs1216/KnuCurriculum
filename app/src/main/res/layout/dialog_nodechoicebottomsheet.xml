@@ -2,61 +2,119 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:background="@drawable/half_rounded_view"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/TopofBottomsheet"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:background="@drawable/half_rounded_view_g"
+        >
+
+        <TextView
+            android:id="@+id/tv_classNameOnBottomSheet"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:fontFamily="@font/main_font_medium"
+            android:includeFontPadding="false"
+            android:textSize="16sp"
+            android:text="과목 이름"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/LL1"
         android:layout_width="match_parent"
-        android:layout_height="40sp">
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp"
+        >
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:textColor="@color/black"
-            android:textSize="23sp"
-            android:text="노드 추가"/>
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:textSize="15sp"
+            android:text="다음 수강할 과목 추가"/>
 
     </LinearLayout>
+
+<!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0F0F0"/>
 
     <LinearLayout
         android:id="@+id/LL2"
         android:layout_width="match_parent"
-        android:layout_height="40sp">
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/black"
-            android:textSize="23sp"
-            android:text="노드 삭제"/>
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:text="과목 삭제"/>
 
     </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0F0F0"/>
 
     <LinearLayout
         android:id="@+id/LL3"
         android:layout_width="match_parent"
-        android:layout_height="40sp">
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/black"
-            android:textSize="23sp"
-            android:text="과목 정보 보기"/>
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:text="과목 상세 정보"/>
 
     </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0F0F0"/>
 
     <LinearLayout
         android:id="@+id/LL4"
         android:layout_width="match_parent"
-        android:layout_height="40sp">
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/black"
-            android:textSize="23sp"
-            android:text="과목 상세 정보"/>
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:text="과목 수강 정보"/>
 
     </LinearLayout>
 

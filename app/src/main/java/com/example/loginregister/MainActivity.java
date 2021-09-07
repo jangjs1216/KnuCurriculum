@@ -157,9 +157,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.item_fragment1:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment1()).commit();
                         break;
-                    case R.id.item_fragment2:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment2()).commit();
-                        break;
+//                    case R.id.item_fragment2:
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment2()).commit();
+//                        break;
                     case R.id.item_fragment3:
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, new Fragment3()).commit();
                         break;

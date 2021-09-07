@@ -5,9 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="#000000"
-    card_view:cardElevation="16dp"
-    card_view:contentPadding="10dp">
+    card_view:cardCornerRadius="20dp"
+    card_view:cardElevation="10dp"
+    card_view:cardBackgroundColor="@color/black"
+    card_view:contentPaddingBottom="10dp"
+    card_view:contentPaddingTop="10dp"
+    card_view:contentPaddingRight="20dp"
+    card_view:contentPaddingLeft="20dp">
 
     <LinearLayout
         android:id="@+id/treenode_layout"
@@ -17,11 +21,15 @@
         >
 
         <TextView
+            android:layout_gravity="center"
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="23sp"
+            android:textSize="20sp"
+            android:fontFamily="@font/main_font_medium"
+            android:text="노드 데이터"
+            android:includeFontPadding="false"
             android:textStyle="bold"/>
 
         <TextView
@@ -30,6 +38,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="12sp"
+            android:fontFamily="@font/main_font_regular"
+            android:text="학기 데이터"
+            android:includeFontPadding="false"
             android:layout_gravity="right"/>
 
     </LinearLayout>
