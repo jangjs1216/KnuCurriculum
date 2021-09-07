@@ -70,41 +70,33 @@
 
 
                         <TextView
+                            android:layout_weight="1"
+                            android:fontFamily="@font/main_font_regular"
+                            android:includeFontPadding="false"
                             android:id="@+id/Comment_nickname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right|center_vertical"
-                            android:layout_marginLeft="10sp"
-                            android:layout_marginRight="20sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
                             android:textSize="15sp"
                             android:textStyle="normal"
                             tools:text="닉네임입니다" />
 
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_weight="6" />
+
 
                         <LinearLayout
+                            android:layout_marginRight="10dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <Button
-                                android:id="@+id/btn_post_treeview"
-                                android:layout_width="100sp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_margin="10sp"
-                                android:background="#FFFFFF"
-                                android:text="트리 보기"
-                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/like_button"
                                 android:layout_width="40sp"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_favorite_border_24"
+                                app:srcCompat="@drawable/ic_baseline_favorite_border_24"
                                 android:clickable="true"
                                 />
 
@@ -119,7 +111,9 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
 
+
                     </LinearLayout>
+
 
                     <TextView
                         android:id="@+id/Comment_title"
@@ -129,6 +123,8 @@
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold"
+                        android:fontFamily="@font/main_font_bold"
+                        android:includeFontPadding="false"
                         tools:text="제목입니다" />
 
                     <TextView
@@ -139,15 +135,37 @@
                         android:layout_marginBottom="10sp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
+                        android:fontFamily="@font/main_font_regular"
+                        android:includeFontPadding="false"
                         tools:text="본문내용입니다" />
 
-                    <ImageView
-                        android:id="@+id/linear_layout"
-                        android:layout_width="200sp"
-                        android:layout_height="200sp"
+                    <Button
+                        android:id="@+id/btn_post_treeview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="10sp"
-                        app:srcCompat="@color/white" />
+                        android:layout_margin="20dp"
+                        android:background="#FFFFFF"
+                        android:text="트리 보기"
+                        android:visibility="gone"/>
+
+                    <androidx.cardview.widget.CardView
+                        android:elevation="6dp"
+                        app:cardCornerRadius="20dp"
+                        android:layout_margin="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp">
+
+                        <ImageView
+                            android:id="@+id/linear_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10sp"
+                            app:srcCompat="@color/white" />
+
+                    </androidx.cardview.widget.CardView>
+
 
                 </LinearLayout>
 

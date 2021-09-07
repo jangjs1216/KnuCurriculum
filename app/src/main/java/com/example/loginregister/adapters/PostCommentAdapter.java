@@ -1,4 +1,5 @@
 package com.example.loginregister.adapters;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,8 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.loginregister.Notice_B.Comment;
@@ -72,7 +75,8 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         OnViewHolderItemClickListener onViewHolderItemClickListener;
         private LinearLayout comment_layout;
         private ImageView iv_point;
-        private Button ccbtn, btn_delete;
+        private LinearLayout ccbtn, btn_delete;
+        View line;
 
         public PostCommentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,7 +86,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             iv_point=itemView.findViewById(R.id.iv_point);
             ccbtn = itemView.findViewById(R.id.btn_c_comment);
             btn_delete=itemView.findViewById(R.id.btn_delete);
-
+            this.line = (View)itemView.findViewById(R.id.line_list);
 
             ccbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,40 +117,52 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             btn_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder delBuilder=new AlertDialog.Builder(activity)
-                            .setTitle("댓글 삭제")
-                            .setMessage("삭제하시겠습니까?")
-                            .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int i) {
-                                    int adapterPosition =getAdapterPosition();
-                                    Log.e("###","adapterPosition : "+adapterPosition);
-                                    Comment precomment = mcontent_data.get(adapterPosition);
-                                    int comment_id = Integer.parseInt(precomment.getComment_id());
-                                    Log.e("###","comment_id : "+Integer.toString(comment_id));
-                                    if(comment_id%100==0) {
-                                        for(int num=mcontent_data.size()-1; num>adapterPosition; num--) {
-                                            Comment nowcomment=mcontent_data.get(num);
-                                            int now_comment_id=Integer.parseInt(nowcomment.getComment_id());
-                                            if(now_comment_id>comment_id && now_comment_id<comment_id+100) {
-                                                mcontent_data.remove(num);
+
+                    int n = getAdapterPosition();
+                    if(mAuth.getUid().equals(mcontent_data.get(n).getDocumentId())) {
+
+
+                        AlertDialog.Builder delBuilder = new AlertDialog.Builder(activity)
+                                .setTitle("댓글 삭제")
+                                .setMessage("삭제하시겠습니까?")
+                                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        int adapterPosition = getAdapterPosition();
+                                        Log.e("###", "adapterPosition : " + adapterPosition);
+                                        Comment precomment = mcontent_data.get(adapterPosition);
+                                        int comment_id = Integer.parseInt(precomment.getComment_id());
+                                        Log.e("###", "comment_id : " + Integer.toString(comment_id));
+                                        if (comment_id % 100 == 0) {
+                                            for (int num = mcontent_data.size() - 1; num > adapterPosition; num--) {
+                                                Comment nowcomment = mcontent_data.get(num);
+                                                int now_comment_id = Integer.parseInt(nowcomment.getComment_id());
+                                                if (now_comment_id > comment_id && now_comment_id < comment_id + 100) {
+                                                    mcontent_data.remove(num);
+                                                }
                                             }
                                         }
+                                        mcontent_data.remove(adapterPosition);
+                                        Map map = new HashMap<String, ArrayList<String>>();
+                                        map.put("comments", mcontent_data);
+                                        docRef.set(map, SetOptions.merge());
+                                        ((Post_Comment) Post_Comment.mcontext).onStart();
+
+                                        //댓글이 자기것이 아니면 안보이게 하기
+
                                     }
-                                    mcontent_data.remove(adapterPosition);
-                                    Map map = new HashMap<String, ArrayList<String>>();
-                                    map.put("comments",mcontent_data);
-                                    docRef.set(map,SetOptions.merge());
-                                    ((Post_Comment)Post_Comment.mcontext).onStart();
-                                }
-                            })
-                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int i) {
-                                }
-                            });
-                    AlertDialog delDlg=delBuilder.create();
-                    delDlg.show();
+                                })
+                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                    }
+                                });
+                        AlertDialog delDlg = delBuilder.create();
+                        delDlg.show();
+                    }
+                    else{
+                        Toast.makeText(activity, "자신이 작성한 댓글이 아닙니다", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -155,10 +171,9 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             c_nickname.setText(mcontent_data.get(position).getC_nickname());
             comment.setText(mcontent_data.get(position).getComment());
 
-            //댓글이 자기것이 아니면 안보이게 하기
-            if(!mAuth.getUid().equals(mcontent_data.get(position).getDocumentId())){
-                btn_delete.setVisibility(View.INVISIBLE);
-            }
+            int n = getAdapterPosition();
+            if(n==mcontent_data.size()-1)line.setVisibility(View.INVISIBLE);
+
 
             int judge = Integer.parseInt(mcontent_data.get(position).getComment_id());
             Log.e("%%%",Integer.toString(judge));
@@ -169,9 +184,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
             if(judge%100 != 0) {
 
-                params.weight = 1;
+                params.weight = 5;
                 comment_layout.setLayoutParams(params);
                 ccbtn.setVisibility(View.INVISIBLE);
+                comment_layout.setBackground(ContextCompat.getDrawable(activity, R.drawable.ccomment_retangle));
+
                 if(position>0) {
                     if (Integer.parseInt(mcontent_data.get(position - 1).getComment_id()) % 100 == 0) {
                         iv_point.setVisibility(View.VISIBLE);
