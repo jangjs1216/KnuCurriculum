@@ -98,24 +98,31 @@ public class Fragment3 extends Fragment {
                 switch(v.getId()){
                     case R.id.layout_forum1:
                         intent.putExtra("게시판",1);
+                        intent.putExtra("이름","반도체 및 디스플레이 공학");
                         break;
                     case R.id.layout_forum2:
                         intent.putExtra("게시판",2);
+                        intent.putExtra("이름","회로 및 임베디드 시스템 공학");
                         break;
                     case R.id.layout_forum3:
                         intent.putExtra("게시판",3);
+                        intent.putExtra("이름","전자파 및 광전자 공학");
                         break;
                     case R.id.layout_forum4:
                         intent.putExtra("게시판",4);
+                        intent.putExtra("이름","인공지능 및 신호처리");
                         break;
                     case R.id.layout_forum5:
                         intent.putExtra("게시판",5);
+                        intent.putExtra("이름","정보 통신 공학");
                         break;
                     case R.id.layout_forum6:
                         intent.putExtra("게시판",6);
+                        intent.putExtra("이름","임베디드 시스템 및 제어공학");
                         break;
                     case R.id.layout_forum7:
                         intent.putExtra("게시판",7);
+                        intent.putExtra("이름","자유게시판");
                         break;
                 }
                 startActivity(intent);

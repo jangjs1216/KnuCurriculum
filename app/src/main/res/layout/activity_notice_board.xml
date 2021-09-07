@@ -12,7 +12,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_notice_board"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/main_color">
 
         <LinearLayout
             android:id="@+id/layout_noticeboard_toolbar"
@@ -21,19 +22,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="KNU Curriculum"
-                android:textColor="#FD0000"
-                android:textSize="12sp" />
-
-            <TextView
                 android:id="@+id/tv_notice_board_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="게시판"
-                android:textColor="@color/black"
-                android:textSize="23sp" />
+                android:textColor="@color/white"
+                android:fontFamily="@font/main_font_bold"
+                android:textSize="15sp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -62,7 +56,6 @@
             android:src="@drawable/ic_baseline_favorite_24"
             app:borderWidth="0dp"
             app:fabSize="normal"
-
             />
 
 

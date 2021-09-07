@@ -10,27 +10,22 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_frag3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/main_color">
 
         <LinearLayout
             android:id="@+id/layout_frag3_toolbar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KNU Curricular"
-                android:textColor="#FD0000"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="게시판"
-                android:textColor="@color/black"
-                android:textSize="23sp" />
+                android:text="커리큘럼 게시판"
+                android:textColor="@color/white"
+                android:fontFamily="@font/main_font_bold"
+                android:textSize="18sp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -140,14 +135,14 @@
             <TextView
                 android:id="@+id/forum1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_gravity="center"
-                android:paddingHorizontal="5sp"
-                android:paddingVertical="3sp"
-                android:text="Forum1"
                 android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
+                android:textSize="15sp"
+                android:gravity="center_vertical"
+                android:text="반도체 및 디스플레이 공학" />
         </LinearLayout>
 
 
@@ -168,11 +163,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:paddingVertical="1sp"
-                android:paddingHorizontal="1sp"
+                android:paddingVertical="3sp"
+                android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum2" />
+                android:text="회로 및 임베디드 시스템 공학" />
         </LinearLayout>
 
         <LinearLayout
@@ -196,7 +191,7 @@
                 android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum3" />
+                android:text="전자파 및 광전자 공학" />
         </LinearLayout>
 
         <LinearLayout
@@ -220,7 +215,7 @@
                 android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum4" />
+                android:text="인공지능 및 신호처리" />
         </LinearLayout>
 
         <LinearLayout
@@ -244,7 +239,7 @@
                 android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum5" />
+                android:text="정보 통신 공학" />
         </LinearLayout>
 
         <LinearLayout
@@ -268,7 +263,7 @@
                 android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum6" />
+                android:text="임베디드 시스템 및 제어공학" />
         </LinearLayout>
 
         <LinearLayout
@@ -292,7 +287,7 @@
                 android:paddingHorizontal="5sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
-                android:text="Forum7" />
+                android:text="자유게시판" />
         </LinearLayout>
 
     </LinearLayout>

@@ -63,8 +63,9 @@ public class NoticeBoard extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     private PostAdapter mAdapter;
     private List<Post> mDatas;
-    private String forum_sort;
+    private String forum_sort, forum_name;
     private TextView tv_forum_title;
+    private TextView tv_notice_board_title;
     private ArrayList<String> preLiked;
     private FloatingActionButton likesort_btn;
     private boolean likeSort_TF=true;
@@ -74,6 +75,7 @@ public class NoticeBoard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board);
 
+        tv_notice_board_title=findViewById(R.id.tv_notice_board_title);
         likesort_btn=findViewById(R.id.like_sort);
         toolbar =(Toolbar)findViewById(R.id.tb_notice_board);
         setSupportActionBar(toolbar);
@@ -85,6 +87,8 @@ public class NoticeBoard extends AppCompatActivity {
         // 게시판 컬렉션 지정
         Intent intent=getIntent();
         forum_num=intent.getExtras().getInt("게시판");
+        forum_name=intent.getExtras().getString("이름");
+        tv_notice_board_title.setText(forum_name);
 
         if(forum_num==8){
             forum_sort="내가 누른 좋아요 글";
@@ -104,7 +108,6 @@ public class NoticeBoard extends AppCompatActivity {
         }
 
         tv_forum_title = findViewById(R.id.tv_notice_board_title);
-        tv_forum_title.setText(forum_sort);
 
 
         mPostRecyclerView = findViewById(R.id.recyclerview);
