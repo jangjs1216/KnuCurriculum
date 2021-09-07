@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Fragment3">
 
@@ -40,10 +41,13 @@
         android:orientation="horizontal"/>
 
     <LinearLayout
-        android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_shape"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/forum_layout"
+        android:elevation="16dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -55,12 +59,14 @@
 
             <ImageView
                 android:layout_margin="15dp"
-                android:src="@drawable/star_img"
                 android:layout_width="25sp"
-                android:layout_height="25sp"/>
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_clarity_heart_solid" />
             <TextView
                 android:layout_gravity="center"
                 android:text="좋아요 누른 글"
+                android:fontFamily="@font/main_font_regular"
+                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -75,12 +81,14 @@
 
             <ImageView
                 android:layout_margin="15dp"
-                android:src="@drawable/mypost_post"
                 android:layout_width="25sp"
-                android:layout_height="25sp"/>
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_ri_file_paper_2_fill"/>
             <TextView
                 android:layout_gravity="center"
                 android:text="내가 쓴글"
+                android:fontFamily="@font/main_font_regular"
+                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -95,12 +103,14 @@
 
             <ImageView
                 android:layout_margin="15dp"
-                android:src="@drawable/ranking_img"
                 android:layout_width="25sp"
-                android:layout_height="25sp"/>
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_fa_solid_crown"/>
             <TextView
                 android:layout_gravity="center"
                 android:text="Best 게시글"
+                android:fontFamily="@font/main_font_regular"
+                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -108,48 +118,58 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/btn_shape"
+        android:background="@drawable/forum_layout"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="3px"
-        >
+        android:elevation="16dp">
 
         <LinearLayout
             android:id="@+id/layout_forum1"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/black"
-                android:paddingVertical="3sp"
+                android:layout_gravity="center"
                 android:paddingHorizontal="5sp"
-                android:textSize="15sp"
-                android:gravity="center_vertical"
-                android:text="Forum1" />
+                android:paddingVertical="3sp"
+                android:text="Forum1"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
         </LinearLayout>
 
 
         <LinearLayout
             android:id="@+id/layout_forum2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:paddingVertical="3sp"
-                android:paddingHorizontal="5sp"
+                android:paddingVertical="1sp"
+                android:paddingHorizontal="1sp"
                 android:textSize="15sp"
                 android:gravity="center_vertical"
                 android:text="Forum2" />
@@ -158,10 +178,14 @@
         <LinearLayout
             android:id="@+id/layout_forum3"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum3"
                 android:layout_width="match_parent"
@@ -178,10 +202,14 @@
         <LinearLayout
             android:id="@+id/layout_forum4"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum4"
                 android:layout_width="match_parent"
@@ -198,10 +226,14 @@
         <LinearLayout
             android:id="@+id/layout_forum5"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum5"
                 android:layout_width="match_parent"
@@ -218,10 +250,14 @@
         <LinearLayout
             android:id="@+id/layout_forum6"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum6"
                 android:layout_width="match_parent"
@@ -238,10 +274,14 @@
         <LinearLayout
             android:id="@+id/layout_forum7"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clickable="true">
+            <ImageView
+                android:layout_margin="15dp"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                app:srcCompat="@drawable/ic_round_numbers"/>
             <TextView
                 android:id="@+id/forum7"
                 android:layout_width="match_parent"
