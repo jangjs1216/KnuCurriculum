@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.loginregister.R;
@@ -27,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private EditText mEtEmail, mEtPwd,mEtPwd2,enick; // 회원가입 입력필드
-    private Button mBtnRegister; // 회원가입 버튼
+    private TextView mBtnRegister; // 회원가입 버튼
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
 
     @Override

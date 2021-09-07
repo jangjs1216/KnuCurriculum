@@ -55,16 +55,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mFirebaseAuth=FirebaseAuth.getInstance();
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
-        Google_Login=findViewById(R.id.Google_Login);
+        //Google_Login=findViewById(R.id.Google_Login);
         TextView btn_login = findViewById(R.id.btn_login);
         TextView btn_register = findViewById(R.id.btn_register);
         CheckBox automatic_login=findViewById(R.id.automatic_login);
 
         //자동로그인
-//        SharedPreferences account_info=getSharedPreferences("user_info",Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor=account_info.edit();
-//        String login_id=account_info.getString("id","");
-//        String login_pw=account_info.getString("pw","");
+        SharedPreferences account_info=getSharedPreferences("user_info",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor=account_info.edit();
+        String login_id=account_info.getString("id","");
+        String login_pw=account_info.getString("pw","");
 
         if(PreferencesManager.getAccount(LoginActivity.this).length()!=0)
         {
@@ -110,12 +110,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
         mAuth=FirebaseAuth.getInstance();
-
-        // 구글 로그인 버튼 클릭했을 때 여기서 수행
-        Google_Login.setOnClickListener(view -> {
-            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-            startActivityForResult(signInIntent,RC_SIGN_IN);
-        });
+//
+//        // 구글 로그인 버튼 클릭했을 때 여기서 수행
+//        Google_Login.setOnClickListener(view -> {
+//            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+//            startActivityForResult(signInIntent,RC_SIGN_IN);
+//        });
 
 
         btn_register.setOnClickListener(view -> {

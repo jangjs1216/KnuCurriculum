@@ -6,22 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".login.LoginActivity">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/et_email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/school" />
+
     <EditText
         android:id="@+id/et_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:ems="10"
-        android:hint="이메일을 입력하세요"
-        android:paddingTop="5sp"
-        android:paddingBottom="5sp"
-        android:paddingLeft="10sp"
-        android:paddingRight="10sp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/custom_edittext"
+        android:ems="13"
+        android:hint="이메일을 입력하세요"
         android:inputType="textEmailAddress"
+        android:paddingLeft="10sp"
+        android:paddingTop="5sp"
+        android:paddingRight="10sp"
+        android:paddingBottom="5sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <EditText
         android:id="@+id/et_pwd"
@@ -32,8 +43,8 @@
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:background="@drawable/custom_edittext"
-        android:layout_marginTop="20dp"
-        android:ems="10"
+        android:layout_marginTop="10dp"
+        android:ems="13"
         android:hint="비밀번호를 입력하세요"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,58 +52,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
+    <CheckBox
+        android:id="@+id/automatic_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="자동로그인"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
+
     <TextView
-        android:id="@+id/btn_login"
-        android:layout_margin="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:text="로그인"
-        android:textStyle="bold"
-        android:clickable="true"
-        android:gravity="center"
-        android:textColor="#FF3D00"
-        android:background="@drawable/custon_button"
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Google_Login" />
+        app:layout_constraintTop_toBottomOf="@+id/automatic_login" />
+
+    <TextView
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_margin="5dp"
+        android:background="@drawable/custon_button"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="로그인"
+        android:textColor="#FF3D00"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
     <TextView
         android:id="@+id/btn_register"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="50sp"
-        android:layout_margin="8dp"
-        android:backgroundTint="@color/black"
+        android:layout_margin="5dp"
+        android:background="@drawable/custon_button"
         android:clickable="true"
         android:gravity="center"
         android:text="회원가입"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />
-
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/Google_Login"
-        android:layout_width="match_parent"
-        android:layout_height="50sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_pwd"
-        app:layout_constraintVertical_bias="0.209" />
-
-    <CheckBox
-        android:id="@+id/automatic_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="자동로그인"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_pwd" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
