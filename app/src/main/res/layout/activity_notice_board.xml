@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/like_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,11 +52,13 @@
             android:layout_marginBottom="20dp"
             android:layout_centerHorizontal="true"
             app:backgroundTint="#EDE4E4"
+            android:gravity="center_horizontal"
+            android:textColor="#1C599A"
+            android:text="좋아요순 정렬"
             app:srcCompat="@drawable/ic_baseline_favorite_24"
             app:borderWidth="0dp"
-            app:fabSize="normal"
-            >
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+            app:fabSize="normal">
+        </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
 
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

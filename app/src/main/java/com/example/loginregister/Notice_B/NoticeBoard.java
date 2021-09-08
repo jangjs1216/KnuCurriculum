@@ -35,6 +35,7 @@ import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -67,7 +68,7 @@ public class NoticeBoard extends AppCompatActivity {
     private TextView tv_forum_title;
     private TextView tv_notice_board_title;
     private ArrayList<String> preLiked;
-    private FloatingActionButton likesort_btn;
+    private ExtendedFloatingActionButton likesort_btn;
     private boolean likeSort_TF=true;
 
     @Override
@@ -147,11 +148,15 @@ public class NoticeBoard extends AppCompatActivity {
                 if(likeSort_TF) {
                     likeSort_TF = false;
                     sortDatas();
+                    likesort_btn.setTextColor(Color.WHITE);
+                    likesort_btn.setText("최신순 정렬");
                     likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_last)));
                 }
                 else{
                     likeSort_TF = true;
                     updateDatas();
+                    likesort_btn.setTextColor(Color.parseColor("#1C599A"));
+                    likesort_btn.setText("좋아요순 정렬");
                     likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_pre)));
                 }
             }
@@ -226,9 +231,9 @@ public class NoticeBoard extends AppCompatActivity {
                                     for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
                                         Post post = snap.toObject(Post.class);
 
-                                        if(Integer.parseInt(post.getLike()) > 1) {
+
                                             mDatas.add(post);
-                                        }
+
                                     }
                                 } else {
                                 }
@@ -363,7 +368,7 @@ public class NoticeBoard extends AppCompatActivity {
                                             for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
                                                 Post post = snap.toObject(Post.class);
 
-                                                if (Integer.parseInt(post.getLike()) > 1) {
+                                                if (Integer.parseInt(post.getLike()) > 10) {
                                                     mDatas.add(post);
                                                 }
                                             }
