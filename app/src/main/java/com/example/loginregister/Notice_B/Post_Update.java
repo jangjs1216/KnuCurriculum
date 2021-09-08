@@ -73,6 +73,7 @@ public class Post_Update extends AppCompatActivity {
     private TextView post_photo, post_tree, post_gallery;
     private ProgressBar post_progressBar;
     private String writer_id, post_id, post_num, comment_post, like, title, content;
+    private int click;
     private Timestamp timestamp;
     private ImageView post_imageView;
     private File tempFile;
@@ -144,6 +145,8 @@ public class Post_Update extends AppCompatActivity {
                     subscriber = post.getSubscriber();
                     title=post.getTitle();
                     content=post.getContents();
+                    click = post.getClick();
+
 
                     mTitle.setText(title);
                     mContents.setText(content);
@@ -291,7 +294,7 @@ public class Post_Update extends AppCompatActivity {
         }
         else {
             if (mAuth.getCurrentUser() != null) {
-                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber);
+                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber, click);
                 mStore.collection(forum_sort).document(post_id).set(post);
                 finish();
             }
