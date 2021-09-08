@@ -21,9 +21,6 @@
             android:name=".Notice_B.Post_Search"
             android:exported="true" />
         <activity
-            android:name=".Notice_B.Post_Treeview"
-            android:exported="true" />
-        <activity
             android:name=".login.LogoutActivity"
             android:exported="true" />
         <activity android:name=".login.LoginActivity">

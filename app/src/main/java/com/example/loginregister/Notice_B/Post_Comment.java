@@ -334,19 +334,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                     });
         }
 
-
-        treeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mcontext, Post_Treeview.class);
-                intent.putExtra("writerID", writer_id_post);
-                intent.putExtra("forumID", forum_sort);
-                intent.putExtra("postID", post_id);
-                intent.putExtra("writerNickname", com_nick.getText().toString());
-                startActivity(intent); //게시글 수정
-            }
-        });
-
         likeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

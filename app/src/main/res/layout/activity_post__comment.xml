@@ -224,7 +224,6 @@
                         android:layout_height="1dp"
                         android:orientation="horizontal"
                         android:background="@color/separate"/>
-
                 </LinearLayout>
 
 
