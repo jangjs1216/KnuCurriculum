@@ -20,6 +20,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,8 +33,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.loginregister.Table;
 import com.example.loginregister.R;
+import com.example.loginregister.adapters.CurriculumAdapter;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
+import com.example.loginregister.login.FirebaseID;
 import com.example.loginregister.login.UserAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,6 +47,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -54,106 +60,63 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Post_Update extends AppCompatActivity implements View.OnClickListener{
+public class Post_Update extends AppCompatActivity {
 
-    private FirebaseAuth mAuth= FirebaseAuth.getInstance();//사용자 정보 가져오기
-    private FirebaseFirestore mStore= FirebaseFirestore.getInstance();
-    private EditText mTitle,mContents;//제목, 내용
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();//사용자 정보 가져오기
+    private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private DocumentReference docRef;
+    private EditText mTitle, mContents;//제목, 내용
     private String p_nickname;//게시판에 표기할 닉네잉 //이게 가져온 값을 저장하는 임시 변수
-    private String post_num,post_id,writer_id,comment_post,like,title,content;
+    private TextView post_photo, post_tree, post_gallery;
+    private ProgressBar post_progressBar;
+    private String writer_id, post_id, post_num, comment_post, like, title, content;
     private Timestamp timestamp;
-    private ImageView url_image;
+    private ImageView post_imageView;
+    private File tempFile;
+    private TextView post_save, btn_back;
+    private static final int FROM_CAMERA = 1;
+    private static final int FROM_GALLERY = 2;
+    private Table choosedTable=null;
     private String forum_sort;
+    private Uri uri;
+    private int commnet_num;
+    private Table table;
     private String image_url;
+    private ArrayList<String> subscriber;
+    private ArrayList<Comment> comments=new ArrayList<>();
     private FirebaseStorage storage;
     private String imageFilePath;
-    private Uri uri;
-    private Button post_photo;
-    private File tempFile;
-    private Table table;
     private Dialog addTreeDialog;
     private RecyclerView postAddTreeRV;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Recycler_Data> arrayList;
-    private Recycler_Adapter recycler_adapter;
-    private DocumentReference docRef;
-    private static final int FROM_CAMERA = 1;
-    private static final int FROM_GALLERY = 2;
-    private ArrayList<Comment> comments = new ArrayList<>();
-    private ArrayList<String> subscriber;
-    private Table choosedTable=null;
-    int commnet_num;
+    private CurriculumAdapter curriculumAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("###", "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post__update);
+        setContentView(R.layout.activity_post_write);
 
-        mTitle=findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
-        mContents=findViewById(R.id.Post_write_contents);
-        url_image = (ImageView) findViewById(R.id.url_image);
-        post_photo=(Button) findViewById(R.id.post_photo);
-        findViewById(R.id.Post_save).setOnClickListener(this);
+        mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
+        mContents = findViewById(R.id.Post_write_contents);
+        post_imageView = findViewById(R.id.post_imageview);
+        post_imageView.setVisibility(View.INVISIBLE);
+        post_progressBar = findViewById(R.id.post_progressbar);
+        post_save=findViewById(R.id.post_save);
+        btn_back=findViewById(R.id.btn_back);
+        post_photo=findViewById(R.id.post_photo);
+        post_tree=findViewById(R.id.post_tree);
+        post_gallery=findViewById(R.id.post_gallery);
 
         Intent intent=getIntent();
         post_id=intent.getStringExtra("post_id");
         forum_sort=intent.getStringExtra("forum_sort");
-        Log.d("###","여기는 게시글 작성위:"+post_num);
 
         storage=FirebaseStorage.getInstance();
-
-        if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
-
-            DocumentReference docRef2 = mStore.collection(forum_sort).document(post_id);
-            docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                                   @Override
-                                                   public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                       Post post = documentSnapshot.toObject(Post.class);
-                                                       writer_id = post.getWriter_id();
-                                                       p_nickname = post.getP_nickname();
-                                                       like = post.getLike();
-                                                       timestamp = post.getTimestamp();
-                                                       comments = post.getComments();
-                                                       commnet_num=post.getcoment_Num();
-                                                       image_url=post.getImage_url();
-                                                       Log.d("###","image_url in update : "+image_url);
-                                                       table = post.getTable();
-                                                       subscriber = post.getSubscriber();
-                                                       title=post.getTitle();
-                                                       content=post.getContents();
-
-                                                       mTitle.setText(title);
-                                                       mContents.setText(content);
-
-                                                       if (image_url != null) {
-                                                           Log.d("###", "image_url : " + image_url);
-                                                           FirebaseStorage storage = FirebaseStorage.getInstance();
-                                                           StorageReference storageReference = storage.getReference();
-                                                           StorageReference pathReference = storageReference.child("post_image");
-                                                           if (pathReference == null) {
-                                                               Toast.makeText(Post_Update.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
-                                                           } else {
-                                                               Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
-                                                               StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
-                                                               submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                                   @Override
-                                                                   public void onSuccess(Uri uri) {
-                                                                       Log.d("###", String.valueOf(uri));
-                                                                       Glide.with(Post_Update.this).load(uri).into(url_image);
-                                                                       url_image.setVisibility(View.VISIBLE);
-                                                                   }
-                                                               }).addOnFailureListener(new OnFailureListener() {
-                                                                   @Override
-                                                                   public void onFailure(@NonNull Exception e) {
-                                                                       // 실패
-                                                                   }
-                                                               });
-                                                           }
-                                                       }
-                                                   }
-                                               });
-        }
 
         TedPermission.with(getApplicationContext())
                 .setPermissionListener(permissionListener)
@@ -162,36 +125,116 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .check();
 
-        post_photo.setOnClickListener(view -> {
-            Log.e("###","선택");
-            AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_Update.this)
-                    .setTitle("사진 첨부")
-                    .setMessage("선택하세요")
-                    .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            takePhoto();
+        if(mAuth.getCurrentUser()!=null){//UserInfo에 등록되어있는 닉네임을 가져오기 위해서
+
+            DocumentReference docRef2 = mStore.collection(forum_sort).document(post_id);
+            docRef2.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Post post = documentSnapshot.toObject(Post.class);
+                    writer_id = post.getWriter_id();
+                    p_nickname = post.getP_nickname();
+                    like = post.getLike();
+                    timestamp = post.getTimestamp();
+                    comments = post.getComments();
+                    commnet_num=post.getcoment_Num();
+                    image_url=post.getImage_url();
+                    Log.d("###","image_url in update : "+image_url);
+                    table = post.getTable();
+                    subscriber = post.getSubscriber();
+                    title=post.getTitle();
+                    content=post.getContents();
+
+                    mTitle.setText(title);
+                    mContents.setText(content);
+
+                    if (image_url != null) {
+                        Log.d("###", "image_url : " + image_url);
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference storageReference = storage.getReference();
+                        StorageReference pathReference = storageReference.child("post_image");
+                        if (pathReference == null) {
+                            Toast.makeText(Post_Update.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
+                            StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
+                            submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Log.d("###", String.valueOf(uri));
+                                    Glide.with(Post_Update.this).load(uri).into(post_imageView);
+                                    post_imageView.setVisibility(View.VISIBLE);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // 실패
+                                }
+                            });
                         }
-                    })
-                    .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            useGallery();
-                        }
-                    })
-                    .setNeutralButton("Tree", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // 트리 사진 올리기
-                            //트리 추가 버튼 다이얼로그
-                            addTreeDialog = new Dialog(Post_Update.this);
-                            addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                            addTreeDialog.setContentView(R.layout.dialog_postaddtree);
-                            showDialog();
-                        }
-                    });
-            AlertDialog alertDialog = picBuilder.create();
-            alertDialog.show();
+                    }
+                }
+            });
+        }
+        // 사진올리기
+//        post_photo.setOnClickListener(view -> {
+//            Log.e("###","선택");
+//            AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_write.this)
+//                    .setTitle("사진 첨부")
+//                    .setMessage("선택하세요")
+//                    .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            takePhoto();
+//                        }
+//                    })
+//                    .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            useGallery();
+//                        }
+//                    });
+//            AlertDialog alertDialog = picBuilder.create();
+//            alertDialog.show();
+//        });
+
+        post_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+
+        post_gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useGallery();
+            }
+        });
+
+        post_tree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addTreeDialog = new Dialog(Post_Update.this);
+                addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                addTreeDialog.setContentView(R.layout.dialog_postaddtree);
+                showDialog();
+            }
+        });
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        // 게시글 올리기
+        post_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SavePost();
+            }
         });
     }
 
@@ -204,8 +247,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
     private void setImage() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-        url_image.setVisibility(View.VISIBLE);
-        url_image.setImageBitmap(originalBm);
+        post_imageView.setVisibility(View.VISIBLE);
+        post_imageView.setImageBitmap(originalBm);
     }
 
     private void takePhoto() {
@@ -219,7 +262,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
 
             }
             if(photoFile!=null) {
-                uri= FileProvider.getUriForFile(getApplicationContext(),getPackageName(),photoFile);
+                uri=FileProvider.getUriForFile(getApplicationContext(),getPackageName(),photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
                 startActivityForResult(intent,FROM_CAMERA);
             }
@@ -239,14 +282,19 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         return image;
     }
 
-
-    @Override
-    public void onClick(View v) {
-
-        if(mAuth.getCurrentUser()!=null){
-            Post post = new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id,comments,commnet_num,image_url,forum_sort, table,subscriber);
-            mStore.collection(forum_sort).document(post_id).set(post);
-            finish();
+    public void SavePost()
+    {
+        Log.d("###", "SavePost진입");
+        if(image_url==null && uri!=null)
+        {
+            Toast.makeText(Post_Update.this,"사진 업로드 중입니다",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            if (mAuth.getCurrentUser() != null) {
+                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber);
+                mStore.collection(forum_sort).document(post_id).set(post);
+                finish();
+            }
         }
     }
 
@@ -259,7 +307,7 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
         else if (requestCode == FROM_GALLERY) {
             uri = data.getData();
             Log.d("###", "첫번째 uri : "+String.valueOf(uri));
-            url_image.setImageURI(uri);
+            post_imageView.setImageURI(uri);
             Cursor cursor = null;
             try {
                 String[] proj = {MediaStore.Images.Media.DATA};
@@ -292,8 +340,8 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                 } else {
                     exifDegree=0;
                 }
-                url_image.setImageBitmap(rotate(bitmap,exifDegree));
-                url_image.setVisibility(View.VISIBLE);
+                post_imageView.setImageBitmap(rotate(bitmap,exifDegree));
+                post_imageView.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(this,"취소되었습니다",Toast.LENGTH_LONG).show();
             }
@@ -361,18 +409,20 @@ public class Post_Update extends AppCompatActivity implements View.OnClickListen
                     Recycler_Data recycler_data = new Recycler_Data(tableName);
                     arrayList.add(recycler_data);
                 }
-                recycler_adapter = new Recycler_Adapter(arrayList);
-                postAddTreeRV.setAdapter(recycler_adapter);
+                curriculumAdapter = new CurriculumAdapter(arrayList);
+                postAddTreeRV.setAdapter(curriculumAdapter);
 
                 //리싸이클러뷰 클릭 리스너
-                recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                curriculumAdapter.setOnItemListener(new CurriculumAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
-                        String tableName = arrayList.get(pos).getTv_title().toString();
-                        Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+                        if(option.equals("choice")){
+                            String tableName = arrayList.get(pos).getTv_title().toString();
+                            Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 
-                        choosedTable = tables.get(pos);
-                        addTreeDialog.dismiss();
+                            choosedTable = tables.get(pos);
+                            addTreeDialog.dismiss();
+                        }
                     }
                 });
             }
