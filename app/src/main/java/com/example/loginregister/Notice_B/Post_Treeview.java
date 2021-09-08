@@ -57,10 +57,6 @@ public class Post_Treeview extends AppCompatActivity{
     ArrayList<Integer> adj[];
     HashMap<String, Integer> m;
 
-    int tableLoc;
-    ArrayList<String> tableNames;
-    ArrayList<Table> tables;
-
     ZoomLayout zoomLayout;
     TreeView treeView;
     BaseTreeAdapter adapter;
@@ -99,7 +95,6 @@ public class Post_Treeview extends AppCompatActivity{
         tv_post = findViewById(R.id.tv_post_treeview);
         tv_post.setText(writerNick+"님의 커리큘럼");
 
-        zoomLayout = findViewById(R.id.post_zoom);
         treeView = new TreeView(getApplicationContext()){
             @Override
             public boolean onScroll(MotionEvent downEvent, MotionEvent event, float distanceX, float distanceY) {

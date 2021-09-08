@@ -16,7 +16,7 @@ public class ViewHolder {
 
     String semester;
     Boolean isTaken;
-    CardView tn_layout;
+    public CardView tn_layout;
     public TextView mTextView;
     public TextView semesterTv;
     public ViewHolder(View view) {

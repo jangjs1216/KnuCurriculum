@@ -147,6 +147,9 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="10sp"
                         app:srcCompat="@color/white" />
+
+
+
                     <View
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"

@@ -187,8 +187,37 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             app:srcCompat="@color/white" />
-
                     </androidx.cardview.widget.CardView>
+
+                    <com.otaliastudios.zoom.ZoomLayout
+                        android:id="@+id/post_zoomlayout"
+                        android:layout_width="300sp"
+                        android:layout_height="300sp"
+                        android:scrollbars="vertical|horizontal"
+                        android:layout_gravity="center"
+                        app:transformation="centerInside"
+                        app:transformationGravity="auto"
+                        app:alignment="center"
+                        app:overScrollHorizontal="true"
+                        app:overScrollVertical="true"
+                        app:overPinchable="true"
+                        app:horizontalPanEnabled="true"
+                        app:verticalPanEnabled="true"
+                        app:zoomEnabled="true"
+                        app:flingEnabled="true"
+                        app:scrollEnabled="true"
+                        app:oneFingerScrollEnabled="true"
+                        app:twoFingersScrollEnabled="true"
+                        app:threeFingersScrollEnabled="true"
+                        app:minZoom="0.7"
+                        app:minZoomType="zoom"
+                        app:maxZoom="5"
+                        app:maxZoomType="zoom"
+                        app:animationDuration="280"
+                        app:hasClickableChildren="true"
+                        android:visibility="gone">
+
+                    </com.otaliastudios.zoom.ZoomLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
