@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.loginregister.Notice_B.Post;
 import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
+import com.google.firebase.Timestamp;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import kotlin.collections.UCollectionsKt;
@@ -52,10 +55,14 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {//아이템을 하나하나 보여주는 함수
         Post data=datas.get(position);//Post라는 모델객체를 하나 만든 이유
-        holder.p_nickname.setText(datas.get(position).getP_nickname());
-        holder.title.setText(datas.get(position).getTitle());//각각 데이터에 들어있는 제목 내용들이 각각 하나고 여러개가 아니기때문에
-        holder.contents.setText(datas.get(position).getContents());//리스트로 만들어 주기 위해서
-        holder.post_like_text.setText(datas.get(position).getLike());
+        holder.post_writer.setText(datas.get(position).getP_nickname());
+        holder.post_title.setText(datas.get(position).getTitle());//각각 데이터에 들어있는 제목 내용들이 각각 하나고 여러개가 아니기때문에
+        holder.post_contents.setText(datas.get(position).getContents());//리스트로 만들어 주기 위해서
+        holder.post_liketext.setText(datas.get(position).getLike());
+        Timestamp timestamp = datas.get(position).getTimestamp();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        holder.post_time.setText(simpleDateFormat.format(timestamp.toDate()));
+        holder.post_click.setText(Integer.toString(datas.get(position).getClick()));
 
         final int posi=holder.getAdapterPosition();
 
@@ -86,19 +93,22 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     }
 
     class PostViewHolder extends RecyclerView.ViewHolder{
-
-        private TextView title;
-        private TextView contents;
-        private TextView p_nickname;
-        private TextView post_like_text;
+        private TextView post_title;
+        private TextView post_contents;
+        private TextView post_writer;
+        private TextView post_liketext;
+        private TextView post_time;
+        private TextView post_click;
 
 
         public PostViewHolder(@NonNull final View itemView) {//포스트 뷰홀더의 생성자
             super(itemView);
-            title=itemView.findViewById(R.id.post_title);
-            contents=itemView.findViewById(R.id.post_contents);
-            p_nickname=itemView.findViewById(R.id.post_writer);
-            post_like_text = itemView.findViewById(R.id.post_liketext);
+            post_title=itemView.findViewById(R.id.post_title);
+            post_contents=itemView.findViewById(R.id.post_contents);
+            post_writer=itemView.findViewById(R.id.post_writer);
+            post_liketext = itemView.findViewById(R.id.post_liketext);
+            post_time = itemView.findViewById(R.id.post_time);
+            post_click = itemView.findViewById(R.id.post_click);
         }
     }
     public Intent putData(Intent intent,List<Post> datas,int posi){
