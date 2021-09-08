@@ -83,7 +83,7 @@ public class Post_write extends AppCompatActivity {
     private Table choosedTable=null;
     private String forum_sort;
     private Uri uri;
-    private String image_url;
+    private String image_url,token;
     private ArrayList<String> subscriber;
     private FirebaseStorage storage;
     private String imageFilePath;
@@ -113,6 +113,13 @@ public class Post_write extends AppCompatActivity {
         Intent intent = getIntent();
         forum_sort = intent.getExtras().getString("게시판");
         storage=FirebaseStorage.getInstance();
+
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                token = s;
+            }
+        });
 
         TedPermission.with(getApplicationContext())
                 .setPermissionListener(permissionListener)
@@ -268,17 +275,9 @@ public class Post_write extends AppCompatActivity {
                         Date date = new Date(datetime);
                         Timestamp timestamp = new Timestamp(date);
                         subscriber = new ArrayList<>();
-                        subscriber.add(mAuth.getUid());
-                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, image_url,forum_sort, choosedTable,subscriber, 0);
+                        subscriber.add(token);
+                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, image_url,forum_sort, choosedTable,subscriber, 0,token);
                         mStore.collection(forum_sort).document(PostID).set(post[0]);
-                        FirebaseMessaging.getInstance().subscribeToTopic(PostID)
-                                .addOnCompleteListener(task -> {
-                                    if (task.isSuccessful()) {
-                                        Log.e("댓글 생성", " 구독성공");
-                                    } else {
-                                        Log.e("댓글 생성", " 구독실패");
-                                    }
-                                });
                     }
                 });
                 finish();

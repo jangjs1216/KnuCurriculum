@@ -49,6 +49,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.otaliastudios.zoom.ZoomLayout;
@@ -97,7 +98,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private ArrayList<String> subs, Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
-    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist;
+    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist,token;
     private Boolean isChecked, isLiked;
     private Post post;
 
@@ -145,6 +146,14 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         post_id = intent.getStringExtra("post_id");
         Log.e("dkstmdwo", forum_sort + post_id);
 
+
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                token = s;
+            }
+        });
+
         /* [ 장준승 ] Post_comment에서 TreeView 보이도록 구현 */
 
         //과목 갯수
@@ -177,7 +186,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                 Log.e("postcomment2", String.valueOf(post) + subs);
 
-                if (subs.contains(mAuth.getUid())) {
+                if (subs.contains(token)) {
                     subscribe.setIcon(R.drawable.ic_baseline_notifications_active_24);
                     isChecked = true;
                 } else {
@@ -580,7 +589,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             if (task.isSuccessful()) {
                                 post = task.getResult().toObject(Post.class);
                                 subs = post.getSubscriber();
-                                subs.remove(mAuth.getUid());
+                                subs.remove(token);
                                 post.setSubscriber(subs);
                                 mStore.collection(forum_sort).document(post.getPost_id()).set(post);
                             }
@@ -596,7 +605,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             if (task.isSuccessful()) {
                                 post = task.getResult().toObject(Post.class);
                                 subs = post.getSubscriber();
-                                subs.add(mAuth.getUid());
+                                subs.add(token);
                                 post.setSubscriber(subs);
                                 mStore.collection(forum_sort).document(post.getPost_id()).set(post);
                             }
@@ -679,8 +688,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         post.setComments(data);
                         subs = post.getSubscriber();
 
-                        if (!subs.contains(mAuth.getUid())) {
-                            subs.add(mAuth.getUid());
+                        if (!subs.contains(token)) {
+                            subs.add(token);
                             post.setSubscriber(subs);
                         }
                         Log.e("TLqkf", post.getSubscriber().toString());
@@ -690,7 +699,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         long datetime = System.currentTimeMillis();
                         Date date = new Date(datetime);
                         Timestamp timestamp = new Timestamp(date);
-                        Msg msg = new Msg(forum_sort, post_id, mAuth.getUid(), timestamp);
+                        Msg msg = new Msg(forum_sort, post_id,token, timestamp);
                         mStore.collection("message").document(mId).set(msg);
 
 
@@ -748,8 +757,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         post.setComments(data);
 
                         subs=post.getSubscriber();
-                        if (!subs.contains(mAuth.getUid())) {
-                            subs.add(mAuth.getUid());
+                        if (!subs.contains(token)) {
+                            subs.add(token);
                             post.setSubscriber(subs);
                         }
                         mStore.collection(forum_sort).document(post_id).set(post);
@@ -759,7 +768,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                         long datetime = System.currentTimeMillis();
                         Date date = new Date(datetime);
                         Timestamp timestamp = new Timestamp(date);
-                        Msg msg = new Msg(forum_sort, post_id, mAuth.getUid(), timestamp);
+                        Msg msg = new Msg(forum_sort, post_id, token, timestamp);
                         mStore.collection("message").document(mId).set(msg);
 
                         View view = getCurrentFocus();//작성버튼을 누르면 에딧텍스트 키보드 내리게 하기

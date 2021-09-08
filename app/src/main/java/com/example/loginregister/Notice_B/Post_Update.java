@@ -85,7 +85,7 @@ public class Post_Update extends AppCompatActivity {
     private Uri uri;
     private int commnet_num;
     private Table table;
-    private String image_url;
+    private String image_url,token;
     private ArrayList<String> subscriber;
     private ArrayList<Comment> comments=new ArrayList<>();
     private FirebaseStorage storage;
@@ -146,7 +146,7 @@ public class Post_Update extends AppCompatActivity {
                     title=post.getTitle();
                     content=post.getContents();
                     click = post.getClick();
-
+                    token = post.getWriter_token();
 
                     mTitle.setText(title);
                     mContents.setText(content);
@@ -294,7 +294,7 @@ public class Post_Update extends AppCompatActivity {
         }
         else {
             if (mAuth.getCurrentUser() != null) {
-                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber, click);
+                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber, click,token);
                 mStore.collection(forum_sort).document(post_id).set(post);
                 finish();
             }

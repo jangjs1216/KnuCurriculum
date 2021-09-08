@@ -16,13 +16,10 @@ public class Post implements Comparable<Post> {
     private Timestamp timestamp;
     private String post_id;
 
-    public int getClick() {
-        return click;
-    }
 
-    public void setClick(int click) {
-        this.click = click;
-    }
+
+    private String writer_token;
+
 
     private ArrayList<Comment> comments; //댓글 리스트들
     private int coment_Num;
@@ -125,6 +122,20 @@ public class Post implements Comparable<Post> {
         this.subscriber = subscriber;
     }
 
+    public int getClick() {
+        return click;
+    }
+
+    public void setClick(int click) {
+        this.click = click;
+    }
+    public String getWriter_token() {
+        return writer_token;
+    }
+
+    public void setWriter_token(String writer_token) {
+        this.writer_token = writer_token;
+    }
 
 
 
@@ -144,9 +155,10 @@ public class Post implements Comparable<Post> {
         this.table = new Table();
         this.subscriber = new ArrayList<>();
         this.click = 0;
+        this.writer_token ="";
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, String image_url, String forum, Table table,ArrayList<String> subscriber, int click) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, String image_url, String forum, Table table,ArrayList<String> subscriber, int click,String writer_token) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;
@@ -161,6 +173,7 @@ public class Post implements Comparable<Post> {
         this.table = table;
         this.subscriber = subscriber;
         this.click = click;
+        this.writer_token = writer_token;
     }
 
     @Override
