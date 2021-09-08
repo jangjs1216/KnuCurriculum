@@ -369,11 +369,9 @@ public class Fragment2 extends Fragment {
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
                         LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
-                        LinearLayout LL4 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL4);
                         LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
-                        LL4.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
             }
@@ -434,73 +432,73 @@ public class Fragment2 extends Fragment {
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
 
-                case R.id.LL4:
-                    SubjectDetailDialog sDialog = new SubjectDetailDialog(v.getContext(), curData);
-                    sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
-                        @Override
-                        public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
-                            String currSubjectName = (String) curViewHolder.mTextView.getText();
-                            Log.e("###", "버튼 클릭됨");
-
-                            for(TreeNode tn : treeNodeList)
-                            {
-                                // [장준승] rootnode 예외 처리
-                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]) && tn.getParent() == null)
-                                {
-                                    if(isTakenClass)
-                                    {
-                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
-                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
-                                    }else{
-                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
-                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
-                                    }
-                                    userAccount.getTables().set(tableLoc, currTable);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                    break;
-                                }
-
-                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
-                                    String parentSubjectName = tn.getParent().getData().toString().split("\\.")[0];
-                                    String currLinkInfo = currTable.getTable().get(parentSubjectName).get(currSubjectName);
-
-                                    Boolean isChecked = false;
-
-                                    if (currLinkInfo != null && currLinkInfo.split("\\.")[2].equals("1"))
-                                    {
-                                        isChecked = true;
-                                    }
-
-                                    if(isTakenClass)
-                                    {
-                                        // 안듣 -> 듣
-                                        if(!isChecked) {
-                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
-                                        }
-
-                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
-                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
-                                    }else{
-                                        //듣 -> 안듣
-                                        if(isChecked)
-                                        {
-                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
-                                        }
-                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
-                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
-                                    }
-                                    userAccount.getTables().set(tableLoc, currTable);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-                                    break;
-                                }
-                            }
-                        }
-                    });
-                    nodeChoiceBottomSheetDialog.dismiss();
-                    sDialog.setCancelable(false);
-                    sDialog.show();
-
-                    break;
+//                case R.id.LL4:
+//                    SubjectDetailDialog sDialog = new SubjectDetailDialog(v.getContext(), curData);
+//                    sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
+//                        @Override
+//                        public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
+//                            String currSubjectName = (String) curViewHolder.mTextView.getText();
+//                            Log.e("###", "버튼 클릭됨");
+//
+//                            for(TreeNode tn : treeNodeList)
+//                            {
+//                                // [장준승] rootnode 예외 처리
+//                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]) && tn.getParent() == null)
+//                                {
+//                                    if(isTakenClass)
+//                                    {
+//                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
+//                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
+//                                    }else{
+//                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
+//                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
+//                                    }
+//                                    userAccount.getTables().set(tableLoc, currTable);
+//                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+//                                    break;
+//                                }
+//
+//                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
+//                                    String parentSubjectName = tn.getParent().getData().toString().split("\\.")[0];
+//                                    String currLinkInfo = currTable.getTable().get(parentSubjectName).get(currSubjectName);
+//
+//                                    Boolean isChecked = false;
+//
+//                                    if (currLinkInfo != null && currLinkInfo.split("\\.")[2].equals("1"))
+//                                    {
+//                                        isChecked = true;
+//                                    }
+//
+//                                    if(isTakenClass)
+//                                    {
+//                                        // 안듣 -> 듣
+//                                        if(!isChecked) {
+//                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
+//                                        }
+//
+//                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
+//                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
+//                                    }else{
+//                                        //듣 -> 안듣
+//                                        if(isChecked)
+//                                        {
+//                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
+//                                        }
+//                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
+//                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
+//                                    }
+//                                    userAccount.getTables().set(tableLoc, currTable);
+//                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    });
+//                    nodeChoiceBottomSheetDialog.dismiss();
+//                    sDialog.setCancelable(false);
+//                    sDialog.show();
+//
+//                    break;
             }
         }
     };
@@ -670,8 +668,6 @@ public class Fragment2 extends Fragment {
                             String choosedSubjectName = searchSubjectList.get(pos).getName();
                             Log.e("###", choosedSubjectName + " 선택 됨");
 
-                            Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-
                             Map<String, Map<String, String>> tb = new HashMap<>();
                             for(Subject_ subject_ : subjectList){
                                 Map<String, String> line = new HashMap<>();
@@ -716,8 +712,6 @@ public class Fragment2 extends Fragment {
                                         treeResisted = true;
                                         String choosedSubjectName = searchSubjectList.get(pos).getName();
                                         Log.e("###", choosedSubjectName + " 선택 됨");
-
-                                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
 
                                         Map<String, Map<String, String>> tb = new HashMap<>();
                                         for(Subject_ subject_ : subjectList){
@@ -896,8 +890,6 @@ public class Fragment2 extends Fragment {
                     String choosedSubjectName = searchSubjectList.get(pos).getName();
                     Log.e("###", choosedSubjectName + " 선택 됨");
 
-                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
-
                     Map<String, Map<String, String>> tb = new HashMap<>();
                     for (Subject_ subject_ : subjectList) {
                         Map<String, String> line = new HashMap<>();
@@ -1044,8 +1036,6 @@ public class Fragment2 extends Fragment {
                         treeResisted = true;
                         String choosedSubjectName = searchSubjectList.get(pos).getName();
                         Log.e("###", choosedSubjectName + " 선택 됨");
-
-                        Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
 
                         Map<String, Map<String, String>> tb = new HashMap<>();
                         for (Subject_ subject_ : subjectList) {
