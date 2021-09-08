@@ -60,7 +60,7 @@ PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
         holder.post_contents.setText(datas.get(position).getContents());//리스트로 만들어 주기 위해서
         holder.post_liketext.setText(datas.get(position).getLike());
         Timestamp timestamp = datas.get(position).getTimestamp();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
         holder.post_time.setText(simpleDateFormat.format(timestamp.toDate()));
         holder.post_click.setText(Integer.toString(datas.get(position).getClick()));
 
