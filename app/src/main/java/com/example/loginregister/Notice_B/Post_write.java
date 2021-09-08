@@ -28,10 +28,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.loginregister.Fragment2;
 import com.example.loginregister.Table;
+import com.example.loginregister.adapters.CurriculumAdapter;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
 import com.example.loginregister.login.FirebaseID;
@@ -88,7 +91,7 @@ public class Post_write extends AppCompatActivity {
     private RecyclerView postAddTreeRV;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Recycler_Data> arrayList;
-    private Recycler_Adapter recycler_adapter;
+    private CurriculumAdapter curriculumAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,18 +397,20 @@ public class Post_write extends AppCompatActivity {
                     Recycler_Data recycler_data = new Recycler_Data(tableName);
                     arrayList.add(recycler_data);
                 }
-                recycler_adapter = new Recycler_Adapter(arrayList);
-                postAddTreeRV.setAdapter(recycler_adapter);
+                curriculumAdapter = new CurriculumAdapter(arrayList);
+                postAddTreeRV.setAdapter(curriculumAdapter);
 
                 //리싸이클러뷰 클릭 리스너
-                recycler_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                curriculumAdapter.setOnItemListener(new CurriculumAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
-                        String tableName = arrayList.get(pos).getTv_title().toString();
-                        Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+                        if(option.equals("choice")){
+                            String tableName = arrayList.get(pos).getTv_title().toString();
+                            Toast.makeText(getApplicationContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 
-                        choosedTable = tables.get(pos);
-                        addTreeDialog.dismiss();
+                            choosedTable = tables.get(pos);
+                            addTreeDialog.dismiss();
+                        }
                     }
                 });
             }

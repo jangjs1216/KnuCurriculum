@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.loginregister.UserInfo.Fragment_UserSpec;
 import com.example.loginregister.UserInfo.Fragment_User_Info;
 import com.example.loginregister.UserInfo.User_Info_Data;
+import com.example.loginregister.adapters.CurriculumAdapter;
 import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.curiList.Recycler_Adapter;
 import com.example.loginregister.curiList.Recycler_Data;
@@ -40,7 +41,7 @@ public class Fragment1 extends Fragment {
     private ArrayList<Recycler_Data> curi_List;
     private RecyclerView curi_recyclerView;
     private LinearLayoutManager curi_linearLayoutManager;
-    private Recycler_Adapter curi_adapter;
+    private CurriculumAdapter curriculumAdapter;
     private TextView tv_username, tv_taked, tv_major, treeMore,specMore;
     private UserAccount userAccount;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
@@ -98,23 +99,25 @@ public class Fragment1 extends Fragment {
                     }
                     Log.e("###", "item : " + tableName);
                 }
-                curi_adapter = new Recycler_Adapter(curi_List);
-                curi_recyclerView.setAdapter(curi_adapter);
+                curriculumAdapter = new CurriculumAdapter(curi_List);
+                curi_recyclerView.setAdapter(curriculumAdapter);
 
                 //리싸이클러뷰 클릭 리스너
-                curi_adapter.setOnItemListener(new Recycler_Adapter.OnItemClickListener() {
+                curriculumAdapter.setOnItemListener(new CurriculumAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int pos, String option) {
-                        String tableName = curi_List.get(pos).getTv_title().toString();
-                        Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
+                        if(option.equals("choice")){
+                            String tableName = curi_List.get(pos).getTv_title().toString();
+                            Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
 
-                        Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                        bundle.putString("tableName", tableName);//번들에 넘길 값 저장
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                        fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                        transaction.replace(R.id.main_frame, fragment2);
-                        transaction.commit();
+                            Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                            bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                            Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                            fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                            transaction.replace(R.id.main_frame, fragment2);
+                            transaction.commit();
+                        }
                     }
                 });
             }
