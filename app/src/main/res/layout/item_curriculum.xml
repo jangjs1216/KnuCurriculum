@@ -24,7 +24,7 @@
             android:padding="15dp"
             android:text="커리큘럼 이름"
             android:textColor="@color/black"
-            android:textSize="10sp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:layout_width="30sp"
