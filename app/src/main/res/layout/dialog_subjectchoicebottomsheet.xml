@@ -53,18 +53,14 @@
                 android:fontFamily="@font/main_font_medium"
                 android:includeFontPadding="false"/>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/cancelIV"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                app:srcCompat="@drawable/cancel"
+                android:layout_marginRight="5sp"/>
 
-        <TextView
-            android:id="@+id/searchTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="검색"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:fontFamily="@font/main_font_medium"
-            android:includeFontPadding="false"/>
+        </LinearLayout>
 
     </LinearLayout>
 

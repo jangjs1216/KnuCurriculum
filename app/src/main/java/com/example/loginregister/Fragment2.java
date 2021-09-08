@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -90,7 +93,7 @@ public class Fragment2 extends Fragment {
     BottomSheetDialog nodeChoiceBottomSheetDialog, subjectChoiceBottomSheetDialog;
     RecyclerView subjectRecyclerView;
     EditText searchET;
-    TextView searchTV;
+    ImageView cancelIV;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -796,12 +799,128 @@ public class Fragment2 extends Fragment {
         subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
         subjectChoiceBottomSheetDialog.setCanceledOnTouchOutside(true);
 
+        noSearching();
+
+        searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
+        searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0){
+                    cancelIV.setVisibility(View.INVISIBLE);
+                    noSearching();
+                }
+                else{
+                    cancelIV.setVisibility(View.VISIBLE);
+                    searching();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        cancelIV = subjectChoiceBottomSheetDialog.findViewById(R.id.cancelIV);
+        cancelIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchET.setText("");
+            }
+        });
+    }
+
+    public void searching(){
+        ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+        for(Subject_ subject_ : subjectList){
+            if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+        }
+        subjectAdapter = new SubjectAdapter(searchSubjectList);
+        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        subjectRecyclerView.setAdapter(subjectAdapter);
+
+        //RecyclerView에서 선택된 아이템에 접근
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                if(currTable != null){
+                    String choosedSubjectName = searchSubjectList.get(pos).getName();
+                    Boolean isSubjectOverlapped = false;
+
+                    Log.e("###", choosedSubjectName + " 선택 됨..");
+
+                    // [ 장준승 ] 노드 중복 방지
+                    for(TreeNode tn : treeNodeList)
+                    {
+                        if(tn != null && choosedSubjectName.equals(tn.getData().toString().split("\\.")[0]))
+                        {
+                            Toast.makeText(getContext(), "이미 선택된 과목입니다",Toast.LENGTH_LONG).show();
+                            isSubjectOverlapped = true;
+                            break;
+                        }
+                    }
+
+                    if(!isSubjectOverlapped) {
+                        for (TreeNode tn : treeNodeList) {
+                            if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
+                                //UserAccount 정보 업데이트
+                                currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                                userAccount.getTables().set(tableLoc, currTable);
+                                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                                int mappingPos = m.get(choosedSubjectName);
+
+                                //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
+                                String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                                final TreeNode newChild = new TreeNode(convertedSubjectName);
+
+                                //[장준승] 화면 사이즈 node 개수에 비례하여 변화
+                                updateDisplaySize();
+                                Log.e("###", "Current displaySize : " + displaySize);
+
+                                adj[m.get(curData)].add(mappingPos);
+                                treeNodeList[mappingPos] = newChild;
+                                tn.addChild(newChild);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else {
+                    treeResisted = true;
+                    String choosedSubjectName = searchSubjectList.get(pos).getName();
+                    Log.e("###", choosedSubjectName + " 선택 됨");
+
+                    Toast.makeText(v.getContext(), choosedSubjectName, Toast.LENGTH_LONG).show();
+
+                    Map<String, Map<String, String>> tb = new HashMap<>();
+                    for (Subject_ subject_ : subjectList) {
+                        Map<String, String> line = new HashMap<>();
+                        tb.put(subject_.getName(), line);
+                    }
+                    Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+
+                    userAccount.getTableNames().add(tableName);
+                    userAccount.getTables().add(table);
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                    //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
+                    getTableFromFB();
+                }
+
+                subjectChoiceBottomSheetDialog.dismiss();
+            }
+        });
+    }
+
+    public void noSearching(){
         subjectAdapter = new SubjectAdapter(subjectList);
         subjectRecyclerView = subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
-        searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
-        searchTV = subjectChoiceBottomSheetDialog.findViewById(R.id.searchTV);
-        searchTV.setOnClickListener(searchTVOnClickListener);
-
         subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         subjectRecyclerView.setAdapter(subjectAdapter);
 

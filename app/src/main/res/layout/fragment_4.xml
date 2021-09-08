@@ -50,7 +50,7 @@
                 android:layout_width="30sp"
                 android:layout_height="30sp"
                 app:srcCompat="@drawable/search"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5sp"/>
 
             <EditText
                 android:id="@+id/searchET"
@@ -64,83 +64,16 @@
                 android:fontFamily="@font/main_font_medium"
                 android:includeFontPadding="false"/>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/cancelIV"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                app:srcCompat="@drawable/cancel"
+                android:layout_marginRight="5sp"/>
 
-        <TextView
-            android:id="@+id/searchTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="검색"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:fontFamily="@font/main_font_medium"
-            android:includeFontPadding="false"/>
+        </LinearLayout>
 
     </LinearLayout>
-
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_background"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_marginBottom="5dp"
-
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-
-            <EditText
-                android:id="@+id/searcf_into"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:inputType="text"
-                android:imeOptions="actionSearch"
-                tools:ignore="Autofill,TextFields" />
-
-            <ImageView
-                android:clickable="true"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:id="@+id/delete_btt"
-                android:src="@drawable/search_delete_button"
-                android:layout_width="20dp"
-                android:layout_height="20dp"/>
-
-
-        </LinearLayout>
-
-
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.tabs.TabItem
-                android:text="개요"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:text="평점"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <com.google.android.material.tabs.TabItem
-                android:text="빌드"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-
-        </com.google.android.material.tabs.TabLayout>
-
-
-
-    </LinearLayout>-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -41,8 +43,8 @@ public class Fragment4 extends Fragment {
     private FragmentManager fm;
     private FragmentTransaction ft;
     private final static  String TAG = "Frag4";
+    ImageView cancelIV;
     EditText searchET;
-    TextView searchTV;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList<Subject_> subjectList = new ArrayList<>();
     ArrayList<Subject_> search_subjectList = new ArrayList<>();
@@ -65,25 +67,35 @@ public class Fragment4 extends Fragment {
         recyclerView = view.findViewById(R.id.F4_frag);
 
         //검색완료시 함수 박경무
-        searchET=view.findViewById(R.id.searchET);
-        searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        cancelIV = view.findViewById(R.id.cancelIV);
+        cancelIV.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                   Searchinto();
-                    return true;
-                }
-                return false;
+            public void onClick(View v) {
+                searchET.setText("");
             }
         });
 
-        searchTV = view.findViewById(R.id.searchTV);
-        searchTV.setOnClickListener(new View.OnClickListener() {
+        searchET=view.findViewById(R.id.searchET);
+        searchET.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Searchinto();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0){
+                    cancelIV.setVisibility(View.INVISIBLE);
+                    listSub();
+                }else{
+                    cancelIV.setVisibility(View.VISIBLE);
+                    Searchinto();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -95,7 +107,6 @@ public class Fragment4 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag1,menu);
-        Log.e(TAG,"sex");
     }
 
     @Override
