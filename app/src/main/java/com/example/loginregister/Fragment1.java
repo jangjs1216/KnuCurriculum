@@ -66,8 +66,14 @@ public class Fragment1 extends Fragment {
         btn_extra = view.findViewById(R.id.btn_frag1_extra);
         setting = view.findViewById(R.id.frag1_setting);
         curi_recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-        curi_linearLayoutManager = new LinearLayoutManager(getContext());
+        curi_linearLayoutManager = new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically(){
+                return false;
+            }
+        };
         curi_recyclerView.setLayoutManager(curi_linearLayoutManager);
+
         //리싸이클러뷰
 //        specs_linearLayoutManager = new LinearLayoutManager(getContext());
 //        specs_recyclerView.setLayoutManager(specs_linearLayoutManager);

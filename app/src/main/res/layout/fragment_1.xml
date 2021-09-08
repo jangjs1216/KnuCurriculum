@@ -290,7 +290,7 @@
                             android:src="@drawable/frag1_globe"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.2"
+                            app:layout_constraintHorizontal_bias="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -329,7 +329,7 @@
                             android:src="@drawable/frag1_cert"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.2"
+                            app:layout_constraintHorizontal_bias="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -374,7 +374,7 @@
                             android:src="@drawable/frag1_trophy"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.2"
+                            app:layout_constraintHorizontal_bias="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -414,7 +414,7 @@
                             android:src="@drawable/frag1_bulb"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="1.2"
+                            app:layout_constraintHorizontal_bias="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
@@ -472,6 +472,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:overScrollMode="never"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
