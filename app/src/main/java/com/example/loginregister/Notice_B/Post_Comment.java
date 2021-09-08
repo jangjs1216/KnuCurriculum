@@ -43,6 +43,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -56,12 +57,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     FirebaseUser user;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private TextView com_title;
-    private TextView com_text;
-    private TextView com_nick;
+    private TextView com_title, com_text, com_nick, com_date;
     private ImageView com_photo;
     private ImageView url_image; // 게시글 이미지
     private String forum_sort;
+    private String timestamp;
     private ImageView btn_comment;
     private PostCommentAdapter contentAdapter;
     private RecyclerView mCommentRecyclerView;
@@ -97,6 +97,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_nick = (TextView) findViewById(R.id.Comment_nickname);          //본문 작성자
         com_title = (TextView) findViewById(R.id.Comment_title);            //제목
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
+        com_date = (TextView)findViewById(R.id.Comment_date);
         com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
         url_image = (ImageView) findViewById(R.id.linear_layout);               //작성자가 올린 이미지
         treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
@@ -134,8 +135,10 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                 likeText.setText(post.getLike());
 
+
                 writer_id_post = post.getWriter_id();
                 image_url = post.getImage_url();
+
                 if (image_url != null) {
                     Log.d("###", "image_url : " + image_url);
                     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -407,6 +410,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 com_nick.setText(post.getP_nickname());          //본문 작성자
                 com_title.setText(post.getTitle());            //제목
                 com_text.setText(post.getContents());             //본문
+                com_date.setText(post.getTimestamp().toDate().toString());
+                Log.e("###",post.getTimestamp().toDate().toString());
 
                 Cdata.clear();
                 Cdata = post.getComments();
@@ -420,6 +425,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         Compared_c = false;
         com_edit.setHint("대댓글 작성하기");
         P_comment_id = comment_id;
+    }
+
+    public String stringTimestamp(Timestamp timestamp) {
+        String pattern = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat format=new SimpleDateFormat(pattern);
+        return pattern;
     }
 
     //댓글 대댓글 작성 함수

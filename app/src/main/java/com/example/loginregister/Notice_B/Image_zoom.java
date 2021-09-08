@@ -36,7 +36,7 @@ public class Image_zoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_zoom);
 
-        btn_store=findViewById(R.id.btn_store);
+//        btn_store=findViewById(R.id.btn_store);
         zoom_image=findViewById(R.id.zoom_image);
         image_url=getIntent().getStringExtra("url");
         if (image_url != null) {
@@ -62,14 +62,14 @@ public class Image_zoom extends AppCompatActivity {
                 });
             }
         }
-        btn_store.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                zoom_image.setDrawingCacheEnabled(true);
-                Bitmap bitmap = zoom_image.getDrawingCache();
-                MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()), "");
-                Toast.makeText(Image_zoom.this,"사진이 저장되었습니다",Toast.LENGTH_SHORT).show();
-            }
-        });
+//        btn_store.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                zoom_image.setDrawingCacheEnabled(true);
+//                Bitmap bitmap = zoom_image.getDrawingCache();
+//                MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()), "");
+//                Toast.makeText(Image_zoom.this,"사진이 저장되었습니다",Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 }
