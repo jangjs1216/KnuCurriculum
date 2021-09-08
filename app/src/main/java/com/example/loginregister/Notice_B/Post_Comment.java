@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -70,11 +71,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     FirebaseUser user;
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private TextView com_title, com_text, com_nick, com_date;
+    private TextView com_title, com_text, com_nick, com_date, com_click;
     private ImageView com_photo;
     private ImageView url_image; // 게시글 이미지
     private String forum_sort;
-    private String timestamp;
+    private Timestamp timestamp;
     private ImageView btn_comment;
     private PostCommentAdapter contentAdapter;
     private RecyclerView mCommentRecyclerView;
@@ -90,7 +91,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private Integer ll;
     SwipeRefreshLayout swipeRefreshLayout;
     DocumentReference docRef;
-
+    private CardView cv_image;
     public static Context mcontext;
     public boolean Compared_c = true;
     private ArrayList<String> subs, Liked = new ArrayList<>();
@@ -129,14 +130,16 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_nick = (TextView) findViewById(R.id.Comment_nickname);          //본문 작성자
         com_title = (TextView) findViewById(R.id.Comment_title);            //제목
         com_text = (TextView) findViewById(R.id.Comment_text);              //본문
-        com_date = (TextView)findViewById(R.id.Comment_date);
+        com_date = (TextView)findViewById(R.id.Comment_date);               //작성날짜
+        com_click = (TextView) findViewById(R.id.Comment_click);            //조회수
         com_edit = (EditText) findViewById(R.id.Edit_comment);              //댓글 작성 내용 입력창
-        url_image = (ImageView) findViewById(R.id.linear_layout);               //작성자가 올린 이미지
+        url_image = (ImageView) findViewById(R.id.linear_layout);           //작성자가 올린 이미지
         treeButton = (Button) findViewById(R.id.btn_post_treeview);         //트리 보여주는 버튼
         likeButton = (ImageView) findViewById(R.id.like_button);            //좋아요 버튼
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         zoomLayout = (ZoomLayout) findViewById(R.id.post_zoomlayout);
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
+        cv_image=findViewById(R.id.cv_image);
         Intent intent = getIntent();//데이터 전달받기
         forum_sort = getIntent().getExtras().getString("forum_sort");
         post_id = intent.getStringExtra("post_id");
@@ -170,6 +173,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                 post_t = post.getTitle();
                 subs = post.getSubscriber();
+                timestamp = post.getTimestamp();
+
                 Log.e("postcomment2", String.valueOf(post) + subs);
 
                 if (subs.contains(mAuth.getUid())) {
@@ -212,6 +217,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         });
                     }
+                }
+                else {
+                    cv_image.setVisibility(View.INVISIBLE);
                 }
 
                 if (isTreeExist.equals("yes")) {
@@ -617,7 +625,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 com_nick.setText(post.getP_nickname());          //본문 작성자
                 com_title.setText(post.getTitle());            //제목
                 com_text.setText(post.getContents());             //본문
-                com_date.setText(post.getTimestamp().toDate().toString());
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy.MM.dd HH:mm");
+                com_date.setText(simpleDateFormat.format(timestamp.toDate()));
+                com_click.setText("조회 " + post.getClick());
                 Log.e("###",post.getTimestamp().toDate().toString());
 
                 Cdata.clear();
@@ -632,12 +642,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         Compared_c = false;
         com_edit.setHint("대댓글 작성하기");
         P_comment_id = comment_id;
-    }
-
-    public String stringTimestamp(Timestamp timestamp) {
-        String pattern = "yyyy-MM-dd HH:mm:ss";
-        SimpleDateFormat format=new SimpleDateFormat(pattern);
-        return pattern;
     }
 
     //댓글 대댓글 작성 함수

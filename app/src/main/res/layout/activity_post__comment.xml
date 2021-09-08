@@ -91,15 +91,31 @@
                                 android:textSize="15sp"
                                 tools:text="닉네임입니다" />
 
-                            <TextView
-                                android:id="@+id/Comment_date"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="10dp"
-                                android:fontFamily="@font/main_font_regular"
-                                android:includeFontPadding="false"
-                                android:textSize="12sp"
-                                android:text="게시날짜입니다" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Comment_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:fontFamily="@font/main_font_regular"
+                                    android:includeFontPadding="false"
+                                    android:text="게시날짜입니다"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/Comment_click"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:fontFamily="@font/main_font_regular"
+                                    android:includeFontPadding="false"
+                                    android:textSize="12dp"
+                                    android:text="조회수" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -174,11 +190,11 @@
 
                     <androidx.cardview.widget.CardView
                         android:elevation="6dp"
-
+                        android:id="@+id/cv_image"
                         app:cardCornerRadius="20dp"
                         android:layout_margin="30dp"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp">
+                        android:layout_height="wrap_content">
 
                         <ImageView
                             android:scaleType="matrix"
