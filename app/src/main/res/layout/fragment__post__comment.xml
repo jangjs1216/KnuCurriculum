@@ -74,8 +74,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right|center_vertical"
-                            android:layout_marginLeft="10sp"
-                            android:layout_marginRight="20sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
                             android:textSize="15sp"
                             android:textStyle="normal"
                             tools:text="닉네임입니다" />
@@ -98,15 +98,14 @@
                                 android:layout_margin="10sp"
                                 android:background="#FFFFFF"
                                 android:text="트리 보기"
-                                android:visibility="gone"/>
+                                android:visibility="gone" />
 
                             <ImageView
                                 android:id="@+id/like_button"
                                 android:layout_width="40sp"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_favorite_border_24"
                                 android:clickable="true"
-                                />
+                                android:src="@drawable/ic_baseline_favorite_border_24" />
 
                             <TextView
                                 android:id="@+id/like_text"
@@ -124,8 +123,8 @@
                     <TextView
                         android:id="@+id/Comment_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="40sp"
-                        android:layout_marginLeft="20sp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
                         android:textColor="@android:color/black"
                         android:textSize="24sp"
                         android:textStyle="bold"
@@ -135,7 +134,7 @@
                         android:id="@+id/Comment_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20sp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginBottom="10sp"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
@@ -148,8 +147,15 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="10sp"
                         app:srcCompat="@color/white" />
+                    <View
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#F0F0F0"/>
 
                 </LinearLayout>
+
 
 
                 <androidx.recyclerview.widget.RecyclerView

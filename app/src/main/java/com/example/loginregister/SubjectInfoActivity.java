@@ -52,7 +52,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     DocumentReference docRef;
     SubjectCommentAdapter subjectCommentAdapter;
     RecyclerView subjectCommentRecyclerView,picksubjectList;
-    Dialog commentAddDialog,commentReviseDialog;
+    BottomSheetDialog commentAddDialog,commentReviseDialog;
     Subject_ subject_;
     String subjectName;
     TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
@@ -134,7 +134,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
                 calculate_total();
 
-                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
+                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments, SubjectInfoActivity.this);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
                 subjectCommentAdapter.setOnItemListener(new SubjectCommentAdapter.OnItemClickListener() {
@@ -163,7 +163,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
             }
         });
 
-        commentAddDialog= new Dialog(SubjectInfoActivity.this, R.style.NewDialog);
+        commentAddDialog= new BottomSheetDialog(SubjectInfoActivity.this, R.style.NewDialog);
         commentAddDialog.setContentView(R.layout.dialog_subjectcomment);
         commentAddDialog.setCanceledOnTouchOutside(true);
 
@@ -258,7 +258,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
 
-                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments);
+                subjectCommentAdapter = new SubjectCommentAdapter(subjectComments,SubjectInfoActivity.this);
                 subjectCommentRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 subjectCommentRecyclerView.setAdapter(subjectCommentAdapter);
                 calculate_total();
@@ -335,28 +335,23 @@ public class SubjectInfoActivity extends AppCompatActivity {
                         }
 
                         for(int j=0;j<5;++j) {
-                            Map<String, String> nextnametable = table.getTable().get(nextnames.get(j));
-                            float ntotal = Integer.parseInt(nextnametable.get(nextnames.get(j)));
-                            float maxi=0;
+                            String curSub =nextnames.get(j);
+                            Map<String, String> nextnametable = table.getTable().get(curSub);
+                            int ntotal = Integer.parseInt(nextnametable.get(curSub));
+                            int maxi=0;
                             String maxstring = null;
                             for( String Nkey : nextnametable.keySet()){
-                                if(Integer.parseInt(nextnametable.get(Nkey))>maxi){
+                                if(Integer.parseInt(nextnametable.get(Nkey))>maxi && !Nkey.equals(curSub)){
                                     maxstring=Nkey;
                                     maxi=Integer.parseInt(nextnametable.get(Nkey));
                                 }
                             }
-                            if(maxstring!=null){ n_nextnames.add(maxstring);}
-                            else{n_nextnames.add("데이터가 없습니다");}
+                            if(maxstring!=null){ n_nextnames.add(maxstring);seconds.add((float)maxi/ntotal);}
+                            else{n_nextnames.add("데이터가 없습니다");  seconds.add((float) (0));}
 
-                            if(ntotal>0) {
-                                seconds.add((float)maxi/ntotal);
-                            }
-                            else{
-                                seconds.add((float) (0));
-                            }
                         }
 
-
+                        //Log.e("%%%%%",Integer.toString(nextnames.size()) +Integer.toString(n_nextnames.size()) +Integer.toString(firsts.size()) +Integer.toString(seconds.size()) );
                         for(int ii=0;ii<5;++ii){
                             Picksubject picksubject = new Picksubject(subjectName, nextnames.get(ii),n_nextnames.get(ii),firsts.get(ii),seconds.get(ii));
                             Picklist.add(picksubject);

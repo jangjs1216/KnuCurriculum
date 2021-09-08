@@ -1,5 +1,9 @@
 package com.example.loginregister.adapters;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.loginregister.Notice_B.Comment;
+import com.example.loginregister.Notice_B.Post_Comment;
 import com.example.loginregister.R;
 import com.example.loginregister.SubjectComment;
+import com.example.loginregister.SubjectInfoActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -23,10 +31,11 @@ import java.util.ArrayList;
 public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAdapter.SubjectCommentViewHolder> {
     ArrayList<SubjectComment> list;
     private OnItemClickListener mListener = null;
+    Activity activity;
 
-
-    public SubjectCommentAdapter(ArrayList<SubjectComment> list){
+    public SubjectCommentAdapter(ArrayList<SubjectComment> list, Activity activity){
         this.list = list;
+        this.activity =activity;
     }
 
     @NonNull
@@ -84,7 +93,26 @@ public class SubjectCommentAdapter extends RecyclerView.Adapter<SubjectCommentAd
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         if(mListener != null){
-                            mListener.onItemClick(v, pos, "delete");
+
+                            AlertDialog.Builder msgBuilder = new AlertDialog.Builder(activity)
+                                    .setTitle("수강평 삭제")
+                                    .setMessage("삭제하시겟습니까?")
+                                    .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            mListener.onItemClick(v, pos, "delete");
+                                        }
+                                    })
+                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                        }
+                                    });
+                            AlertDialog msgDlg = msgBuilder.create();
+                            msgDlg.setCanceledOnTouchOutside(true);
+                            msgDlg.show();
+
                         }
                     }
                 }

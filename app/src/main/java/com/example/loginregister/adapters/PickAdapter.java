@@ -77,7 +77,7 @@ public class PickAdapter extends RecyclerView.Adapter<PickAdapter.PickViewHolder
             next_sub.setText(subject.getNextSub());
             n_next_sub.setText(subject.getN_nextSub());
             first.setText(Integer.toString((int) (subject.getFirst() * 100))+"%");
-            second.setText(Integer.toString((int)subject.getSecond())+"%");
+            second.setText(Integer.toString((int)(subject.getSecond()*100))+"%");
         }
     }
 

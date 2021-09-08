@@ -82,6 +82,8 @@
             android:text="과목평"/>
 
         <EditText
+            android:paddingTop="10dp"
+            android:gravity="top"
             android:fontFamily="@font/main_font_regular"
             android:includeFontPadding="false"
             android:background="@drawable/blank_retangle"
