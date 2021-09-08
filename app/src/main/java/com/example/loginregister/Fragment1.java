@@ -108,8 +108,6 @@ public class Fragment1 extends Fragment {
                     public void onItemClick(View v, int pos, String option) {
                         if(option.equals("choice")){
                             String tableName = curi_List.get(pos).getTv_title().toString();
-                            Toast.makeText(getContext(), tableName + " 선택됨", Toast.LENGTH_LONG).show();
-
                             Bundle bundle = new Bundle(); // 번들을 통해 값 전달
                             bundle.putString("tableName", tableName);//번들에 넘길 값 저장
                             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();

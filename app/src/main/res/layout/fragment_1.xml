@@ -36,7 +36,7 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/main_font_bold"
+            android:fontFamily="@font/main_font_medium"
             android:includeFontPadding="false"
             android:text="전공 학점"
             android:textColor="@color/white"
@@ -51,7 +51,7 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/main_font_bold"
+            android:fontFamily="@font/main_font_medium"
             android:includeFontPadding="false"
             android:text="수강 학점"
             android:textColor="@color/white"
@@ -455,7 +455,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200sp"
             android:layout_marginHorizontal="26dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/frag1_btn"
@@ -472,7 +472,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:overScrollMode="never"
-
+                android:background="frag1_btn"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
