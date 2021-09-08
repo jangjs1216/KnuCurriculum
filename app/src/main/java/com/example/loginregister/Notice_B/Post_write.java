@@ -69,7 +69,7 @@ public class Post_write extends AppCompatActivity {
     private DocumentReference docRef;
     private EditText mTitle, mContents;//제목, 내용
     private String p_nickname;//게시판에 표기할 닉네잉 //이게 가져온 값을 저장하는 임시 변수
-    private TextView post_photo, post_tree;
+    private TextView post_photo, post_tree, post_gallery;
     private ProgressBar post_progressBar;
     private String writer_id;
     private ImageView post_imageView;
@@ -105,6 +105,7 @@ public class Post_write extends AppCompatActivity {
         btn_back=findViewById(R.id.btn_back);
         post_photo=findViewById(R.id.post_photo);
         post_tree=findViewById(R.id.post_tree);
+        post_gallery=findViewById(R.id.post_gallery);
 
         Intent intent = getIntent();
         forum_sort = intent.getExtras().getString("게시판");
@@ -131,25 +132,39 @@ public class Post_write extends AppCompatActivity {
                     });
         }
         // 사진올리기
-        post_photo.setOnClickListener(view -> {
-            Log.e("###","선택");
-            AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_write.this)
-                    .setTitle("사진 첨부")
-                    .setMessage("선택하세요")
-                    .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            takePhoto();
-                        }
-                    })
-                    .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            useGallery();
-                        }
-                    });
-            AlertDialog alertDialog = picBuilder.create();
-            alertDialog.show();
+//        post_photo.setOnClickListener(view -> {
+//            Log.e("###","선택");
+//            AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_write.this)
+//                    .setTitle("사진 첨부")
+//                    .setMessage("선택하세요")
+//                    .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            takePhoto();
+//                        }
+//                    })
+//                    .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            useGallery();
+//                        }
+//                    });
+//            AlertDialog alertDialog = picBuilder.create();
+//            alertDialog.show();
+//        });
+
+        post_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+            }
+        });
+
+        post_gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useGallery();
+            }
         });
 
         post_tree.setOnClickListener(new View.OnClickListener() {
