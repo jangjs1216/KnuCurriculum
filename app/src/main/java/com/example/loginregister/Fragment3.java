@@ -140,7 +140,7 @@ public class Fragment3 extends Fragment {
     public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.actionbar_frag3,menu);
-        Log.e(TAG,"이건뭐노?");
+
     }
 
     @Override

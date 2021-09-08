@@ -10,7 +10,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_curi_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="@color/main_color">
 
 
         <LinearLayout
@@ -20,18 +21,15 @@
             android:orientation="vertical"
             >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="KNU Curricular"
-                android:textColor="#FD0000"
-                android:textSize="12sp" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="과정 선택"
-                android:textColor="@color/black"
+                android:fontFamily="@font/main_font_bold"
+                android:includeFontPadding="false"
+                android:textColor="@color/white"
                 android:textSize="23sp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
