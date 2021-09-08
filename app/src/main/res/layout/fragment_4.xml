@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:background="@color/transparent"
                 android:fontFamily="@font/main_font_medium"
-                android:includeFontPadding="false"/>
+                android:includeFontPadding="false" />
 
             <ImageView
                 android:id="@+id/cancelIV"

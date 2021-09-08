@@ -1,5 +1,7 @@
 package com.example.loginregister;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH;
 import static com.google.common.primitives.Ints.max;
 
 import android.content.DialogInterface;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -95,6 +99,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     RecyclerView subjectRecyclerView;
     EditText searchET;
     ImageView cancelIV;
+    InputMethodManager inputMethodManager;
 
     SubjectAdapter subjectAdapter;
     TreeView treeView;
@@ -152,6 +157,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
         //뒤로가기
         ((MainActivity) getActivity()).setBackPressedlistener(this);
+        inputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
 
         /*
         TreeView 선언
@@ -800,6 +806,21 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         noSearching();
 
         searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
+        searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event)
+            {
+                switch (actionId)
+                {
+                    case IME_ACTION_SEARCH :
+                        inputMethodManager.hideSoftInputFromWindow(searchET.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        searching();
+                        break;
+                }
+                return true;
+            }
+        });
+
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

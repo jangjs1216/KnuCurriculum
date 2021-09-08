@@ -1,5 +1,8 @@
 package com.example.loginregister;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -23,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,6 +54,7 @@ public class Fragment4 extends Fragment {
     ArrayList<Subject_> search_subjectList = new ArrayList<>();
     SubjectAdapter subjectAdapter;
     RecyclerView recyclerView;
+    InputMethodManager inputMethodManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +70,7 @@ public class Fragment4 extends Fragment {
         actionBar.setDisplayShowTitleEnabled(false);//기본제목을 없애줍니다.
         setHasOptionsMenu(true);
         recyclerView = view.findViewById(R.id.F4_frag);
+        inputMethodManager = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
 
         //검색완료시 함수 박경무
         cancelIV = view.findViewById(R.id.cancelIV);
@@ -76,6 +82,22 @@ public class Fragment4 extends Fragment {
         });
 
         searchET=view.findViewById(R.id.searchET);
+
+        searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event)
+            {
+                switch (actionId)
+                {
+                    case IME_ACTION_SEARCH :
+                        inputMethodManager.hideSoftInputFromWindow(searchET.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        Searchinto();
+                        break;
+                }
+                return true;
+            }
+        });
+
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
