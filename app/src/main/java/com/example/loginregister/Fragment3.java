@@ -53,6 +53,7 @@ public class Fragment3 extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),NoticeBoard.class);
                 intent.putExtra("게시판", 8);
+                intent.putExtra("이름","좋아요 누른 글");
                 startActivity(intent);
             }
         });
@@ -62,6 +63,7 @@ public class Fragment3 extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),NoticeBoard.class);
                 intent.putExtra("게시판",9);
+                intent.putExtra("이름","내가 쓴글");
                 startActivity(intent);
             }
         });
@@ -71,6 +73,7 @@ public class Fragment3 extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),NoticeBoard.class);
                 intent.putExtra("게시판", 10);
+                intent.putExtra("이름","Best 게시글");
                 startActivity(intent);
             }
         });

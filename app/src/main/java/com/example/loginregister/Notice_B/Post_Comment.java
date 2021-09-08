@@ -334,13 +334,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-
                                     Log.d("확인", "삭제되었습니다.");
                                     finish();
                                 }
                             });
                 } else {
-
+                    Toast.makeText(this, "작성자가 아닙니다.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.action_btn_modify:
