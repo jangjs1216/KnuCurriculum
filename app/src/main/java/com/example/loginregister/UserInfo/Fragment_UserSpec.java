@@ -88,20 +88,21 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
         recyclerView.setOnTouchListener(new OnSwipeTouchListener(getContext()){
             @Override
             public void onSwipeLeft() {
-                if(!type.equals("0")){
+                if(!type.equals("4")){
                     int it = Integer.parseInt(type);
-                    it--;
+                    it++;
                     type = Integer.toString(it);
                     TabLayout.Tab tabAt = tabLayout.getTabAt(it);
                     tabLayout.selectTab(tabAt);
                 }
+
             }
 
             @Override
             public void onSwipeRight() {
-                if(!type.equals("4")){
+                if(!type.equals("0")){
                     int it = Integer.parseInt(type);
-                    it++;
+                    it--;
                     type = Integer.toString(it);
                     TabLayout.Tab tabAt = tabLayout.getTabAt(it);
                     tabLayout.selectTab(tabAt);
@@ -135,13 +136,11 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
                 }
                 adapter_user_info = new Adapter_User_Info(specs);
                 recyclerView.setAdapter(adapter_user_info);
+
                 adapter_user_info.setOnItemListener(new Adapter_User_Info.OnItemClickListner() {
-                    @Override
-                    public void onItemClick(View v, int pos) {
-                    }
 
                     @Override
-                    public void onItemLongClick(View v, int pos) {
+                    public void onEditClick(View v, int pos) {
                         SpecDiaLog specDiaLog = new SpecDiaLog(getContext(),specs.get(pos));
                         specDiaLog.setSpecDialogListener(new SpecDiaLog.SpecDiaLogListener() {
                             @Override
@@ -159,22 +158,31 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
                                 adapter_user_info.notifyDataSetChanged();
                             }
 
+
+                        });
+                        specDiaLog.show();
+                    }
+
+                    @Override
+                    public void onDeleteClick(View v, int pos) {
+                        Dialog_delete_spec dialogDeleteSpec = new Dialog_delete_spec(getContext());
+                        dialogDeleteSpec.setDeleteDialogListener(new Dialog_delete_spec.DeleteDiaLogListener() {
                             @Override
-                            public void onNegativeClicked(User_Info_Data user_info_data) {
+                            public void onPositiveClicked() {
                                 temp_specs.remove(specs.get(pos));
-                                datas  = specs_to_str_specs(temp_specs);
+                                datas = specs_to_str_specs(temp_specs);
                                 userAccount.setSpecs(datas);
-                                specs.remove(pos);
                                 mStore.collection("user").document(mAuth.getUid()).set(userAccount).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
                                         datachanged(type);
+                                        adapter_user_info.notifyDataSetChanged();
                                     }
                                 });
-                                adapter_user_info.notifyDataSetChanged();
+
                             }
                         });
-                        specDiaLog.show();
+                        dialogDeleteSpec.show();
                     }
                 });
             }
@@ -266,11 +274,6 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
                 userAccount.setSpecs(datas);
                 mStore.collection("user").document(mAuth.getUid()).set(userAccount);
                 datachanged(type);
-            }
-
-            @Override
-            public void onNegativeClicked(User_Info_Data user_info_data) {
-                temp_specs.remove(user_info_data);
             }
         });
         specDiaLog.show();

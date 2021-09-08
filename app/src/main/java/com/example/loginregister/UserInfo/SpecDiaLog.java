@@ -25,7 +25,6 @@ public class SpecDiaLog extends Dialog  {
    private TextView tv_confirm;
    private TextView tv_cancle;
    private RadioGroup rg;
-   private ImageView iv_delete;
    private RadioButton rb1,rb2,rb3,rb4;
    private SpecDiaLogListener specDiaLogListener;
 
@@ -38,7 +37,6 @@ public class SpecDiaLog extends Dialog  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_edit_spec);
         tv_confirm = findViewById(R.id.tv_confirm);
-        iv_delete = findViewById(R.id.iv_delete);
         tv_cancle = findViewById(R.id.tv_cancle);
         rg= findViewById(R.id.rg);
         rb1=findViewById(R.id.rb1);
@@ -67,13 +65,6 @@ public class SpecDiaLog extends Dialog  {
             }
         }
 
-        iv_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                specDiaLogListener.onNegativeClicked(user_info_data);
-                dismiss();
-            }
-        });
 
         tv_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +117,6 @@ public class SpecDiaLog extends Dialog  {
 
     interface SpecDiaLogListener {
         void onPositiveClicked(User_Info_Data user_info_data);
-        void onNegativeClicked(User_Info_Data user_info_data);
     }
 
 

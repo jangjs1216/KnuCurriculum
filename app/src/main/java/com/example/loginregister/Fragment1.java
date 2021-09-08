@@ -47,14 +47,14 @@ public class Fragment1 extends Fragment {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     DocumentReference docRef;
     private ArrayList<User_Info_Data> specs;
-    private View btn_lang,btn_cert,btn_award,btn_extra;
+    private View btn_lang,btn_cert,btn_award,btn_extra,view;
     private ImageView setting;
     BottomNavigationView bottomNavigationView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_1, container, false);
+        view=inflater.inflate(R.layout.fragment_1, container, false);
         tv_taked = view.findViewById(R.id.tv_taked);
         tv_major = view.findViewById(R.id.tv_major);
         userAccount = ((MainActivity)getActivity()).getUserAccount();
@@ -208,12 +208,10 @@ public class Fragment1 extends Fragment {
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         // 프로필 설정
         tv_username = view.findViewById(R.id.tv_userName);
-        setProfile(view);
+
 
         return view;
     }
-
-
 
 
     public void setProfile(View view){
@@ -244,5 +242,19 @@ public class Fragment1 extends Fragment {
             }
         }
         return user_info_data;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("frag1","데이터 재설정");
+        mStore.collection("user").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                userAccount = documentSnapshot.toObject(UserAccount.class);
+                setProfile(view);
+            }
+        });
+
     }
 }

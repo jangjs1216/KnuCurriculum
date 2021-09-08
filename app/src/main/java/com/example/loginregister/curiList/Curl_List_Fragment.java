@@ -50,8 +50,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Map;
 
-import de.blox.treeview.TreeNode;
-
 
 public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBackPressed {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();

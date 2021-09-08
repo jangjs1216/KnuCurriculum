@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,21 +42,16 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
         holder.tv_user_info_title.setText(arrayList.get(position).getUser_info_title());
         holder.tv_user_info_content.setText(arrayList.get(position).getUser_info_content());
         holder.itemView.setTag(position);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.iv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClicklistner !=null) {
-                    onItemClicklistner.onItemClick(v, position);
-                }
+                onItemClicklistner.onEditClick(v,position);
             }
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                if(onItemClicklistner!=null){
-                    onItemClicklistner.onItemLongClick(v,position);
-                }
-                return true;
+            public void onClick(View v) {
+                onItemClicklistner.onDeleteClick(v,position);
             }
         });
     }
@@ -77,10 +73,14 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView tv_user_info_title;
         protected TextView tv_user_info_content;
+        protected ImageView iv_edit,iv_delete;
+
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.tv_user_info_title = itemView.findViewById(R.id.tv_user_info_title);
             this.tv_user_info_content=itemView.findViewById(R.id.tv_user_info_content);
+            this.iv_edit = itemView.findViewById(R.id.iv_edit);
+            this.iv_delete = itemView.findViewById(R.id.iv_delete);
         }
     }
 
@@ -99,16 +99,15 @@ public class Adapter_User_Info extends RecyclerView.Adapter<Adapter_User_Info.Cu
     }
 
     public interface OnItemClickListner{
-        void onItemClick(View v, int pos);
-        void onItemLongClick(View v,int pos);
+
+        void onEditClick(View v,int pos);
+        void onDeleteClick(View v, int pos);
     }
     public void setOnItemListener(OnItemClickListner onItemClicklistner){
         this.onItemClicklistner = onItemClicklistner;
     }
 
-    public void setOnItemSwipeListener(OnItemSwipeListener onItemSwipeListener) {
-        this.onItemSwipeListener = onItemSwipeListener;
-    }
+
 
     public interface OnItemSwipeListener{
         void onItemSwipe(int position);

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/addtree_shape">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:background="@drawable/half_rounded_view_g">
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:fontFamily="@font/main_font_medium"
+            android:includeFontPadding="false"
+            android:textSize="16sp"
+            android:text="스펙 삭제"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/search_shape"
+            android:layout_margin="6dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="정말 삭제하시겠습니까?"
+                android:textSize="20sp"
+                android:background="@color/transparent"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="10sp">
+
+        <TextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_shape"
+            android:text="확인"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/main_font_medium"
+            android:includeFontPadding="false"
+            android:gravity="center"
+            android:layout_marginRight="40sp"/>
+
+        <TextView
+            android:id="@+id/tv_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_shape"
+            android:text="취소"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/main_font_medium"
+            android:includeFontPadding="false"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

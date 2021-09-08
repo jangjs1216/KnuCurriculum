@@ -5,15 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="33sp"
+        android:layout_height="33sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_user_info_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/trashcan_theme" />
+
+    <ImageView
+        android:id="@+id/iv_edit"
+        android:layout_width="33sp"
+        android:layout_height="33sp"
+        android:layout_marginRight="5sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_user_info_content"
+        app:layout_constraintEnd_toStartOf="@+id/iv_delete"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/pencil_theme" />
+
     <TextView
         android:id="@+id/tv_user_info_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="이름"
+        android:fontFamily="@font/main_font_bold"
+        android:includeFontPadding="false"
         android:padding="3sp"
         android:layout_marginRight="400px"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,21 +42,16 @@
         android:id="@+id/tv_user_info_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="3sp"
-        android:hint="내용"
-        android:textSize="18sp"
-        android:textColor="@color/black"
         android:layout_marginLeft="60px"
+        android:fontFamily="@font/main_font_regular"
+        android:hint="내용"
+        android:includeFontPadding="false"
+        android:padding="3sp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_user_info_title" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/line"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
