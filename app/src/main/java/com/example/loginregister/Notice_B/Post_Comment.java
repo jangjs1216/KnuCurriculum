@@ -652,8 +652,12 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         com_edit.setHint("대댓글 작성하기");
         P_comment_id = comment_id;
 
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(com_edit, 0);
+        com_edit.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+
     }
 
     //댓글 대댓글 작성 함수
