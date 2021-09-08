@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_vertical"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:layout_marginLeft="20sp">
 
         <TextView
             android:id="@+id/textView1"
@@ -21,8 +22,7 @@
             android:text="TITLE"
             android:textSize="15sp"
             android:textColor="@android:color/black"
-            android:textStyle="bold"
-            android:fontFamily="@font/main_font_medium"
+            android:fontFamily="@font/main_font_regular"
             android:includeFontPadding="false"/>
 
         <TextView
@@ -32,7 +32,7 @@
             android:text="content"
             android:textSize="13sp"
             android:textColor="@android:color/darker_gray"
-            android:fontFamily="@font/main_font_medium"
+            android:fontFamily="@font/main_font_regular"
             android:includeFontPadding="false"/>
     </LinearLayout>
     <View
