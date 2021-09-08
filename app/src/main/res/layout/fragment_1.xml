@@ -27,8 +27,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:elevation="6dp"
-        android:layout_marginHorizontal="10dp"
-        app:layout_constraintVertical_bias="0.05"
+        android:layout_marginHorizontal="20dp"
         android:background="@drawable/frag1_user_card"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -111,7 +110,7 @@
             android:layout_marginLeft="50dp"
             app:layout_constraintVertical_bias="0.2"
             android:textColor="@color/white"
-            android:textSize="20sp"
+            android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -209,7 +208,7 @@
             android:includeFontPadding="false"
             app:layout_constraintHorizontal_bias="0"
             android:layout_marginLeft="26dp"
-            android:fontFamily="@font/main_font_bold"
+            android:fontFamily="@font/main_font_medium"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintVertical_bias="0.08"
@@ -241,11 +240,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="26dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvtv"
-            app:layout_constraintVertical_bias="0.05">
+            app:layout_constraintTop_toBottomOf="@+id/tvtv">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -430,8 +428,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="26dp"
-            android:layout_marginVertical="10dp"
-            android:fontFamily="@font/main_font_bold"
+            android:layout_marginVertical="15dp"
+            android:fontFamily="@font/main_font_medium"
             android:includeFontPadding="false"
             android:text="나의 커리큘럼"
             android:textColor="@color/black"
@@ -459,7 +457,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginHorizontal="26dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/frag1_btn"
             android:elevation="6dp"
             android:orientation="vertical"
