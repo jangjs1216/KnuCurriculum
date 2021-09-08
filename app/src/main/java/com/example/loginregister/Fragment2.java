@@ -41,6 +41,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.loginregister.UserInfo.Fragment_User_Info;
 import com.example.loginregister.adapters.SubjectAdapter;
 import com.example.loginregister.curiList.Curl_List_Fragment;
 import com.example.loginregister.login.UserAccount;
@@ -71,7 +72,7 @@ import de.blox.treeview.BaseTreeAdapter;
 import de.blox.treeview.TreeNode;
 import de.blox.treeview.TreeView;
 
-public class Fragment2 extends Fragment {
+public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference docRef;
@@ -148,6 +149,9 @@ public class Fragment2 extends Fragment {
 
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
+
+        //뒤로가기
+        ((MainActivity) getActivity()).setBackPressedlistener(this);
 
         /*
         TreeView 선언
@@ -1157,5 +1161,14 @@ public class Fragment2 extends Fragment {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        ft.replace(R.id.main_frame, new Fragment1());
+        ft.commit();
+    }
 
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).setBackPressedlistener(null);
+    }
 }
