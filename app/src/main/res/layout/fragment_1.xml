@@ -455,9 +455,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="200sp"
+            android:layout_height="0sp"
             android:layout_marginHorizontal="26dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginVertical="15dp"
             android:background="@drawable/frag1_btn"
             android:elevation="6dp"
             app:layout_constraintVertical_bias="0"
@@ -472,7 +472,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:overScrollMode="never"
-                android:background="frag1_btn"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
