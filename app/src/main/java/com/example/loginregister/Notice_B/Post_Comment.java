@@ -503,7 +503,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 else if (P_comment_id != null) {
                     if (mAuth.getCurrentUser() != null) {//새로 Comment란 컬렉션에 넣어줌
 
-                        Post post = documentSnapshot.toObject(Post.class);
+                        post = documentSnapshot.toObject(Post.class);
                         ArrayList<Comment> data = new ArrayList<>();
                         int Csize = 1;
 
@@ -534,8 +534,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                         data.add(cur_comment);
                         Collections.sort(data);
-
                         post.setComments(data);
+
+                        subs=post.getSubscriber();
                         if (!subs.contains(mAuth.getUid())) {
                             subs.add(mAuth.getUid());
                             post.setSubscriber(subs);
