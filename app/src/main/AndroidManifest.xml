@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.loginregister">
+    package="com.UniPlan.loginregister">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -15,30 +15,30 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginRegister">
         <activity
-            android:name=".Notice_B.Image_zoom"
+            android:name="com.UniPlan.loginregister.Notice_B.Image_zoom"
             android:exported="true" />
         <activity
-            android:name=".Notice_B.Post_Search"
+            android:name="com.UniPlan.loginregister.Notice_B.Post_Search"
             android:exported="true" />
         <activity
-            android:name=".login.LogoutActivity"
+            android:name="com.UniPlan.loginregister.login.LogoutActivity"
             android:exported="true" />
-        <activity android:name=".login.LoginActivity">
+        <activity android:name="com.UniPlan.loginregister.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.RegisterActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".Notice_B.Post_write" />
-        <activity android:name=".Notice_B.NoticeBoard" />
-        <activity android:name=".Notice_B.Post_Comment" />
-        <activity android:name=".Notice_B.Post_Update" />
-        <activity android:name=".SubjectInfoActivity" /> <!-- 푸쉬알림 설정 -->
+        <activity android:name="com.UniPlan.loginregister.login.RegisterActivity" />
+        <activity android:name="com.UniPlan.loginregister.MainActivity" />
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_write" />
+        <activity android:name="com.UniPlan.loginregister.Notice_B.NoticeBoard" />
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Comment" />
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Update" />
+        <activity android:name="com.UniPlan.loginregister.SubjectInfoActivity" /> <!-- 푸쉬알림 설정 -->
         <service
-            android:name=".push_alram.MyFirebaseMessagingService"
+            android:name="com.UniPlan.loginregister.push_alram.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -59,7 +59,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.loginregister"
+            android:authorities="com.UniPlan.loginregister"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

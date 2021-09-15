@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserInfo.Fragment_UserSpec">
+    tools:context="com.UniPlan.loginregister.UserInfo.Fragment_UserSpec">
     <!--     app:contentInsetStart="0dp"넣으면 왼쪽 공백없앨수있음-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_spec"

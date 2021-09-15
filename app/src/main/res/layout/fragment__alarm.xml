@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".push_alram.Fragment_Alarm">
+    tools:context="com.UniPlan.loginregister.push_alram.Fragment_Alarm">
 
     <!--     app:contentInsetStart="0dp"넣으면 왼쪽 공백없앨수있음-->
     <androidx.appcompat.widget.Toolbar

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Notice_B.Image_zoom">
+    tools:context="com.UniPlan.loginregister.Notice_B.Image_zoom">
 
     <com.otaliastudios.zoom.ZoomLayout
         android:id="@+id/image_zoom"

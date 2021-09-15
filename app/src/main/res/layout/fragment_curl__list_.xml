@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".curiList.Curl_List_Fragment" >
+    tools:context="com.UniPlan.loginregister.curiList.Curl_List_Fragment" >
 
     <!--     app:contentInsetStart="0dp"넣으면 왼쪽 공백없앨수있음-->
     <androidx.appcompat.widget.Toolbar

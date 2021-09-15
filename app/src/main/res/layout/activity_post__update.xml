@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="12"
-    tools:context=".Notice_B.Post_Update">
+    tools:context="com.UniPlan.loginregister.Notice_B.Post_Update">
 
     <LinearLayout
         android:layout_width="match_parent"

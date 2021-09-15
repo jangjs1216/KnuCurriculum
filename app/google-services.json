@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1033052277678:android:21faa436edeea741d1563f",
         "android_client_info": {
-          "package_name": "com.example.loginregister"
+          "package_name": "com.UniPlan.loginregister"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "1033052277678-edsff3nrks2ccckvk8fhn02oftgol5dr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.loginregister",
+            "package_name": "com.UniPlan.loginregister",
             "certificate_hash": "c636dfa9f440ec8696998763b158eb48a8c0d1b0"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "1033052277678-q6k0qu2tel7nandcecdj9khbqlnu7ume.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.loginregister",
+            "package_name": "com.UniPlan.loginregister",
             "certificate_hash": "a06ba19a0cf2a0224125b48707f11f391203e16a"
           }
         },
