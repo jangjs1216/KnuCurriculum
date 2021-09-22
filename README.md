@@ -27,7 +27,7 @@
 또한 해당 과목에 대한 학생들의 수강평도 확인할 수 있습니다.
 
 <br><br>
-Curriculum Visualization : 장준승(jangjs1216) / 최정인(rmfotjanj1234)
-Bulletin Board : 박경무(rudan8256) / 손종하(thswhdgk)
-Notice : 안승재(sonbe8704)
-Design : 이지혜
+**Curriculum Visualization** : 장준승(jangjs1216) / 최정인(rmfotjanj1234)<br>
+**Bulletin Board** : 박경무(rudan8256) / 손종하(thswhdgk)<br>
+**Notice** : 안승재(sonbe8704)<br>
+**Design** : 이지혜<br>
