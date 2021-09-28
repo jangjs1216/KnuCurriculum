@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/frame_1"/>
+    <item android:drawable="@drawable/frame_2"/>
+    <item android:drawable="@drawable/frame_3"/>
+    <item android:drawable="@drawable/frame_4"/>
+    <item android:drawable="@drawable/frame_5"/>
+    <item android:drawable="@drawable/frame_6"/>
+    <item android:drawable="@drawable/frame_7"/>
+    <item android:drawable="@drawable/frame_8"/>
+    <item android:drawable="@drawable/frame_9"/>
+    <item android:drawable="@drawable/frame_10"/>
+    <item android:drawable="@drawable/frame_11"/>
+    <item android:drawable="@drawable/frame_12"/>
+    <item android:drawable="@drawable/frame_13"/>
+    <item android:drawable="@drawable/frame_14"/>
+    <item android:drawable="@drawable/frame_15"/>
+    <item android:drawable="@drawable/frame_16"/>
+    <item android:drawable="@drawable/frame_17"/>
+    <item android:drawable="@drawable/frame_18"/>
+    <item android:drawable="@drawable/frame_19"/>
+    <item android:drawable="@drawable/frame_20"/>
+    <item android:drawable="@drawable/frame_21"/>
+    <item android:drawable="@drawable/frame_22"/>
+    <item android:drawable="@drawable/frame_23"/>
+    <item android:drawable="@drawable/frame_24"/>
+    <item android:drawable="@drawable/frame_25"/>
+    <item android:drawable="@drawable/frame_26"/>
+    <item android:drawable="@drawable/frame_27"/>
+    <item android:drawable="@drawable/frame_28"/>
+    <item android:drawable="@drawable/frame_29"/>
+    <item android:drawable="@drawable/frame_30"/>
+
+
+
+</animation-list>

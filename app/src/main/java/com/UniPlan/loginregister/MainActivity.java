@@ -3,15 +3,23 @@ package com.UniPlan.loginregister;
 import static com.UniPlan.loginregister.R.drawable.ic_baseline_notifications_24;
 
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialog;
 
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.curiList.Recycler_Data;
@@ -58,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     private long time=0;
     private Toast toast;
-
     public interface IOnBackPressed{
         void onBackPressed();
     }
@@ -261,6 +268,52 @@ public class MainActivity extends AppCompatActivity {
     public void setBottom_alarm(){
         bottom_alarm.setIcon(ic_baseline_notifications_24);
     }
+
+
+
+//    void Onprogress(Activity activity,String message){
+//
+//        if (activity == null || activity.isFinishing()) {
+//            return;
+//        }
+//
+//
+//        if (progressDialog != null && progressDialog.isShowing()) {
+//
+//        } else {
+//            //이 밑부분 떼서 작업전에 AppcompatDialog 변수선언해주고 progressDialog 먼저 만들고
+//            // 작업시작할때 Onprogress 넣어주고 작업끝나면 밑에 progressOFF 넣어주면됩니다.
+//            progressDialog = new AppCompatDialog(activity);
+//            progressDialog.setCancelable(false);
+//            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//            progressDialog.setContentView(R.layout.progress_loading);
+//            progressDialog.show();
+//
+//        }
+//
+//
+//        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+//        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+//        img_loading_frame.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                frameAnimation.start();
+//            }
+//        });
+//
+//        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+//        if (!TextUtils.isEmpty(message)) {
+//            tv_progress_message.setText(message);
+//        }
+//
+//    }
+
+//    public void progressOFF() {
+//        if (progressDialog != null && progressDialog.isShowing()) {
+//            progressDialog.dismiss();
+//        }
+//    }
+
 
 
 
