@@ -97,6 +97,8 @@ public class Fragment_Alarm extends Fragment {
                         forum_sort=alarms.get(pos).getForum_sort();
                         post_id=alarms.get(pos).getPost_id();
                         alarms.get(pos).setChecked(true);
+                        data.setAlarms(alarms);
+                        mStore.collection("Alarm").document(mAuth.getUid()).set(data);
                         v.setBackgroundResource(R.color.white);
                         Intent intent = new Intent(getContext(), Post_Comment.class);
                         intent.putExtra("forum_sort",forum_sort);

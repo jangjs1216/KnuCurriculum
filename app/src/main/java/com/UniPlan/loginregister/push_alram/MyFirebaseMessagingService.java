@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -91,8 +92,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationChannel pushChannel = null;
         NotificationChannel nonChannel = null;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             pushChannel = new NotificationChannel("push_channel", "푸쉬 알림", NotificationManager.IMPORTANCE_HIGH);
             pushChannel.enableLights(true);
             pushChannel.setLightColor((getColor(R.color.colorAccent)));
@@ -106,6 +107,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             nonChannel.setDescription("상단바 알림");
             pushManager.createNotificationChannel(nonChannel);
         }
+
+
 
 
         Intent intent = new Intent(this, Post_Comment.class);
@@ -126,11 +129,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
         @SuppressLint("ResourceAsColor") NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.dkdlzhs   ) // 아이콘
+                .setSmallIcon(R.drawable.uniplan_logo) // 아이콘
                 .setContentTitle(message.get("title").toString()) // 제목
                 .setContentText(message.get("body").toString()) // 내용
                 .setAutoCancel(true)//누르면사라짐
-                .setColor((ContextCompat.getColor(this, R.color.btn_theme))) //상단바 아이콘이랑 이름 색
+                .setColor((ContextCompat.getColor(this, R.color.alarm_checked))) //상단바 아이콘이랑 이름 색
                 .setColorized(true)
                 .setContentIntent(pendingIntent)//클릭하면 이동할 곳
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -140,7 +143,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if(PreferencesManager.getAccount(getApplicationContext()).equals(mAuth.getUid())) {
                 Log.e("alarm","일치");
                 pushManager.notify(createID(), builder.build());
-
             }
 
     }

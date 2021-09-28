@@ -13,7 +13,7 @@
     <color name="search_pre">#EDE4E4</color>
     <color name="search_last">@color/btn_theme</color>
     <color name="transparent">#00000000</color>
-    <color name="alarm_checked">#DD60A1E5</color>
+    <color name="alarm_checked">#6F98CBFF</color>
     <color name="main_color">#60A1E5</color>
     <color name="separate">#F0F0F0</color>
 
