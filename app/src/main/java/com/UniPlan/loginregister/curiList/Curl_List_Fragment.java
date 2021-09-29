@@ -65,6 +65,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     private FragmentTransaction ft;
     Table UsersTableInfo;
     ArrayList<Subject_> subjectList = new ArrayList<>();
+    ArrayList<Table> recommendationList = new ArrayList<>();
 
 
     @Override
@@ -99,6 +100,20 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                                 subjectList.add(document.toObject(Subject_.class));
                             }
                         } else {
+                        }
+                    }
+                });
+
+        db.collection("Recommendation")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : task.getResult()){
+                                recommendationList.add(document.toObject(Table.class));
+                            }
+                        }else{
                         }
                     }
                 });
@@ -197,6 +212,9 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
 
         TextView noTV = addTreeDialog.findViewById(R.id.noTV);
         TextView yesTV = addTreeDialog.findViewById(R.id.yesTV);
+        TextView TV1 = addTreeDialog.findViewById(R.id.TV1);
+        TextView TV2 = addTreeDialog.findViewById(R.id.TV2);
+        TextView TV3 = addTreeDialog.findViewById(R.id.TV3);
         noTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -218,6 +236,66 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
 
                 Bundle bundle = new Bundle(); // 번들을 통해 값 전달
                 bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                transaction.replace(R.id.main_frame, fragment2);
+                transaction.commit();
+            }
+        });
+        TV1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userAccount.getTableNames().add("반도체");
+                userAccount.getTables().add(recommendationList.get(0));
+                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                recycler_adapter.notifyDataSetChanged();
+                addTreeDialog.dismiss();
+
+                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                bundle.putString("tableName", "반도체");//번들에 넘길 값 저장
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                transaction.replace(R.id.main_frame, fragment2);
+                transaction.commit();
+            }
+        });
+        TV2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userAccount.getTableNames().add("통신");
+                userAccount.getTables().add(recommendationList.get(1));
+                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                recycler_adapter.notifyDataSetChanged();
+                addTreeDialog.dismiss();
+
+                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                bundle.putString("tableName", "통신");//번들에 넘길 값 저장
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                transaction.replace(R.id.main_frame, fragment2);
+                transaction.commit();
+            }
+        });
+        TV3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userAccount.getTableNames().add("회로");
+                userAccount.getTables().add(recommendationList.get(2));
+                db.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                recycler_adapter.notifyDataSetChanged();
+                addTreeDialog.dismiss();
+
+                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                bundle.putString("tableName", "회로");//번들에 넘길 값 저장
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
                 fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비

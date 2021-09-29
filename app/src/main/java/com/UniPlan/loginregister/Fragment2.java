@@ -644,7 +644,6 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         break;
                     }
                 }
-
                 if(currTable == null){
                     Toast.makeText(getContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
 
