@@ -227,80 +227,123 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 EditText treeNameET = addTreeDialog.findViewById(R.id.treeNameET);
                 String treeName = treeNameET.getText().toString();
                 treeNameET.setText("");
+                
+                //과정 이름 중복 체크
+                boolean checkName = false;
+                for(int i = 0; i < userAccount.getTableNames().size(); i++){
+                    if(treeName.equals(userAccount.getTableNames().get(i))) checkName = true;
+                }
+                if(checkName == false){
+                    Recycler_Data recycler_data = new Recycler_Data(treeName);
+                    arrayList.add(recycler_data);
+                    ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                    recycler_adapter.notifyDataSetChanged();
+                    addTreeDialog.dismiss();
 
-                Recycler_Data recycler_data = new Recycler_Data(treeName);
-                arrayList.add(recycler_data);
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                addTreeDialog.dismiss();
-
-                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                bundle.putString("tableName", treeName);//번들에 넘길 값 저장
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                transaction.replace(R.id.main_frame, fragment2);
-                transaction.commit();
+                    Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                    bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                    fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                    transaction.replace(R.id.main_frame, fragment2);
+                    transaction.commit();
+                }
+                else{
+                    Toast.makeText(getContext(), "이미 존재하는 과정입니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         TV1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userAccount.getTableNames().add("반도체");
-                userAccount.getTables().add(recommendationList.get(0));
-                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                String treeName = "반도체";
+                //과정 이름 중복 체크
+                boolean checkName = false;
+                for(int i = 0; i < userAccount.getTableNames().size(); i++){
+                    if(treeName.equals(userAccount.getTableNames().get(i))) checkName = true;
+                }
+                if(checkName == false){
+                    userAccount.getTableNames().add(treeName);
+                    userAccount.getTables().add(recommendationList.get(0));
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                addTreeDialog.dismiss();
+                    ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                    recycler_adapter.notifyDataSetChanged();
+                    addTreeDialog.dismiss();
 
-                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                bundle.putString("tableName", "반도체");//번들에 넘길 값 저장
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                transaction.replace(R.id.main_frame, fragment2);
-                transaction.commit();
+                    Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                    bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                    fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                    transaction.replace(R.id.main_frame, fragment2);
+                    transaction.commit();
+                }
+                else{
+                    Toast.makeText(getContext(), "이미 존재하는 과정입니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         TV2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userAccount.getTableNames().add("통신");
-                userAccount.getTables().add(recommendationList.get(1));
-                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                String treeName = "통신";
+                //과정 이름 중복 체크
+                boolean checkName = false;
+                for(int i = 0; i < userAccount.getTableNames().size(); i++){
+                    if(treeName.equals(userAccount.getTableNames().get(i))) checkName = true;
+                }
+                if(checkName == false){
+                    userAccount.getTableNames().add(treeName);
+                    userAccount.getTables().add(recommendationList.get(1));
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                addTreeDialog.dismiss();
+                    ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                    recycler_adapter.notifyDataSetChanged();
+                    addTreeDialog.dismiss();
 
-                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                bundle.putString("tableName", "통신");//번들에 넘길 값 저장
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                transaction.replace(R.id.main_frame, fragment2);
-                transaction.commit();
+                    Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                    bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                    fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                    transaction.replace(R.id.main_frame, fragment2);
+                    transaction.commit();
+                }
+                else{
+                    Toast.makeText(getContext(), "이미 존재하는 과정입니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         TV3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userAccount.getTableNames().add("회로");
-                userAccount.getTables().add(recommendationList.get(2));
-                db.collection("user").document(mAuth.getUid()).set(userAccount);
+                String treeName = "회로";
+                //과정 이름 중복 체크
+                boolean checkName = false;
+                for(int i = 0; i < userAccount.getTableNames().size(); i++){
+                    if(treeName.equals(userAccount.getTableNames().get(i))) checkName = true;
+                }
+                if(checkName == false){
+                    userAccount.getTableNames().add(treeName);
+                    userAccount.getTables().add(recommendationList.get(2));
+                    db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
-                recycler_adapter.notifyDataSetChanged();
-                addTreeDialog.dismiss();
+                    ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                    recycler_adapter.notifyDataSetChanged();
+                    addTreeDialog.dismiss();
 
-                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
-                bundle.putString("tableName", "회로");//번들에 넘길 값 저장
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
-                fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
-                transaction.replace(R.id.main_frame, fragment2);
-                transaction.commit();
+                    Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                    bundle.putString("tableName", treeName);//번들에 넘길 값 저장
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    Fragment2 fragment2 = new Fragment2();//프래그먼트2 선언
+                    fragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+                    transaction.replace(R.id.main_frame, fragment2);
+                    transaction.commit();
+                }
+                else{
+                    Toast.makeText(getContext(), "이미 존재하는 과정입니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
