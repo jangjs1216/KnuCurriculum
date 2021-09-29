@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -29,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mEtEmail, mEtPwd,mEtPwd2,enick; // 회원가입 입력필드
     private TextView mBtnRegister; // 회원가입 버튼
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
+    private String retVal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +54,32 @@ public class RegisterActivity extends AppCompatActivity {
                 String strEmail=mEtEmail.getText().toString();
                 String strPwd1=mEtPwd.getText().toString();
                 String strPwd2=mEtPwd2.getText().toString();
-                String nickname = enick.getText().toString();
+                String nickname=enick.getText().toString();
 
-                if(strPwd1.equals(strPwd2) && !TextUtils.isEmpty(nickname)){
+                if(strPwd1.equals(strPwd2) && !TextUtils.isEmpty(nickname)) {
                     //Firebase Auth 진행
-                    mFirebaseAuth.createUserWithEmailAndPassword(strEmail, strPwd1).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                    MessageDigest md= null;
+                    try {
+                        md = MessageDigest.getInstance("SHA-1");
+                        md.update(strPwd1.getBytes());
+
+                        byte byteData[]=md.digest();
+
+                        StringBuffer sb=new StringBuffer();
+                        for(int i=0; i<byteData.length; i++) {
+                            sb.append(Integer.toString((byteData[i]&0xff)+0x100, 16).substring(1));
+                        }
+                        retVal=sb.toString();
+                        Log.e("###",retVal);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+
+                    mFirebaseAuth.createUserWithEmailAndPassword(strEmail, retVal).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
-
                                 //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
                                 ArrayList<String> liked_Post = new ArrayList<>();
                                 ArrayList<String> Mypost = new ArrayList<>();
@@ -69,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 String major = "", taked = "";
                                 ArrayList<Alarm> alarms = new ArrayList<>();
                                 Alarms alarmdata = new Alarms(alarms);
-                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, strPwd1, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null);
+                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, retVal, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null);
                                 mStore.collection("user").document(user.getUid()).set(userAccount);
                                 mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
                                 finish();

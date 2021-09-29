@@ -30,16 +30,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
     private EditText mEtEmail, mEtPwd; // 회원가입 입력필드
-
-    SignInButton Google_Login; // 구글 로그인 버튼
     private static final int RC_SIGN_IN = 1000; // 구글 로그인 결과 코드
     private FirebaseAuth mAuth; // 파이어베이스 인증 객체
     private GoogleApiClient mGoogleApiClient; // 구글 API 클라이언트 객체
+    private String retVal;
 
 
     @Override
@@ -50,7 +52,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mFirebaseAuth=FirebaseAuth.getInstance();
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
-        //Google_Login=findViewById(R.id.Google_Login);
         TextView btn_login = findViewById(R.id.btn_login);
         TextView btn_register = findViewById(R.id.btn_register);
         CheckBox automatic_login=findViewById(R.id.automatic_login);
@@ -73,8 +74,24 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             // 로그인 요청
             String strEmail = mEtEmail.getText().toString();
             String strPwd = mEtPwd.getText().toString();
+            MessageDigest md= null;
+            try {
+                md = MessageDigest.getInstance("SHA-1");
+                md.update(strPwd.getBytes());
+
+                byte byteData[]=md.digest();
+
+                StringBuffer sb=new StringBuffer();
+                for(int i=0; i<byteData.length; i++) {
+                    sb.append(Integer.toString((byteData[i]&0xff)+0x100, 16).substring(1));
+                }
+                retVal=sb.toString();
+                Log.e("###",retVal);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
             Log.e("Login","로그인요청");
-            mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+            mFirebaseAuth.signInWithEmailAndPassword(strEmail, retVal).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
@@ -97,21 +114,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 }
             });
         });
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail().build();
-        mGoogleApiClient=new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
         mAuth=FirebaseAuth.getInstance();
-//
-//        // 구글 로그인 버튼 클릭했을 때 여기서 수행
-//        Google_Login.setOnClickListener(view -> {
-//            Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-//            startActivityForResult(signInIntent,RC_SIGN_IN);
-//        });
-
 
         btn_register.setOnClickListener(view -> {
             // 회원가입 화면으로 이동
@@ -154,11 +157,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
     }
 
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
     }
-
-
 }
