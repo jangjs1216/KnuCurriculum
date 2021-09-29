@@ -52,7 +52,7 @@ public class ViewHolder {
         }else if(semesterTv.getText().equals("1학년 2학기")){
             tn_layout.setCardBackgroundColor(Color.parseColor("#BAE7AF"));
         }else if(semesterTv.getText().equals("2학년 1학기")){
-            tn_layout.setCardBackgroundColor(Color.parseColor("#FFF77F"));
+            tn_layout.setCardBackgroundColor(Color.parseColor("#CFDD8E"));
         }else if(semesterTv.getText().equals("2학년 2학기")){
             tn_layout.setCardBackgroundColor(Color.parseColor("#FF7F7F"));
         }else if(semesterTv.getText().equals("3학년 1학기")){
