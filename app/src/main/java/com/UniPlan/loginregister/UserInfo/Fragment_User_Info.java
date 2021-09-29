@@ -175,7 +175,7 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
             @Override
             public void onPositiveClicked(String userNick) {
                 userAccount.setNickname(userNick);
-                mStore.collection("User").document(mAuth.getUid()).set(userAccount);
+                mStore.collection("user").document(mAuth.getUid()).set(userAccount);
                 tv_userName.setText(userNick);
             }
         });
