@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/school" />
+        app:srcCompat="@drawable/uniplan_logo" />
 
     <EditText
         android:id="@+id/et_email"
@@ -100,12 +100,13 @@
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="50sp"
-        android:layout_margin="5dp"
+        android:layout_marginHorizontal="20dp"
         android:background="@drawable/custon_button"
         android:clickable="true"
         android:gravity="center"
         android:text="가입 완료"
-        android:textColor="#FF3D00"
+        android:textSize="17sp"
+        android:textColor="@color/line"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.444"

@@ -350,7 +350,7 @@ public class NoticeBoard extends AppCompatActivity {
                                     @Override
                                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                                         if (queryDocumentSnapshots != null) {
-                                            mDatas.clear();//미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
+                                                    //미리 생성된 게시글들을 다시 불러오지않게 데이터를 한번 정리
                                             for (DocumentSnapshot snap : queryDocumentSnapshots.getDocuments()) {
                                                 Post post = snap.toObject(Post.class);
 
