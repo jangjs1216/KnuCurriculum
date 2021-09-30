@@ -6,6 +6,8 @@ import static com.UniPlan.loginregister.R.drawable.ic_baseline_notifications_24;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,10 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDialog;
 
+import com.UniPlan.loginregister.Intro.SplashActivity;
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.curiList.Recycler_Data;
 import com.UniPlan.loginregister.login.UserAccount;
 import com.UniPlan.loginregister.push_alram.Fragment_Alarm;
+import com.github.paolorotolo.appintro.AppIntro;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -32,6 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.apache.log4j.chainsaw.Main;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -49,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     //과목코드 해시함수로 배열화 과목코드넣으면 과목명이랑 학점나옴
     HashMap<String, Object> subjectCode =  new HashMap<>();
     public static Context maincontext;
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     public void setBackPressedlistener(IOnBackPressed backPressedlistener) {
         this.backPressedlistener = backPressedlistener;
@@ -96,6 +105,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getApplicationContext().getSharedPreferences("IntroData", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        if(sharedPreferences != null){
+            Log.e("###", "방문됨");
+
+            boolean checkShared = sharedPreferences.getBoolean("checkStated", false);
+            if(checkShared == false){
+                Intent it = new Intent(MainActivity.this, SplashActivity.class);
+                startActivity(it);
+            }
+            editor.putBoolean("checkStated", true).commit();
+        }
+        // 2021-10-01 장준승 AppIntro
+
+
         maincontext = this;
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -161,13 +187,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
-
         //과목코드 받아오기 함수시작
 //        try {
 //            readFromAssets("subjectCode.txt");
@@ -185,8 +204,6 @@ public class MainActivity extends AppCompatActivity {
 
     //과목코드 받아오기 함수
     private void  readFromAssets(String filename) throws Exception {
-
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open(filename)));
 
         String line = reader.readLine();
@@ -199,13 +216,10 @@ public class MainActivity extends AppCompatActivity {
             String Sname = Sarray[1];
             String score = Sarray[2].substring(0, 1);
 
-
             //String name, String code, String score, String grade, String semester, Boolean open, ArrayList<SubjectComment> comments
             subject_ = new Subject_(Sname, Scode, score, "1", "1", "없음", "없음", false, new ArrayList<>(),0,0);
 
             mStore.collection("Subject").document(subject_.getName()).set(subject_);
-
-
 
             ++counti;
             line = reader.readLine();

@@ -4,12 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/activity_licenses.xml" value="0.26526315789473687" />
+        <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/activity_main.xml" value="0.13125" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/activity_notice_board.xml" value="0.264" />
+        <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/activity_splash.xml" value="0.25364583333333335" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/comment_item.xml" value="0.1296875" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/dialog_nodechoicebottomsheet.xml" value="0.25364583333333335" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/dialog_setnick.xml" value="0.13125" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/fragment_3.xml" value="0.13125" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/fragment__user__info.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/fragment_splash1.xml" value="0.2390625" />
+        <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/fragment_splash2.xml" value="0.25364583333333335" />
+        <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/fragment_splash3.xml" value="0.25364583333333335" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/node.xml" value="0.25364583333333335" />
         <entry key="..\:/Androidstudio/UniPlan/app/src/main/res/layout/progress_loading.xml" value="0.1296875" />
         <entry key="..\:/CookAndroid/KnuCurriculum/app/src/main/res/layout/dialog_bottomsheet.xml" value="0.12604166666666666" />

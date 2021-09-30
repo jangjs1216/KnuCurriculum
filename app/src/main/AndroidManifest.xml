@@ -15,7 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginRegister">
         <activity
+            android:name=".Intro.SplashActivity"
+            android:screenOrientation="portrait"
+            android:exported="true" />
+        <activity
             android:name=".Licenses"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".Notice_B.Image_zoom"
@@ -31,7 +36,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".login.LoginActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name=".StartLoadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
