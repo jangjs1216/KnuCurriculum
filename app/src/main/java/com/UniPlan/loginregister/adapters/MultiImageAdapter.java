@@ -17,8 +17,10 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.ViewHolder>{
+
     private ArrayList<Uri> mData = null ;
     private Context mContext = null ;
+    private OnItemClickListener mListener = null;
 
     // 생성자에서 데이터 리스트 객체, Context를 전달받음.
     public MultiImageAdapter(ArrayList<Uri> list, Context context) {
@@ -42,8 +44,11 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
-
-                    ((Post_Comment)Post_Comment.mcontext).imagezoom(mData.get(pos));
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (mListener != null) {
+                            mListener.onItemClick(v, pos);
+                        }
+                    }
                 }
             });
         }
@@ -78,6 +83,14 @@ public class MultiImageAdapter extends RecyclerView.Adapter<MultiImageAdapter.Vi
     @Override
     public int getItemCount() {
         return mData.size() ;
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(View v, int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.mListener = listener;
     }
 
 }

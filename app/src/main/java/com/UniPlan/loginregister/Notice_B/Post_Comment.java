@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.ViewHolder;
@@ -212,6 +213,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                 if (image_urllist.size()>0) {
 
+                    ((MainActivity)MainActivity.maincontext).Onprogress(Post_Comment.this,"게시글 로드중");
+
                     for(String image_url : image_urllist) {
                         Log.d("####", "image_url : " + image_url);
                         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -228,6 +231,17 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                 photo_list.setAdapter(photoadapter);
                                 photo_list.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
+                                photoadapter.setOnItemClickListener(new MultiImageAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(View v, int pos) {
+
+                                        Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
+                                        intent.putExtra("uri",uriList.get(pos));
+                                        startActivity(intent);
+                                    }
+                                });
+
+                                if(uriList.size() == image_urllist.size()) { ((MainActivity)MainActivity.maincontext).progressOFF(); }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -236,11 +250,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         });
                     }
-
-
-                }
-                else {
-                    cv_image.setVisibility(View.INVISIBLE);
                 }
 
                 if (isTreeExist.equals("yes")) {
@@ -387,15 +396,6 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
             }
         });
-    }
-
-    public void imagezoom(Uri uri){
-
-                Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
-                intent.putExtra("uri",uri);
-                startActivity(intent);
-
-
     }
 
 

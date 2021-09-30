@@ -2,6 +2,7 @@ package com.UniPlan.loginregister.Notice_B;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.adapters.CurriculumAdapter;
 import com.UniPlan.loginregister.adapters.MultiImageAdapter;
@@ -91,6 +93,7 @@ public class Post_Update extends AppCompatActivity {
     private MultiImageAdapter photoadapter;
     private ArrayList<Uri> uriList = new ArrayList<>();
     private RecyclerView photo_list;
+    StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +103,6 @@ public class Post_Update extends AppCompatActivity {
 
         mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents = findViewById(R.id.Post_write_contents);
-
-        post_imageView.setVisibility(View.INVISIBLE);
 
         post_save=findViewById(R.id.post_save);
         btn_back=findViewById(R.id.btn_back);
@@ -115,6 +116,7 @@ public class Post_Update extends AppCompatActivity {
         forum_sort=intent.getStringExtra("forum_sort");
 
         storage=FirebaseStorage.getInstance();
+        storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
 
         TedPermission.with(getApplicationContext())
                 .setPermissionListener(permissionListener)
@@ -148,62 +150,10 @@ public class Post_Update extends AppCompatActivity {
                     mTitle.setText(title);
                     mContents.setText(content);
 
-                    if (image_url != null) {
-                        Log.d("###", "image_url : " + image_url);
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-                        StorageReference storageReference = storage.getReference();
-                        StorageReference pathReference = storageReference.child("post_image");
-                        if (pathReference == null) {
-                            Toast.makeText(Post_Update.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
-                            StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
-                            submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Log.d("###", String.valueOf(uri));
-                                    Glide.with(Post_Update.this).load(uri).into(post_imageView);
-                                    post_imageView.setVisibility(View.VISIBLE);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // 실패
-                                }
-                            });
-                        }
-                    }
+                    loadphoto();
                 }
             });
         }
-        // 사진올리기
-//        post_photo.setOnClickListener(view -> {
-//            Log.e("###","선택");
-//            AlertDialog.Builder picBuilder = new AlertDialog.Builder(Post_write.this)
-//                    .setTitle("사진 첨부")
-//                    .setMessage("선택하세요")
-//                    .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            takePhoto();
-//                        }
-//                    })
-//                    .setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            useGallery();
-//                        }
-//                    });
-//            AlertDialog alertDialog = picBuilder.create();
-//            alertDialog.show();
-//        });
-
-        post_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto();
-            }
-        });
 
         post_gallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,36 +188,55 @@ public class Post_Update extends AppCompatActivity {
         });
     }
 
+    private void loadphoto(){
+        if (image_urllist.size()>0) {
+
+            ((MainActivity)MainActivity.maincontext).Onprogress(Post_Update.this,"게시글 로드중");
+
+            for(String image_url : image_urllist) {
+                Log.d("####", "image_url : " + image_url);
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference storageReference = storage.getReference();
+
+                Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
+                //StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
+                storageReference.child("post_image/" + image_url + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+
+                        uriList.add(uri);
+                        photoadapter = new MultiImageAdapter(uriList, getApplicationContext());
+                        photo_list.setAdapter(photoadapter);
+                        photo_list.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+
+                        photoadapter.setOnItemClickListener(new MultiImageAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View v, int pos) {
+
+                                Intent intent=new Intent(Post_Update.this,Image_zoom.class);
+                                intent.putExtra("uri",uriList.get(pos));
+                                startActivity(intent);
+                            }
+                        });
+
+                        if(uriList.size() == image_urllist.size()) { ((MainActivity)MainActivity.maincontext).progressOFF(); }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // 실패
+                    }
+                });
+            }
+        }
+    }
+
     private void useGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent, FROM_GALLERY);
     }
 
-    private void setImage() {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
-        post_imageView.setVisibility(View.VISIBLE);
-        post_imageView.setImageBitmap(originalBm);
-    }
-
-    private void takePhoto() {
-        Log.e("###","takePhoto");
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(intent.resolveActivity(getPackageManager())!=null) {
-            File photoFile=null;
-            try{
-                photoFile=createImageFile();
-            } catch (IOException e) {
-
-            }
-            if(photoFile!=null) {
-                uri=FileProvider.getUriForFile(getApplicationContext(),getPackageName(),photoFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,uri);
-                startActivityForResult(intent,FROM_CAMERA);
-            }
-        }
-    }
 
     private File createImageFile() throws IOException {
         String timestamp=new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -301,65 +270,88 @@ public class Post_Update extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=RESULT_OK) {
-            return;
+
+
+        if(data == null){   // 어떤 이미지도 선택하지 않은 경우
+            Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
         }
-        else if (requestCode == FROM_GALLERY) {
-            uri = data.getData();
-            Log.d("###", "첫번째 uri : "+String.valueOf(uri));
-            post_imageView.setImageURI(uri);
-            Cursor cursor = null;
-            try {
-                String[] proj = {MediaStore.Images.Media.DATA};
-                assert uri != null;
-                cursor = getContentResolver().query(uri, proj, null, null, null);
-                assert cursor != null;
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                tempFile = new File(cursor.getString(column_index));
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
+        else{   // 이미지를 하나라도 선택한 경우
+            if(data.getClipData() == null){     // 이미지를 하나만 선택한 경우
+                Log.e("single choice: ", String.valueOf(data.getData()));
+                Uri imageUri = data.getData();
+                uriList.add(imageUri);
+
+            }
+            else{      // 이미지를 여러장 선택한 경우
+                ClipData clipData = data.getClipData();
+
+                if(clipData.getItemCount() > 10){   // 선택한 이미지가 11장 이상인 경우
+                    Toast.makeText(getApplicationContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show();
+                }
+                else{   // 선택한 이미지가 1장 이상 10장 이하인 경우
+
+                    for (int i = 0; i < clipData.getItemCount(); i++) {
+                        Uri imageUri = clipData.getItemAt(i).getUri();  // 선택한 이미지들의 uri를 가져온다.
+                        try {
+                            uriList.add(imageUri);  //uri를 list에 담는다.
+
+                        } catch (Exception e) {
+                        }
+                    }
                 }
             }
-            setImage();
-        } else if (requestCode == FROM_CAMERA) {
-            if(resultCode==RESULT_OK) {
-                Bitmap bitmap=BitmapFactory.decodeFile(imageFilePath);
-                ExifInterface exif=null;
-                try {
-                    exif=new ExifInterface(imageFilePath);
-                } catch(IOException e) {
-                    e.printStackTrace();
+
+            photoadapter = new MultiImageAdapter(uriList, getApplicationContext());
+            photo_list.setAdapter(photoadapter);
+            photo_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+
+            //사진 스토리지에 업로드
+            ((MainActivity)MainActivity.maincontext).Onprogress(Post_Update.this,"사진 업로드중");
+            UploadPhoto(uriList,0);
+
+
+            photoadapter.setOnItemClickListener(new MultiImageAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View v, int pos) {
+
+                    Intent intent=new Intent(Post_Update.this,Image_zoom.class);
+                    intent.putExtra("uri",uriList.get(pos));
+                    startActivity(intent);
                 }
-                int exifOrientation;
-                int exifDegree;
-                if(exif!=null) {
-                    exifOrientation=exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
-                    exifDegree=exifOrientationDegrees(exifOrientation);
-                } else {
-                    exifDegree=0;
-                }
-                post_imageView.setImageBitmap(rotate(bitmap,exifDegree));
-                post_imageView.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(this,"취소되었습니다",Toast.LENGTH_LONG).show();
-            }
+            });
         }
-        StorageReference storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
-        Log.d("###", "Uri 는: "+uri);
-        String filename=mAuth.getUid()+"_"+System.currentTimeMillis();
-        StorageReference ref=storageReference.child("post_image/"+filename+".jpg");
-        image_url=filename;
-        Log.d("###",filename);
-        ref.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                final Task<Uri> imageUrl=task.getResult().getStorage().getDownloadUrl();
-                while(!imageUrl.isComplete());
-                image_url=imageUrl.getResult().toString();
-            }
-        });
+    }
+
+    private void UploadPhoto(ArrayList<Uri> uris,int n){
+
+        int i=0;
+        for(Uri uri:uris ) {
+            Log.d("###", "Uri 는: " + uri);
+            String filename = mAuth.getUid() + "_" + System.currentTimeMillis() + n;
+            StorageReference ref = storageReference.child("post_image/" + filename + ".jpg");
+            image_urllist.add(filename);
+            image_url = filename;
+            Log.d("###", filename);
+
+            UploadTask uploadTask;
+            uploadTask = ref.putFile(uri);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                    //Toast.makeText(getApplicationContext(),"업로드 실패",Toast.LENGTH_LONG).show();
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //Toast.makeText(getApplicationContext(),"업로드 성공",Toast.LENGTH_LONG).show();
+
+                }
+            });
+            ++i;
+            if(uris.size() ==i)((MainActivity)MainActivity.maincontext).progressOFF();
+        }
     }
 
     private int exifOrientationDegrees(int exifOrientation) {

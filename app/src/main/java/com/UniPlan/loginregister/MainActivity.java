@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         void onBackPressed();
     }
 
+    AppCompatDialog progressDialog;
+
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
@@ -271,48 +273,48 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//    void Onprogress(Activity activity,String message){
-//
-//        if (activity == null || activity.isFinishing()) {
-//            return;
-//        }
-//
-//
-//        if (progressDialog != null && progressDialog.isShowing()) {
-//
-//        } else {
-//            //이 밑부분 떼서 작업전에 AppcompatDialog 변수선언해주고 progressDialog 먼저 만들고
-//            // 작업시작할때 Onprogress 넣어주고 작업끝나면 밑에 progressOFF 넣어주면됩니다.
-//            progressDialog = new AppCompatDialog(activity);
-//            progressDialog.setCancelable(false);
-//            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-//            progressDialog.setContentView(R.layout.progress_loading);
-//            progressDialog.show();
-//
-//        }
-//
-//
-//        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
-//        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
-//        img_loading_frame.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                frameAnimation.start();
-//            }
-//        });
-//
-//        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
-//        if (!TextUtils.isEmpty(message)) {
-//            tv_progress_message.setText(message);
-//        }
-//
-//    }
+    public void Onprogress(Activity activity,String message){
 
-//    public void progressOFF() {
-//        if (progressDialog != null && progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//        }
-//    }
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+
+        } else {
+            //이 밑부분 떼서 작업전에 AppcompatDialog 변수선언해주고 progressDialog 먼저 만들고
+            // 작업시작할때 Onprogress 넣어주고 작업끝나면 밑에 progressOFF 넣어주면됩니다.
+            progressDialog = new AppCompatDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            progressDialog.setContentView(R.layout.progress_loading);
+            progressDialog.show();
+
+        }
+
+
+        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() {
+            @Override
+            public void run() {
+                frameAnimation.start();
+            }
+        });
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+    }
+
+    public void progressOFF() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
 
 
