@@ -1,9 +1,13 @@
 package com.UniPlan.loginregister.UserInfo;
 
+import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.login.UserAccount;
@@ -52,7 +59,7 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
     private FragmentManager fm;
     private FragmentTransaction ft;
     private ItemTouchHelperListener itemTouchHelperListener;
-
+    private AppCompatDialog progressDialog;
     public Fragment_UserSpec(){}
     public Fragment_UserSpec(String type) {
         this.type = type;
@@ -64,6 +71,9 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment__user_spec, container, false);
+        progressDialog = new AppCompatDialog(getContext());
+
+        Onprogress(getActivity(),"Loading...");
 
         fm = getActivity().getSupportFragmentManager();
         ft = fm.beginTransaction();
@@ -111,7 +121,8 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
         ((MainActivity)getActivity()).setBackPressedlistener(this);
 
 
-        mStore.collection("user").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        mStore.collection("user").document(mAuth.getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userAccount = documentSnapshot.toObject(UserAccount.class);
@@ -180,9 +191,10 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
                         });
                         dialogDeleteSpec.show();
                     }
-                });
-            }
 
+                });
+                progressOFF();
+            }
         });
 
 
@@ -303,5 +315,46 @@ public class Fragment_UserSpec extends Fragment implements MainActivity.IOnBackP
         adapter_user_info.notifyDataSetChanged();
     }
 
+    void Onprogress(Activity activity, String message){
 
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+
+        } else {
+            //이 밑부분 떼서 작업전에 AppcompatDialog 변수선언해주고 progressDialog 먼저 만들고
+            // 작업시작할때 Onprogress 넣어주고 작업끝나면 밑에 progressOFF 넣어주면됩니다.
+            progressDialog = new AppCompatDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            progressDialog.setContentView(R.layout.progress_loading);
+            progressDialog.show();
+
+        }
+
+
+        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() {
+            @Override
+            public void run() {
+                frameAnimation.start();
+            }
+        });
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+    }
+
+    public void progressOFF() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 }
