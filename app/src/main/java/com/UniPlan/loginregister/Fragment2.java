@@ -302,6 +302,12 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                             btn_isTaken.setText("");
                         }
 
+                        //과목 이름 설정해주기
+                        String className = viewHolder.mTextView.getText().toString();
+                        TextView classNameOnBottomSheet = nodeChoiceBottomSheetDialog.findViewById(R.id.tv_classNameOnBottomSheet);
+                        classNameOnBottomSheet.setText(className);
+                        classNameOnBottomSheet.setSelected(true);
+
                         //수강 버튼 눌렀을 경우
                         btn_isTaken.setOnClickListener(new View.OnClickListener() {
                             @Override
