@@ -2,6 +2,7 @@ package com.UniPlan.loginregister.Notice_B;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -29,11 +30,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.adapters.CurriculumAdapter;
+import com.UniPlan.loginregister.adapters.MultiImageAdapter;
 import com.UniPlan.loginregister.curiList.Recycler_Data;
 import com.UniPlan.loginregister.login.FirebaseID;
 import com.UniPlan.loginregister.login.UserAccount;
 import com.UniPlan.loginregister.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -85,6 +88,11 @@ public class Post_write extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Recycler_Data> arrayList;
     private CurriculumAdapter curriculumAdapter;
+    private ArrayList<Uri> uriList = new ArrayList<>();
+    private RecyclerView photo_list;
+    private MultiImageAdapter photoadapter;
+    StorageReference storageReference;
+    private ArrayList<String>image_urllist = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,18 +102,18 @@ public class Post_write extends AppCompatActivity {
 
         mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents = findViewById(R.id.Post_write_contents);
-        post_imageView = findViewById(R.id.post_imageview);
-        post_imageView.setVisibility(View.INVISIBLE);
-        post_progressBar = findViewById(R.id.post_progressbar);
         post_save=findViewById(R.id.post_save);
         btn_back=findViewById(R.id.btn_back);
         post_photo=findViewById(R.id.post_photo);
         post_tree=findViewById(R.id.post_tree);
         post_gallery=findViewById(R.id.post_gallery);
+        photo_list  =findViewById(R.id.photo_list);
 
         Intent intent = getIntent();
         forum_sort = intent.getExtras().getString("게시판");
         storage=FirebaseStorage.getInstance();
+
+        storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
 
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
@@ -199,6 +207,8 @@ public class Post_write extends AppCompatActivity {
     private void useGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, FROM_GALLERY);
     }
 
@@ -269,7 +279,7 @@ public class Post_write extends AppCompatActivity {
                         Timestamp timestamp = new Timestamp(date);
                         subscriber = new ArrayList<>();
                         subscriber.add(token);
-                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, image_url,forum_sort, choosedTable,subscriber, 0,token);
+                        post[0] = new Post(mAuth.getUid(), mTitle.getText().toString(), mContents.getText().toString(), userAccount.getNickname(), "0", timestamp, PostID, new ArrayList<>(), 0, image_urllist,forum_sort, choosedTable,subscriber, 0,token);
                         mStore.collection(forum_sort).document(PostID).set(post[0]);
                     }
                 });
@@ -281,66 +291,138 @@ public class Post_write extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=RESULT_OK) {
-            return;
+//        if(resultCode!=RESULT_OK) {
+//            return;
+//        }
+//        else if (requestCode == FROM_GALLERY) {
+//            uri = data.getData();
+//            Log.d("###", "첫번째 uri : "+String.valueOf(uri));
+//            post_imageView.setImageURI(uri);
+//            Cursor cursor = null;
+//            try {
+//                String[] proj = {MediaStore.Images.Media.DATA};
+//                assert uri != null;
+//                cursor = getContentResolver().query(uri, proj, null, null, null);
+//                assert cursor != null;
+//                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//                cursor.moveToFirst();
+//                tempFile = new File(cursor.getString(column_index));
+//            } finally {
+//                if (cursor != null) {
+//                    cursor.close();
+//                }
+//            }
+//            setImage();
+//        } else if (requestCode == FROM_CAMERA) {
+//            if(resultCode==RESULT_OK) {
+//                Bitmap bitmap=BitmapFactory.decodeFile(imageFilePath);
+//                ExifInterface exif=null;
+//                try {
+//                    exif=new ExifInterface(imageFilePath);
+//                } catch(IOException e) {
+//                    e.printStackTrace();
+//                }
+//                int exifOrientation;
+//                int exifDegree;
+//                if(exif!=null) {
+//                    exifOrientation=exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
+//                    exifDegree=exifOrientationDegrees(exifOrientation);
+//                } else {
+//                    exifDegree=0;
+//                }
+//                post_imageView.setImageBitmap(rotate(bitmap,exifDegree));
+//                post_imageView.setVisibility(View.VISIBLE);
+//            } else {
+//                Toast.makeText(this,"취소되었습니다",Toast.LENGTH_LONG).show();
+//            }
+//        }
+
+        if(data == null){   // 어떤 이미지도 선택하지 않은 경우
+            Toast.makeText(getApplicationContext(), "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
         }
-        else if (requestCode == FROM_GALLERY) {
-            uri = data.getData();
-            Log.d("###", "첫번째 uri : "+String.valueOf(uri));
-            post_imageView.setImageURI(uri);
-            Cursor cursor = null;
-            try {
-                String[] proj = {MediaStore.Images.Media.DATA};
-                assert uri != null;
-                cursor = getContentResolver().query(uri, proj, null, null, null);
-                assert cursor != null;
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                tempFile = new File(cursor.getString(column_index));
-            } finally {
-                if (cursor != null) {
-                    cursor.close();
+        else{   // 이미지를 하나라도 선택한 경우
+            if(data.getClipData() == null){     // 이미지를 하나만 선택한 경우
+                Log.e("single choice: ", String.valueOf(data.getData()));
+                Uri imageUri = data.getData();
+                uriList.add(imageUri);
+
+                photoadapter = new MultiImageAdapter(uriList, getApplicationContext());
+                photo_list.setAdapter(photoadapter);
+                photo_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+
+
+
+                UploadPhoto(imageUri,0);
+            }
+            else{      // 이미지를 여러장 선택한 경우
+                ClipData clipData = data.getClipData();
+
+                if(clipData.getItemCount() > 10){   // 선택한 이미지가 11장 이상인 경우
+                    Toast.makeText(getApplicationContext(), "사진은 10장까지 선택 가능합니다.", Toast.LENGTH_LONG).show();
+                }
+                else{   // 선택한 이미지가 1장 이상 10장 이하인 경우
+
+                    for (int i = 0; i < clipData.getItemCount(); i++){
+                        Uri imageUri = clipData.getItemAt(i).getUri();  // 선택한 이미지들의 uri를 가져온다.
+                        try {
+                            uriList.add(imageUri);  //uri를 list에 담는다.
+                            UploadPhoto(imageUri,i);
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+                    photoadapter = new MultiImageAdapter(uriList, getApplicationContext());
+                    photo_list.setAdapter(photoadapter);   // 리사이클러뷰에 어댑터 세팅
+                    photo_list.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+
                 }
             }
-            setImage();
-        } else if (requestCode == FROM_CAMERA) {
-            if(resultCode==RESULT_OK) {
-                Bitmap bitmap=BitmapFactory.decodeFile(imageFilePath);
-                ExifInterface exif=null;
-                try {
-                    exif=new ExifInterface(imageFilePath);
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
-                int exifOrientation;
-                int exifDegree;
-                if(exif!=null) {
-                    exifOrientation=exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,ExifInterface.ORIENTATION_NORMAL);
-                    exifDegree=exifOrientationDegrees(exifOrientation);
-                } else {
-                    exifDegree=0;
-                }
-                post_imageView.setImageBitmap(rotate(bitmap,exifDegree));
-                post_imageView.setVisibility(View.VISIBLE);
-            } else {
-                Toast.makeText(this,"취소되었습니다",Toast.LENGTH_LONG).show();
-            }
         }
-        StorageReference storageReference=storage.getReferenceFromUrl("gs://login-6ba8f.appspot.com/");
+
+
+
+
+//        ref.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+//                final Task<Uri> imageUrl=task.getResult().getStorage().getDownloadUrl();
+//                while(!imageUrl.isComplete());
+//                image_url=imageUrl.getResult().toString();
+//            }
+//        });
+    }
+
+    public void UploadPhoto(Uri uri,int n){
+
+
         Log.d("###", "Uri 는: "+uri);
-        String filename=mAuth.getUid()+"_"+System.currentTimeMillis();
+        String filename=mAuth.getUid()+"_"+System.currentTimeMillis()+n;
         StorageReference ref=storageReference.child("post_image/"+filename+".jpg");
+        image_urllist.add(filename);
         image_url=filename;
         Log.d("###",filename);
-        ref.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+
+        UploadTask uploadTask;
+        uploadTask = ref.putFile(uri);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                final Task<Uri> imageUrl=task.getResult().getStorage().getDownloadUrl();
-                while(!imageUrl.isComplete());
-                image_url=imageUrl.getResult().toString();
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(getApplicationContext(),"업로드 실패",Toast.LENGTH_LONG).show();
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getApplicationContext(),"업로드 성공",Toast.LENGTH_LONG).show();
+
             }
         });
+
     }
+
+
 
     private int exifOrientationDegrees(int exifOrientation) {
         if(exifOrientation==ExifInterface.ORIENTATION_ROTATE_90) {

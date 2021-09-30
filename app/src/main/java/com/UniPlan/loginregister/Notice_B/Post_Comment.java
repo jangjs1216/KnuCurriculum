@@ -25,12 +25,14 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.ViewHolder;
+import com.UniPlan.loginregister.adapters.MultiImageAdapter;
 import com.UniPlan.loginregister.adapters.PostCommentAdapter;
 import com.UniPlan.loginregister.login.FirebaseID;
 import com.bumptech.glide.Glide;
@@ -98,9 +100,13 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private ArrayList<String> subs, Liked = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
-    private String photoUrl, uid, post_id, writer_id_post, current_user, image_url, isTreeExist,token;
+    private String photoUrl, uid, post_id, writer_id_post, current_user,  isTreeExist,token;
     private Boolean isChecked, isLiked;
     private Post post;
+    private ArrayList<String > image_urllist;
+    private MultiImageAdapter photoadapter;
+    private ArrayList<Uri> uriList = new ArrayList<>();
+    private RecyclerView photo_list;
 
     // [ 장준승 ] TreeView 바로 보이도록 구현
     ZoomLayout zoomLayout;
@@ -140,11 +146,11 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         zoomLayout = (ZoomLayout) findViewById(R.id.post_zoomlayout);
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
-        cv_image=findViewById(R.id.cv_image);
         Intent intent = getIntent();//데이터 전달받기
         forum_sort = getIntent().getExtras().getString("forum_sort");
         post_id = intent.getStringExtra("post_id");
         Log.e("dkstmdwo", forum_sort + post_id);
+        photo_list  =findViewById(R.id.photo_list);
 
 
         FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
@@ -201,23 +207,27 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 likeText.setText(post.getLike());
 
                 writer_id_post = post.getWriter_id();
-                image_url = post.getImage_url();
+                image_urllist = post.getImage_url();
 
-                if (image_url != null) {
-                    Log.d("###", "image_url : " + image_url);
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference storageReference = storage.getReference();
-                    StorageReference pathReference = storageReference.child("post_image");
-                    if (pathReference == null) {
-                        Toast.makeText(Post_Comment.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
-                    } else {
+
+                if (image_urllist.size()>0) {
+
+                    for(String image_url : image_urllist) {
+                        Log.d("####", "image_url : " + image_url);
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference storageReference = storage.getReference();
+
                         Log.d("###", "최종 사진 주소 : " + "post_image/" + image_url + ".jpg");
-                        StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
-                        submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        //StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
+                        storageReference.child("post_image/" + image_url + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                Log.d("###", String.valueOf(uri));
-                                Glide.with(Post_Comment.this).load(uri).into(url_image);
+
+                                uriList.add(uri);
+                                photoadapter = new MultiImageAdapter(uriList, getApplicationContext());
+                                photo_list.setAdapter(photoadapter);
+                                photo_list.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -226,6 +236,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                             }
                         });
                     }
+
+
                 }
                 else {
                     cv_image.setVisibility(View.INVISIBLE);
@@ -282,14 +294,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        url_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
-                intent.putExtra("url",image_url);
-                startActivity(intent);
-            }
-        });
+
 
         swipeRefreshLayout = findViewById(R.id.refresh_commnet);
 
@@ -383,6 +388,16 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
+    public void imagezoom(Uri uri){
+
+                Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
+                intent.putExtra("uri",uri);
+                startActivity(intent);
+
+
+    }
+
 
     public void getSubjectListFromFB(){
         mStore.collection("Subject")

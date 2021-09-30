@@ -15,15 +15,10 @@ public class Post implements Comparable<Post> {
     @ServerTimestamp
     private Timestamp timestamp;
     private String post_id;
-
-
-
     private String writer_token;
-
-
     private ArrayList<Comment> comments; //댓글 리스트들
     private int coment_Num;
-    private String image_url;
+    private ArrayList<String> image_url;
     private Table table;
     private ArrayList<String> subscriber;
     private String forum;
@@ -46,9 +41,9 @@ public class Post implements Comparable<Post> {
     }
 
 
-    public String getImage_url() { return image_url; }
+    public ArrayList<String> getImage_url() { return image_url; }
 
-    public void setImage_url(String image_url) { this.image_url=image_url; }
+    public void setImage_url(ArrayList<String> image_url) { this.image_url=image_url; }
 
     public void setcoment_Num(int coment_num){this.coment_Num=coment_num;}
 
@@ -150,7 +145,7 @@ public class Post implements Comparable<Post> {
         this.post_id = "";
         this.comments = new ArrayList<>();
         this.coment_Num=0;
-        this.image_url= "";
+        this.image_url= new ArrayList<>();
         this.forum="";
         this.table = new Table();
         this.subscriber = new ArrayList<>();
@@ -158,7 +153,7 @@ public class Post implements Comparable<Post> {
         this.writer_token ="";
     }
 
-    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, String image_url, String forum, Table table,ArrayList<String> subscriber, int click,String writer_token) {
+    public Post(String writer_id, String title, String contents, String p_nickname, String like, Timestamp timestamp, String post_id, ArrayList<Comment> comments, int coment_Num, ArrayList<String> image_url, String forum, Table table,ArrayList<String> subscriber, int click,String writer_token) {
         this.writer_id = writer_id;
         this.title = title;
         this.contents = contents;

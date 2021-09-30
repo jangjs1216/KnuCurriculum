@@ -188,22 +188,15 @@
                         android:text="트리 보기"
                         android:visibility="gone"/>
 
-                    <androidx.cardview.widget.CardView
-                        android:elevation="6dp"
-                        android:id="@+id/cv_image"
-                        app:cardCornerRadius="20dp"
-                        android:layout_margin="30dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:scaleType="matrix"
-                            android:id="@+id/linear_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            app:srcCompat="@color/white" />
-                    </androidx.cardview.widget.CardView>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/photo_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3.5"
+                        android:layout_marginTop="24dp"
+                        android:orientation="horizontal"
+                        />
 
                     <com.otaliastudios.zoom.ZoomLayout
                         android:id="@+id/post_zoomlayout"
@@ -279,7 +272,7 @@
             android:id="@+id/btn_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_twotone_send_24"
+            app:srcCompat="@drawable/ic_twotone_send_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

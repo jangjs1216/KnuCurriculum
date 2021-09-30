@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.adapters.CurriculumAdapter;
+import com.UniPlan.loginregister.adapters.MultiImageAdapter;
 import com.UniPlan.loginregister.curiList.Recycler_Data;
 import com.UniPlan.loginregister.login.UserAccount;
 import com.bumptech.glide.Glide;
@@ -86,6 +87,10 @@ public class Post_Update extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<Recycler_Data> arrayList;
     private CurriculumAdapter curriculumAdapter;
+    private ArrayList<String > image_urllist;
+    private MultiImageAdapter photoadapter;
+    private ArrayList<Uri> uriList = new ArrayList<>();
+    private RecyclerView photo_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,14 +100,15 @@ public class Post_Update extends AppCompatActivity {
 
         mTitle = findViewById(R.id.Post_write_title);//제목 , item_post.xml의 변수와 혼동주의
         mContents = findViewById(R.id.Post_write_contents);
-        post_imageView = findViewById(R.id.post_imageview);
+
         post_imageView.setVisibility(View.INVISIBLE);
-        post_progressBar = findViewById(R.id.post_progressbar);
+
         post_save=findViewById(R.id.post_save);
         btn_back=findViewById(R.id.btn_back);
         post_photo=findViewById(R.id.post_photo);
         post_tree=findViewById(R.id.post_tree);
         post_gallery=findViewById(R.id.post_gallery);
+        photo_list  =findViewById(R.id.photo_list);
 
         Intent intent=getIntent();
         post_id=intent.getStringExtra("post_id");
@@ -130,7 +136,7 @@ public class Post_Update extends AppCompatActivity {
                     timestamp = post.getTimestamp();
                     comments = post.getComments();
                     commnet_num=post.getcoment_Num();
-                    image_url=post.getImage_url();
+                    image_urllist=post.getImage_url();
                     Log.d("###","image_url in update : "+image_url);
                     table = post.getTable();
                     subscriber = post.getSubscriber();
@@ -285,7 +291,7 @@ public class Post_Update extends AppCompatActivity {
         }
         else {
             if (mAuth.getCurrentUser() != null) {
-                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_url, forum_sort, table, subscriber, click,token);
+                Post post=new Post(writer_id, mTitle.getText().toString(), mContents.getText().toString(), p_nickname, like, timestamp, post_id, comments, commnet_num, image_urllist, forum_sort, table, subscriber, click,token);
                 mStore.collection(forum_sort).document(post_id).set(post);
                 finish();
             }

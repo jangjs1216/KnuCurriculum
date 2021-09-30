@@ -22,7 +22,7 @@ public class Image_zoom extends AppCompatActivity {
 
     ZoomLayout zoomLayout;
     ImageView zoom_image;
-    String image_url;
+    Uri image_url;
     Button btn_store;
 
     @Override
@@ -32,29 +32,11 @@ public class Image_zoom extends AppCompatActivity {
 
 //        btn_store=findViewById(R.id.btn_store);
         zoom_image=findViewById(R.id.zoom_image);
-        image_url=getIntent().getStringExtra("url");
+        image_url=getIntent().getParcelableExtra("uri");
         if (image_url != null) {
-            Log.d("###", "image_url in Image_zoom : " + image_url);
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageReference = storage.getReference();
-            StorageReference pathReference = storageReference.child("post_image");
-            if (pathReference == null) {
-                Toast.makeText(Image_zoom.this, "해당 사진이 없습니다", Toast.LENGTH_SHORT).show();
-            } else {
-                StorageReference submitImage = storageReference.child("post_image/" + image_url + ".jpg");
-                submitImage.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("###", String.valueOf(uri));
-                        Glide.with(Image_zoom.this).load(uri).into(zoom_image);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("###","실패");
-                    }
-                });
-            }
+
+            Glide.with(Image_zoom.this).load(image_url).into(zoom_image);
+
         }
 //        btn_store.setOnClickListener(new View.OnClickListener() {
 //            @Override
