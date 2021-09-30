@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setvisibleNavi(boolean bottom){
-        if(bottom){bottomNavigationView.setVisibility(View.INVISIBLE);}
+        if(bottom){bottomNavigationView.setVisibility(View.GONE);}
         else{bottomNavigationView.setVisibility(View.VISIBLE);}
     }
 
