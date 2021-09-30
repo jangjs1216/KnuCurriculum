@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.UniPlan.loginregister.Licenses;
 import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.SettingsFragment;
 import com.UniPlan.loginregister.login.LogoutActivity;
@@ -41,7 +42,7 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     private FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
     private FragmentManager fm2;
     private FragmentTransaction ft2;
-    private TextView tv_userName,btn_logout,btn_nick,btn_major_gpa,tv_major,tv_taked,tv_request;
+    private TextView tv_userName,btn_logout,btn_nick,btn_major_gpa,tv_major,tv_taked,tv_request, tv_license;
     private UserAccount userAccount;
 
 
@@ -58,6 +59,8 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         btn_nick=view.findViewById(R.id.tv_setUserName);
         btn_major_gpa = view.findViewById(R.id.btn_major_gpa);
         tv_request = view.findViewById(R.id.tv_request);
+        tv_license = view.findViewById(R.id.tv_license);
+
         btn_nick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +77,14 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
                 showGpaDialog();
             }
         });
+
+        tv_license.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLicense();
+            }
+        });
+
         //뒤로가기
         ((MainActivity) getActivity()).setBackPressedlistener(this);
 
@@ -200,6 +211,10 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
             }
         });
         dialogSetgpa.show();
+    }
+    public void showLicense(){
+        Intent it = new Intent(getActivity(), Licenses.class);
+        startActivity(it);
     }
 }
 
