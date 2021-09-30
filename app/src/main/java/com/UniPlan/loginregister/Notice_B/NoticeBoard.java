@@ -135,14 +135,14 @@ public class NoticeBoard extends AppCompatActivity {
                     likeSort_TF = false;
                     sortDatas();
                     likesort_btn.setTextColor(Color.WHITE);
-                    likesort_btn.setText("최신순 정렬");
+                    likesort_btn.setText(" 최신순 정렬");
                     likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_last)));
                 }
                 else{
                     likeSort_TF = true;
                     updateDatas();
                     likesort_btn.setTextColor(Color.parseColor("#1C599A"));
-                    likesort_btn.setText("좋아요순 정렬");
+                    likesort_btn.setText(" 좋아요순 정렬");
                     likesort_btn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.search_pre)));
                 }
             }

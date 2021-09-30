@@ -49,16 +49,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
             android:layout_centerHorizontal="true"
-            app:backgroundTint="#EDE4E4"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/main_font_regular"
             android:gravity="center_horizontal"
+            android:includeFontPadding="false"
+            android:text=" 좋아요순 정렬"
             android:textColor="#1C599A"
-            android:text="좋아요순 정렬"
-            app:srcCompat="@drawable/ic_baseline_favorite_24"
+            app:backgroundTint="#EDE4E4"
             app:borderWidth="0dp"
-            app:fabSize="normal">
-        </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_baseline_favorite_24"></com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
 
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
