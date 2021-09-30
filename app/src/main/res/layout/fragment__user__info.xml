@@ -243,6 +243,19 @@
             android:textColor="@color/black"
             />
         <TextView
+            android:id="@+id/tv_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:fontFamily="@font/main_font_regular"
+            android:text="건의하기"
+            android:textSize="15sp"
+            android:padding="10sp"
+            android:layout_marginLeft="15sp"
+            android:includeFontPadding="false"
+            android:textColor="@color/black"
+            />
+        <TextView
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

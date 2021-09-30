@@ -41,11 +41,9 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
     private FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
     private FragmentManager fm2;
     private FragmentTransaction ft2;
-    private TextView tv_userName;
-    private TextView btn_logout,btn_nick,btn_major_gpa;
+    private TextView tv_userName,btn_logout,btn_nick,btn_major_gpa,tv_major,tv_taked,tv_request;
     private UserAccount userAccount;
-    private TextView tv_major;
-    private TextView tv_taked;
+
 
 
     @Override
@@ -59,7 +57,7 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         tv_userName = view.findViewById(R.id.tv_userName);
         btn_nick=view.findViewById(R.id.tv_setUserName);
         btn_major_gpa = view.findViewById(R.id.btn_major_gpa);
-
+        tv_request = view.findViewById(R.id.tv_request);
         btn_nick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +95,18 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         actionBar.setDisplayHomeAsUpEnabled(true); //뒤로가기 기능생성
         //툴바 끝
 
+        //문의하기
+        tv_request.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.addToBackStack(null);
+                ft.replace(R.id.main_frame, new Fragment_User_Info());
+                ft.commit();
+            }
+        });
+
+
         //로그아웃
         btn_logout=view.findViewById(R.id.btn_logout);
 
@@ -110,8 +120,6 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
 
 
         //      리싸이클러뷰 끝
-
-
         return view;
     }
 

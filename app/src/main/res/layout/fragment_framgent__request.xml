@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="12"
+    tools:context="com.UniPlan.loginregister.Notice_B.Post_write">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/separate"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_back"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_bi_x" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/main_font_bold"
+            android:layout_weight="10"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"
+            android:text="건의하기" />
+
+        <TextView
+            android:layout_marginRight="10dp"
+            android:id="@+id/request_save"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical|right"
+            android:background="@drawable/button_shape"
+            android:fontFamily="@font/main_font_medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="완료"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:paddingLeft="7dp"
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="제목"
+            android:includeFontPadding="false"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"
+            android:background="@null"
+            android:textSize="20sp"
+            android:fontFamily="@font/main_font_regular" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_height="1dp"
+            android:background="@color/separate"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="13dp"
+        android:layout_weight="8"
+        android:orientation="horizontal"
+        android:elevation="16dp">
+
+        <EditText
+            android:paddingTop="10dp"
+            android:gravity="top"
+            android:id="@+id/et_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@null"
+            android:hint="내용을 입력하세요"
+            android:selectAllOnFocus="false"
+            android:singleLine="false"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
