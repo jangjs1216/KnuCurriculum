@@ -16,14 +16,17 @@
         android:theme="@style/Theme.LoginRegister">
         <activity
             android:name="com.UniPlan.loginregister.Notice_B.Image_zoom"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name="com.UniPlan.loginregister.Notice_B.Post_Search"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name="com.UniPlan.loginregister.login.LogoutActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
-        <activity android:name="com.UniPlan.loginregister.login.LoginActivity">
+        <activity android:name="com.UniPlan.loginregister.login.LoginActivity" android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".StartLoadActivity">
@@ -33,13 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.UniPlan.loginregister.login.RegisterActivity" />
-        <activity android:name="com.UniPlan.loginregister.MainActivity" />
-        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_write" />
-        <activity android:name="com.UniPlan.loginregister.Notice_B.NoticeBoard" />
-        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Comment" />
-        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Update" />
-        <activity android:name="com.UniPlan.loginregister.SubjectInfoActivity" /> <!-- 푸쉬알림 설정 -->
+        <activity android:name="com.UniPlan.loginregister.login.RegisterActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_write" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.Notice_B.NoticeBoard" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Comment" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.Notice_B.Post_Update" android:screenOrientation="portrait"/>
+        <activity android:name="com.UniPlan.loginregister.SubjectInfoActivity" android:screenOrientation="portrait"/> <!-- 푸쉬알림 설정 -->
         <service
             android:name="com.UniPlan.loginregister.push_alram.MyFirebaseMessagingService"
             android:exported="false">
