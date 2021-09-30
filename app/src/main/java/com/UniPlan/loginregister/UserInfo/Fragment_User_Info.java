@@ -101,7 +101,7 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
             public void onClick(View v) {
                 ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
-                ft.replace(R.id.main_frame, new Fragment_User_Info());
+                ft.replace(R.id.main_frame, new Fragment_Request());
                 ft.commit();
             }
         });

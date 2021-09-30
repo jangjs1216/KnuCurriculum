@@ -43,11 +43,13 @@ public class Fragment_Request extends Fragment implements MainActivity.IOnBackPr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_framgent__request, container, false);
+        fm = getActivity().getSupportFragmentManager();
+        ft = fm.beginTransaction();
         tv_back = view.findViewById(R.id.btn_back);
         tv_save = view.findViewById(R.id.request_save);
         et_title = view.findViewById(R.id.et_title);
         et_content = view.findViewById(R.id.et_contents);
-
+        ((MainActivity)getActivity()).setBackPressedlistener(this);
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +67,8 @@ public class Fragment_Request extends Fragment implements MainActivity.IOnBackPr
                 String content = et_content.getText().toString();
 
                 Request request = new Request(title,content);
-                mStore.collection("request").document(mAuth.getUid()).set(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                String mId = mStore.collection("request").document().getId();
+                mStore.collection("request").document(mId).set(request).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         ft.remove(Fragment_Request.this).commit();
@@ -76,6 +79,11 @@ public class Fragment_Request extends Fragment implements MainActivity.IOnBackPr
             }
         });
         return view;
+    }
+
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).setBackPressedlistener(null);
     }
 
     @Override
