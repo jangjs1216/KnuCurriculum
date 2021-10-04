@@ -3,13 +3,17 @@ package com.UniPlan.loginregister;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -18,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -116,6 +121,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     HashMap<String, Integer> m;
     ArrayList<Integer> adj[];
 
+    //로딩
+    private AppCompatDialog progressDialog;
+
     /*
     [20210807] 장준승 Fragment2 시각화 구현
      */
@@ -166,6 +174,8 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         treeView.setLineColor(Color.BLACK);
         treeView.setLineThickness(5);
 
+        progressDialog = new AppCompatDialog(getContext());
+        Onprogress(getActivity(),"로딩중...");
         //UsersTableInfo 처음에만 받아오고 후에 변화할땐 저장만 해주면 됨.
         docRef = db.collection("UsersTableInfo").document("Matrix");
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -576,7 +586,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             TextView tableNameTV = v.findViewById(R.id.tableNameTV);
             tableNameTV.setText(tableName);
             treeResisted = false;
+
             getSubjectListFromFB();
+            progressOFF();
         }
         else if(userAccount.getBasicTableName() != null){
             tableName = userAccount.getBasicTableName();
@@ -1184,5 +1196,48 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     public void onPause() {
         super.onPause();
         ((MainActivity) getActivity()).setBackPressedlistener(null);
+    }
+
+    void Onprogress(Activity activity, String message){
+
+        if (activity == null || activity.isFinishing()) {
+            return;
+        }
+
+
+        if (progressDialog != null && progressDialog.isShowing()) {
+
+        } else {
+            //이 밑부분 떼서 작업전에 AppcompatDialog 변수선언해주고 progressDialog 먼저 만들고
+            // 작업시작할때 Onprogress 넣어주고 작업끝나면 밑에 progressOFF 넣어주면됩니다.
+            progressDialog = new AppCompatDialog(activity);
+            progressDialog.setCancelable(false);
+            progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            progressDialog.setContentView(R.layout.progress_loading);
+            progressDialog.show();
+
+        }
+
+
+        final ImageView img_loading_frame = (ImageView) progressDialog.findViewById(R.id.iv_frame_loading);
+        final AnimationDrawable frameAnimation = (AnimationDrawable) img_loading_frame.getBackground();
+        img_loading_frame.post(new Runnable() {
+            @Override
+            public void run() {
+                frameAnimation.start();
+            }
+        });
+
+        TextView tv_progress_message = (TextView) progressDialog.findViewById(R.id.tv_progress_message);
+        if (!TextUtils.isEmpty(message)) {
+            tv_progress_message.setText(message);
+        }
+
+    }
+
+    public void progressOFF() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }
