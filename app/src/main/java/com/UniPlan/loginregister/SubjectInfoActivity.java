@@ -11,6 +11,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
@@ -20,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.adapters.PickAdapter;
 import com.UniPlan.loginregister.adapters.SubjectCommentAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -284,18 +287,18 @@ public class SubjectInfoActivity extends AppCompatActivity {
 
         ArrayList<String> nextnames = new ArrayList<>();
         ArrayList<Float> firsts = new ArrayList<Float>();
-        ArrayList<String> n_nextnames = new ArrayList<>();
-        ArrayList<Float> seconds = new ArrayList<Float>();
+        Map<Integer,String> n_nextnames = new HashMap<>();
+        Map<Integer,Float> seconds = new HashMap<>();
 
-        mStore.collection("UsersTableInfo").document("Matrix")// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+        mStore.collection("UsersTableInfo").document(subjectName)// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Table table = documentSnapshot.toObject(Table.class);
+                        Line line = documentSnapshot.toObject(Line.class);
                         Map<String,String> curtable =  new HashMap<>();
-                        curtable=table.getTable().get(subjectName);
+                        curtable=line.getLine();
 
                         float total = Integer.parseInt(curtable.get(subjectName));
 
@@ -322,30 +325,56 @@ public class SubjectInfoActivity extends AppCompatActivity {
                         }
 
                         for(int j=0;j<5;++j) {
-                            String curSub =nextnames.get(j);
-                            Map<String, String> nextnametable = table.getTable().get(curSub);
-                            int ntotal = Integer.parseInt(nextnametable.get(curSub));
-                            int maxi=0;
-                            String maxstring = null;
-                            for( String Nkey : nextnametable.keySet()){
-                                if(Integer.parseInt(nextnametable.get(Nkey))>maxi && !Nkey.equals(curSub)){
-                                    maxstring=Nkey;
-                                    maxi=Integer.parseInt(nextnametable.get(Nkey));
+
+                            int finalJ = j;
+                            Log.e("%%%%%",j+" "+nextnames.get(j));
+
+                            mStore.collection("UsersTableInfo").document(nextnames.get(j))// 여기 콜렉션 패스 경로가 중요해 보면 패스 경로가 user로 되어있어서
+                                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    Line sline = documentSnapshot.toObject(Line.class);
+                                    String curSub =sline.getRoot();
+                                    Map<String, String> nextnametable = sline.getLine();
+
+                                    int ntotal = Integer.parseInt(nextnametable.get(curSub));
+                                    int maxi=0;
+                                    String maxstring = null;
+                                    for( String Nkey : nextnametable.keySet()){
+                                        if(Integer.parseInt(nextnametable.get(Nkey))>maxi && !Nkey.equals(curSub)){
+                                            maxstring=Nkey;
+                                            maxi=Integer.parseInt(nextnametable.get(Nkey));
+                                        }
+                                    }
+                                    Log.e("%%%%%",curSub);
+                                    Log.e("%%%%%",Integer.toString(finalJ));
+                                    if(maxstring!=null){
+                                        n_nextnames.put(finalJ,maxstring);
+                                        seconds.put(finalJ,(float)maxi/ntotal);
+                                        //n_nextnames.add(maxstring);seconds.add((float)maxi/ntotal);
+                                    }
+                                    else{
+                                        n_nextnames.put(finalJ,"데이터가 없습니다");
+                                        seconds.put(finalJ,(float)(0));
+                                       // n_nextnames.add("데이터가 없습니다");  seconds.add((float) (0));
+                                    }
+
+                                    if(n_nextnames.size() ==5) {
+                                        Log.e("%%%%%",Integer.toString(nextnames.size()) +Integer.toString(n_nextnames.size()) +Integer.toString(firsts.size()) +Integer.toString(seconds.size()) );
+                                        for (int ii = 0; ii < 5; ++ii) {
+                                            Picksubject picksubject = new Picksubject(subjectName, nextnames.get(ii), n_nextnames.get(ii), firsts.get(ii), seconds.get(ii));
+                                            Picklist.add(picksubject);
+                                        }
+                                        pickAdapter = new PickAdapter(Picklist);
+                                        picksubjectList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                                        picksubjectList.setAdapter(pickAdapter);
+                                    }
                                 }
-                            }
-                            if(maxstring!=null){ n_nextnames.add(maxstring);seconds.add((float)maxi/ntotal);}
-                            else{n_nextnames.add("데이터가 없습니다");  seconds.add((float) (0));}
-
+                            });
                         }
 
-                        //Log.e("%%%%%",Integer.toString(nextnames.size()) +Integer.toString(n_nextnames.size()) +Integer.toString(firsts.size()) +Integer.toString(seconds.size()) );
-                        for(int ii=0;ii<5;++ii){
-                            Picksubject picksubject = new Picksubject(subjectName, nextnames.get(ii),n_nextnames.get(ii),firsts.get(ii),seconds.get(ii));
-                            Picklist.add(picksubject);
-                        }
-                        pickAdapter = new PickAdapter(Picklist);
-                        picksubjectList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        picksubjectList.setAdapter(pickAdapter);
+
+
 
                     }
                 });

@@ -26,10 +26,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.UniPlan.loginregister.Fragment1;
 import com.UniPlan.loginregister.Fragment2;
 import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
+import com.UniPlan.loginregister.UserInfo.Fragment_User_Info;
 import com.UniPlan.loginregister.login.UserAccount;
 import com.UniPlan.loginregister.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -200,8 +202,9 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 break;
 
             case android.R.id.home:
-                ft.replace(R.id.main_frame,new Fragment2()).commit();
-                ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
+                onBackPressed();
+                //ft.replace(R.id.main_frame,new Fragment2()).commit();
+               // ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -399,8 +402,9 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     //뒤로가기
     @Override
     public void onBackPressed() {
-        ft.replace(R.id.main_frame, new Fragment2()).commit();
-
+        ft.replace(R.id.main_frame, new Fragment1()).commit();
+        //ft.remove(Curl_List_Fragment.this).commit();
+        fm.popBackStack();
 
         ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
     }

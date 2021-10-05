@@ -145,7 +145,7 @@ public class Fragment1 extends Fragment {
         treeMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right,R.anim.enter_to_right, R.anim.exit_to_right);
+                ft.setCustomAnimations(R.anim.enter_to_right, R.anim.exit_to_right);
                 ft.addToBackStack(null);
                 ft.replace(R.id.main_frame, new Curl_List_Fragment());
                 ft.commit();
