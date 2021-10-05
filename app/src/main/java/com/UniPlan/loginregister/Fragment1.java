@@ -2,6 +2,7 @@ package com.UniPlan.loginregister;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -24,14 +25,22 @@ import com.UniPlan.loginregister.adapters.CurriculumAdapter;
 import com.UniPlan.loginregister.curiList.Curl_List_Fragment;
 import com.UniPlan.loginregister.curiList.Recycler_Data;
 import com.UniPlan.loginregister.login.UserAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.blox.treeview.TreeNode;
 
 public class Fragment1 extends Fragment {
     private static  final String TAG = "Frag1";

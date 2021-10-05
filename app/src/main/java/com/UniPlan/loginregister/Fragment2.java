@@ -107,7 +107,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     Boolean treeResisted = false;
 
     //UsersTableInfo
-    Table UsersTableInfo;
+    //Table UsersTableInfo;
 
     //크기 유동적 변화 구현
     ViewHolder[] viewHolderList;
@@ -176,14 +176,6 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
         progressDialog = new AppCompatDialog(getContext());
         Onprogress(getActivity(),"로딩중...");
-        //UsersTableInfo 처음에만 받아오고 후에 변화할땐 저장만 해주면 됨.
-        docRef = db.collection("UsersTableInfo").document("Matrix");
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UsersTableInfo = documentSnapshot.toObject(Table.class);
-            }
-        });
         docRef = db.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -1151,14 +1143,25 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             userAccount.setTaked(Integer.toString(currTaked));
             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-            int currCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-            currCount -= 1;
-            int currParentCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-            currParentCount -= 1;
+            Onprogress(getActivity(),"로딩중...");
+            docRef = db.collection("UsersTableInfo").document(parentSubjectName);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Line line = documentSnapshot.toObject(Line.class);
 
-            UsersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-            UsersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-            db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
+                    int currCount = Integer.parseInt(line.getLine().get(currSubjectName));
+                    currCount -= 1;
+                    int currParentCount = Integer.parseInt(line.getLine().get(parentSubjectName));
+                    currParentCount -= 1;
+
+                    line.getLine().put(currSubjectName, Integer.toString(currCount));
+                    line.getLine().put(parentSubjectName, Integer.toString(currParentCount));
+
+                    db.collection("UsersTableInfo").document(parentSubjectName).set(line);
+                    progressOFF();
+                }
+            });
 
         }else{
             //안 듣고 있는데 듣는 것으로 수정하는 경우
@@ -1175,15 +1178,25 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             userAccount.setTaked(Integer.toString(currTaked));
             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
+            Onprogress(getActivity(),"로딩중...");
+            docRef = db.collection("UsersTableInfo").document(parentSubjectName);
+            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    Line line = documentSnapshot.toObject(Line.class);
 
-            int currCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(currSubjectName));
-            currCount += 1;
-            int currParentCount = Integer.parseInt(UsersTableInfo.getTable().get(parentSubjectName).get(parentSubjectName));
-            currParentCount += 1;
+                    int currCount = Integer.parseInt(line.getLine().get(currSubjectName));
+                    currCount += 1;
+                    int currParentCount = Integer.parseInt(line.getLine().get(parentSubjectName));
+                    currParentCount += 1;
 
-            UsersTableInfo.getTable().get(parentSubjectName).put(currSubjectName, Integer.toString(currCount));
-            UsersTableInfo.getTable().get(parentSubjectName).put(parentSubjectName, Integer.toString(currParentCount));
-            db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
+                    line.getLine().put(currSubjectName, Integer.toString(currCount));
+                    line.getLine().put(parentSubjectName, Integer.toString(currParentCount));
+
+                    db.collection("UsersTableInfo").document(parentSubjectName).set(line);
+                    progressOFF();
+                }
+            });
         }
     }
 
