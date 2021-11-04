@@ -105,6 +105,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     int tableLoc;
     Table currTable;
     Boolean treeResisted = false;
+    Map<String, String> takenSubject;
 
     //UsersTableInfo
     //Table UsersTableInfo;
@@ -181,6 +182,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userAccount = documentSnapshot.toObject(UserAccount.class);
+                takenSubject = userAccount.getTakenSubject();
                 init();
             }
         });
@@ -200,14 +202,14 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         값 자체를 변환하기 어려우므로, String 값 자체에 모든 정보를 일괄적으로 넘겨주어 처리합니다.
                         Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.)
                  */
-                //Log.e("###", "현재 데이터 : "+data.toString());
+                Log.e("###", "현재 데이터 : "+data.toString());
                 String[] nodeData = data.toString().split("\\.");
                 //Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
                 viewHolder.mTextView.setText(nodeData[0]);
 
                 viewHolderList[m.get(nodeData[0])] = viewHolder;
 
-                if(nodeData[2].equals("1") && nodeData[2] != null)
+                if(nodeData[2] != null && nodeData[2].equals("1"))
                 {
                     viewHolder.setViewHolderSelected();
                 }
@@ -268,9 +270,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                                 if(tn != null && tn.getParent() == null) {
                                     //루트노드인 경우
                                     currTable.setRoot(nodeData[0]+"."+spinnerItem[position]+"."+nodeData[2]);
+                                    setSubjectInfo(nodeData[0], "." + spinnerItem[position] + "." + nodeData[2]);
                                 }else{
                                     String parentSubjectName = treeNodeList[m.get(curData)].getParent().getData().toString().split("\\.")[0];
                                     currTable.getTable().get(parentSubjectName).put(nodeData[0], "."+spinnerItem[position]+"."+nodeData[2]);
+                                    setSubjectInfo(nodeData[0], "." + spinnerItem[position] + "." + nodeData[2]);
                                 }
                                 userAccount.getTables().set(tableLoc, currTable);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
@@ -333,6 +337,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
                                         tn.setData(currSubjectName+"."+currentSemester+".0");
                                         currTable.setRoot(currSubjectName+"."+currentSemester+".0");
+
+                                        String[] currInfo = getSubjectInfo(currSubjectName).split("\\.");
+                                        currInfo[2] = "0";
+                                        String inputString = currInfo[0] + "." + currInfo[1] + "." + currInfo[2];
+                                        setSubjectInfo(currSubjectName, inputString);
                                     }else{
                                         //안듣 -> 듣
                                         btn_isTaken.setBackgroundResource(R.drawable.button_shape);
@@ -341,6 +350,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
                                         tn.setData(currSubjectName+"."+currentSemester+".1");
                                         currTable.setRoot(currSubjectName+"."+currentSemester+".1");
+
+                                        String[] currInfo = getSubjectInfo(currSubjectName).split("\\.");
+                                        currInfo[2] = "1";
+                                        String inputString = currInfo[0] + "." + currInfo[1] + "." + currInfo[2];
+                                        setSubjectInfo(currSubjectName, inputString);
                                     }
                                 }else{
                                     String parentSubjectName = treeNodeList[m.get(curData)].getParent().getData().toString().split("\\.")[0];
@@ -355,6 +369,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                                         ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
                                         tn.setData(currSubjectName+"."+currentSemester+".0");
                                         currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+currentSemester+".0");
+
+                                        String[] currInfo = getSubjectInfo(currSubjectName).split("\\.");
+                                        currInfo[2] = "0";
+                                        String inputString = currInfo[0] + "." + currInfo[1] + "." + currInfo[2];
+                                        setSubjectInfo(currSubjectName, inputString);
                                     }else{
                                         //안듣 -> 듣
                                         btn_isTaken.setBackgroundResource(R.drawable.button_shape);
@@ -364,6 +383,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                                         ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
                                         tn.setData(currSubjectName+"."+currentSemester+".1");
                                         currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+currentSemester+".1");
+
+                                        String[] currInfo = getSubjectInfo(currSubjectName).split("\\.");
+                                        currInfo[2] = "1";
+                                        String inputString = currInfo[0] + "." + currInfo[1] + "." + currInfo[2];
+                                        setSubjectInfo(currSubjectName, inputString);
                                     }
                                 }
                                 userAccount.getTables().set(tableLoc, currTable);
@@ -410,6 +434,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                     }else{
                         String[] nodeData = parent.getData().toString().split("\\.");
                         currTable.getTable().get(nodeData[0]).remove(curData);
+                        setSubjectInfo(curData, ".1학년 1학기.0");
 
                         userAccount.getTables().set(tableLoc, currTable);
                         db.collection("user").document(mAuth.getUid()).set(userAccount);
@@ -650,13 +675,24 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                     if(tableNames.get(i).equals(tableName)){
                         tableLoc = i;
                         currTable = tables.get(i);
+
+                        // 사용자 수강 정보로 테이블 정보 업데이트 후 시각화 시작.
+                        String[] rootData = currTable.getRoot().split("\\.");
+                        currTable.setRoot(rootData[0] + getSubjectInfo(rootData[0]));
+
+                        for(String currSubject : currTable.getTable().keySet()){
+                            for(String nextSubject : currTable.getTable().get(currSubject).keySet()){
+                                currTable.getTable().get(currSubject).put(nextSubject, getSubjectInfo(nextSubject));
+                            }
+                        }
+                        userAccount.getTables().set(tableLoc, currTable);
+                        db.collection("user").document(mAuth.getUid()).set(userAccount);
+                        //////////////////////////////////////////////////
                         changeToAdj(currTable);
                         break;
                     }
                 }
                 if(currTable == null){
-                    Toast.makeText(getContext(), "트리를 추가해주세요.", Toast.LENGTH_LONG).show();
-
                     subjectChoiceBottomSheetDialog.show();
                     ArrayList<Subject_> searchSubjectList = new ArrayList<>();
                     for(Subject_ subject_ : subjectList){
@@ -680,7 +716,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                                 Map<String, String> line = new HashMap<>();
                                 tb.put(subject_.getName(), line);
                             }
-                            Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+                            Table table;
+                            String rootString = choosedSubjectName + getSubjectInfo(choosedSubjectName);
+                            table = new Table(tb, rootString);
 
                             userAccount.getTableNames().add(tableName);
                             userAccount.getTables().add(table);
@@ -725,8 +763,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                                             Map<String, String> line = new HashMap<>();
                                             tb.put(subject_.getName(), line);
                                         }
-                                        Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
-
+                                        Table table;
+                                        String rootString = choosedSubjectName + getSubjectInfo(choosedSubjectName);
+                                        table = new Table(tb, rootString);
 
                                         userAccount.getTableNames().add(tableName);
                                         userAccount.getTables().add(table);
@@ -885,14 +924,14 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         for (TreeNode tn : treeNodeList) {
                             if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
                                 //UserAccount 정보 업데이트
-                                currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                                currTable.getTable().get(curData).put(choosedSubjectName, getSubjectInfo(choosedSubjectName));
                                 userAccount.getTables().set(tableLoc, currTable);
                                 db.collection("user").document(mAuth.getUid()).set(userAccount);
 
                                 int mappingPos = m.get(choosedSubjectName);
 
                                 //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                                String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                                String convertedSubjectName = choosedSubjectName + getSubjectInfo(choosedSubjectName);
                                 final TreeNode newChild = new TreeNode(convertedSubjectName);
 
                                 //[장준승] 화면 사이즈 node 개수에 비례하여 변화
@@ -917,7 +956,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         Map<String, String> line = new HashMap<>();
                         tb.put(subject_.getName(), line);
                     }
-                    Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+                    Table table = new Table(tb, choosedSubjectName + getSubjectInfo(choosedSubjectName));
 
                     userAccount.getTableNames().add(tableName);
                     userAccount.getTables().add(table);
@@ -966,8 +1005,8 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
                         {
                             //DBG
-                            //UserAccount 정보 업데이트
-                            currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
+                            //사용자 수강 정보 이용해서 노드 추가하기
+                            currTable.getTable().get(curData).put(choosedSubjectName, getSubjectInfo(choosedSubjectName));
                             userAccount.getTables().set(tableLoc, currTable);
                             db.collection("user").document(mAuth.getUid()).set(userAccount);
 
@@ -976,7 +1015,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                             int mappingPos = m.get(choosedSubjectName);
 
                             //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                            String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
+                            String convertedSubjectName = choosedSubjectName + getSubjectInfo(choosedSubjectName);
                             final TreeNode newChild = new TreeNode(convertedSubjectName);
 
                             updateDisplaySize();
@@ -1110,6 +1149,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
             //UserAccount 정보 업데이트
             currTable.getTable().get(currNode).remove(nextNode);
+            setSubjectInfo(nextNode, ".1학년 1학기.0");
 
             userAccount.getTables().set(tableLoc, currTable);
             db.collection("user").document(mAuth.getUid()).set(userAccount);
@@ -1134,14 +1174,6 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             Log.e("###", parentSubjectName+" -> "+currSubjectName+" 으로 픽률 정보 제거를 진행합니다. ");
             //듣고 있는데 안 듣는 것으로 수정하는 경우
             // 수강 한다 -> 수강 안한다
-            //수강 학점 서버에 변경
-            int currTaked = Integer.parseInt(userAccount.getTaked());
-            Log.e("###", "currTaked : " + currTaked);
-            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
-            currTaked -= Integer.parseInt(currSubject_.getScore());
-            Log.e("###", "currTaked : " + currTaked);
-            userAccount.setTaked(Integer.toString(currTaked));
-            db.collection("user").document(mAuth.getUid()).set(userAccount);
 
             Onprogress(getActivity(),"로딩중...");
             docRef = db.collection("UsersTableInfo").document(parentSubjectName);
@@ -1165,18 +1197,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
 
         }else{
             //안 듣고 있는데 듣는 것으로 수정하는 경우
-
             // 수강 한다 -> 수강 안한다
 
             Log.e("###", parentSubjectName+" -> "+currSubjectName+" 으로 픽률 정보 추가를 진행합니다. ");
-            //수강 학점 서버에 변경
-            int currTaked = Integer.parseInt(userAccount.getTaked());
-            Log.e("###", "currTaked : " + currTaked);
-            Subject_ currSubject_ = subjectList.get(m.get(currSubjectName));
-            currTaked += Integer.parseInt(currSubject_.getScore());
-            Log.e("###", "currTaked : " + currTaked);
-            userAccount.setTaked(Integer.toString(currTaked));
-            db.collection("user").document(mAuth.getUid()).set(userAccount);
 
             Onprogress(getActivity(),"로딩중...");
             docRef = db.collection("UsersTableInfo").document(parentSubjectName);
@@ -1200,8 +1223,32 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         }
     }
 
+    public String getSubjectInfo(String subjectName){
+        return takenSubject.get(subjectName);
+    }
+
+    public void setSubjectInfo(String subjectName, String info){
+        takenSubject.put(subjectName, info);
+        userAccount.setTakenSubject(takenSubject);
+        db.collection("user").document(mAuth.getUid()).set(userAccount);
+    }
+
     @Override
     public void onBackPressed() {
+        int sum = 0;
+        for(String subjectName : takenSubject.keySet()){
+            if(takenSubject.get(subjectName).split("\\.")[2].equals("0")) continue;
+            for(int i = 0; i < subjectList.size(); i++){
+                if(subjectList.get(i).getName().equals(subjectName)){
+                    int score = Integer.parseInt(subjectList.get(i).getScore());
+                    sum += score;
+                    break;
+                }
+            }
+        }
+        userAccount.setTaked(Integer.toString(sum));
+        db.collection("user").document(mAuth.getUid()).set(userAccount);
+
         ft.replace(R.id.main_frame, new Fragment1());
         ft.commit();
     }

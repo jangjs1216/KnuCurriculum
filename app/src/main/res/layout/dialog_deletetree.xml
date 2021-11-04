@@ -26,22 +26,30 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="80sp"
         android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:background="@drawable/search_shape"
             android:layout_margin="6dp"
             android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="정말 삭제하시겠습니까?"
                 android:textSize="20sp"
+                android:background="@color/transparent"
+                android:fontFamily="@font/main_font_medium"
+                android:includeFontPadding="false"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(삭제 시 수강 정보가 초기화됩니다.)"
+                android:textSize="15sp"
                 android:background="@color/transparent"
                 android:fontFamily="@font/main_font_medium"
                 android:includeFontPadding="false"/>

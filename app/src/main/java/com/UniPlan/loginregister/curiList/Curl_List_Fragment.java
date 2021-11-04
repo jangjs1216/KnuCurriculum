@@ -68,6 +68,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     Table UsersTableInfo;
     ArrayList<Subject_> subjectList = new ArrayList<>();
     ArrayList<Table> recommendationList = new ArrayList<>();
+    Map<String, String> takenSubject;
 
 
     @Override
@@ -134,6 +135,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 userAccount = documentSnapshot.toObject(UserAccount.class);
+                takenSubject = userAccount.getTakenSubject();
 
                 //      리싸이클러뷰
                 recyclerView = (RecyclerView)view.findViewById(R.id.Recycler_View_Curi_List);
@@ -382,26 +384,38 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     }
 
     public void deleteTreeFromServer(Table table){
+        setSubjectInfo(table.getRoot().split("\\.")[0], ".1학년 1학기.0");
+
         for(String subjectName : table.getTable().keySet()){
-            Map<String, String> line = table.getTable().get(subjectName);
-            for(String lineSubjectName : line.keySet()){
-                if(line.get(lineSubjectName).split("\\.")[2].equals("1")){
-                    int currTaked = Integer.parseInt(userAccount.getTaked());
-                    for(Subject_ subject_ : subjectList){
-                        if(subject_.getName().equals(lineSubjectName)){
-                            currTaked -= Integer.parseInt(subject_.getScore());
-                            userAccount.setTaked(Integer.toString(currTaked));
-                        }
-                    }
-                }
+            for(String lineSubjectName : table.getTable().get(subjectName).keySet()){
+                setSubjectInfo(lineSubjectName, ".1학년 1학기.0");
             }
         }
-        db.collection("UsersTableInfo").document("Matrix").set(UsersTableInfo);
+    }
+
+    public void setSubjectInfo(String subjectName, String info){
+        takenSubject.put(subjectName, info);
+        userAccount.setTakenSubject(takenSubject);
+        db.collection("user").document(mAuth.getUid()).set(userAccount);
     }
 
     //뒤로가기
     @Override
     public void onBackPressed() {
+        int sum = 0;
+        for(String subjectName : takenSubject.keySet()){
+            if(takenSubject.get(subjectName).split("\\.")[2].equals("0")) continue;
+            for(int i = 0; i < subjectList.size(); i++){
+                if(subjectList.get(i).getName().equals(subjectName)){
+                    int score = Integer.parseInt(subjectList.get(i).getScore());
+                    sum += score;
+                    break;
+                }
+            }
+        }
+        userAccount.setTaked(Integer.toString(sum));
+        db.collection("user").document(mAuth.getUid()).set(userAccount);
+
         ft.replace(R.id.main_frame, new Fragment1()).commit();
         //ft.remove(Curl_List_Fragment.this).commit();
         fm.popBackStack();

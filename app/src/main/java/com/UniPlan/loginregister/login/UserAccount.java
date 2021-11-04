@@ -4,6 +4,7 @@ import com.UniPlan.loginregister.Table;
 
 
 import java.util.ArrayList;
+import java.util.Map;
 
 // 사용자 계정 정보 모델 클래스
 public class UserAccount {
@@ -20,11 +21,12 @@ public class UserAccount {
     private String Major;
     private String taked;
     private String basicTableName;
+    private Map<String, String> takenSubject;
 
     public UserAccount() {
     }
 
-    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String major, String taked, String basicTableName) {
+    public UserAccount(String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post, ArrayList<String> mypost, ArrayList<String> subscribed_Post, ArrayList<Table> tables, ArrayList<String> tableNames, ArrayList<String> specs, String major, String taked, String basicTableName, Map<String, String> takenSubject) {
         this.idToken = idToken;
         this.emailId = emailId;
         this.password = password;
@@ -38,6 +40,7 @@ public class UserAccount {
         Major = major;
         this.taked = taked;
         this.basicTableName = basicTableName;
+        this.takenSubject = takenSubject;
     }
 
     public String getIdToken() {
@@ -142,5 +145,13 @@ public class UserAccount {
 
     public void setBasicTableName(String basicTableName) {
         this.basicTableName = basicTableName;
+    }
+
+    public Map<String, String> getTakenSubject() {
+        return takenSubject;
+    }
+
+    public void setTakenSubject(Map<String, String> takenSubject) {
+        this.takenSubject = takenSubject;
     }
 }
