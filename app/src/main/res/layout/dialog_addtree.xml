@@ -25,14 +25,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200sp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50sp"
-            android:orientation="horizontal"
-            android:background="@drawable/search_shape"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_margin="6dp"
             android:gravity="center"
             android:layout_weight="1">
@@ -48,110 +48,111 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="과정 이름"
-                android:layout_marginLeft="5dp"
-                android:background="@color/transparent"
+                android:paddingHorizontal="5sp"
+                android:paddingVertical="3dp"
+                android:background="@drawable/search_shape_white"
                 android:fontFamily="@font/main_font_medium"
                 android:includeFontPadding="false"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150sp"
+                android:orientation="vertical"
+                android:padding="5dp">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="20sp"
+                    android:text="추천 과정"
+                    android:fontFamily="@font/main_font_medium"
+                    android:includeFontPadding="false"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/search_shape_white"
+                    android:layout_margin="6dp"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        app:srcCompat="@drawable/book"
+                        android:layout_marginLeft="5dp"/>
+
+                    <TextView
+                        android:id="@+id/TV1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="반도체"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/transparent"
+                        android:fontFamily="@font/main_font_medium"
+                        android:includeFontPadding="false"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/search_shape_white"
+                    android:layout_margin="6dp"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        app:srcCompat="@drawable/book"
+                        android:layout_marginLeft="5dp"/>
+
+                    <TextView
+                        android:id="@+id/TV2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="통신"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/transparent"
+                        android:fontFamily="@font/main_font_medium"
+                        android:includeFontPadding="false"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/search_shape_white"
+                    android:layout_margin="6dp"
+                    android:gravity="center"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        app:srcCompat="@drawable/book"
+                        android:layout_marginLeft="5dp"/>
+
+                    <TextView
+                        android:id="@+id/TV3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="회로"
+                        android:layout_marginLeft="5dp"
+                        android:background="@color/transparent"
+                        android:fontFamily="@font/main_font_medium"
+                        android:includeFontPadding="false"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="150sp"
-            android:orientation="vertical"
-            android:background="@drawable/recommendation_layout">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="20sp"
-                android:text="추천 과정"
-                android:fontFamily="@font/main_font_medium"
-                android:includeFontPadding="false"
-                android:layout_gravity="center"
-                android:layout_marginTop="2dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/search_shape"
-                android:layout_margin="6dp"
-                android:gravity="center"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="20sp"
-                    android:layout_height="20sp"
-                    app:srcCompat="@drawable/book"
-                    android:layout_marginLeft="5dp"/>
-
-                <TextView
-                    android:id="@+id/TV1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="반도체"
-                    android:layout_marginLeft="5dp"
-                    android:background="@color/transparent"
-                    android:fontFamily="@font/main_font_medium"
-                    android:includeFontPadding="false"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/search_shape"
-                android:layout_margin="6dp"
-                android:gravity="center"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="20sp"
-                    android:layout_height="20sp"
-                    app:srcCompat="@drawable/book"
-                    android:layout_marginLeft="5dp"/>
-
-                <TextView
-                    android:id="@+id/TV2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="통신"
-                    android:layout_marginLeft="5dp"
-                    android:background="@color/transparent"
-                    android:fontFamily="@font/main_font_medium"
-                    android:includeFontPadding="false"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/search_shape"
-                android:layout_margin="6dp"
-                android:gravity="center"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="20sp"
-                    android:layout_height="20sp"
-                    app:srcCompat="@drawable/book"
-                    android:layout_marginLeft="5dp"/>
-
-                <TextView
-                    android:id="@+id/TV3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="회로"
-                    android:layout_marginLeft="5dp"
-                    android:background="@color/transparent"
-                    android:fontFamily="@font/main_font_medium"
-                    android:includeFontPadding="false"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
 
