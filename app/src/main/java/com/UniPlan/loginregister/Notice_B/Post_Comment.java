@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,10 +22,12 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -120,6 +123,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     Table userTableInfo;
     TreeNode rootNode;
 
+    // [ 장준승 ] 트리 크게보기
+    Button btn_window_treeview;
+
     //크기 유동적 변화 구현
     ViewHolder[] viewHolderList;
     private int displaySize = 500;
@@ -128,6 +134,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private int displayWidthMargin = 1200;
     private int displayHeightMargin = 600;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +154,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
         likeText = (TextView) findViewById(R.id.like_text);                 //좋아요 개수 보여주는 텍스트
         zoomLayout = (ZoomLayout) findViewById(R.id.post_zoomlayout);
         mCommentRecyclerView = findViewById(R.id.comment_recycler);         //코멘트 리사이클러뷰
+        btn_window_treeview = findViewById(R.id.btn_window_treeview);
         Intent intent = getIntent();//데이터 전달받기
         forum_sort = getIntent().getExtras().getString("forum_sort");
         post_id = intent.getStringExtra("post_id");
@@ -158,6 +166,20 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(String s) {
                 token = s;
+            }
+        });
+
+        /* [ 장준승 ] 이중 스크롤 방지 */
+        NestedScrollView NestView = findViewById(R.id.NestView);
+        zoomLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                Log.e("###", "스크롤바 움직임");
+                if (event.getAction() == MotionEvent.ACTION_UP)
+                    NestView.requestDisallowInterceptTouchEvent(false);
+                else
+                    NestView.requestDisallowInterceptTouchEvent(true);
+                return false;
             }
         });
 
@@ -303,7 +325,18 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-
+        // [ 장준승 ] 트리뷰 크게보기 구현
+        btn_window_treeview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(mcontext, Post_Treeview.class);
+                it.putExtra("forum_sort", forum_sort);
+                it.putExtra("post_id", post_id);
+                it.putExtra("writerID", writer_id_post);
+                it.putExtra("writerNickname", com_nick.getText().toString());
+                startActivity(it);//게시글 수정
+            }
+        });
 
         swipeRefreshLayout = findViewById(R.id.refresh_commnet);
 

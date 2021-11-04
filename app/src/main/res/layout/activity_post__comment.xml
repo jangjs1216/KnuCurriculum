@@ -41,6 +41,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/NestView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fillViewport="true"
@@ -201,7 +202,7 @@
                     <com.otaliastudios.zoom.ZoomLayout
                         android:id="@+id/post_zoomlayout"
                         android:layout_width="300sp"
-                        android:layout_height="300sp"
+                        android:layout_height="200sp"
                         android:scrollbars="vertical|horizontal"
                         android:layout_gravity="center"
                         app:transformation="centerInside"
@@ -224,9 +225,19 @@
                         app:maxZoomType="zoom"
                         app:animationDuration="280"
                         app:hasClickableChildren="true"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        android:nestedScrollingEnabled="false">
 
                     </com.otaliastudios.zoom.ZoomLayout>
+
+                    <Button
+                        android:id="@+id/btn_window_treeview"
+                        android:layout_width="35sp"
+                        android:layout_height="35sp"
+                        android:background="@drawable/ic_baseline_crop_free_24"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="30sp"
+                        android:layout_marginBottom="10sp"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

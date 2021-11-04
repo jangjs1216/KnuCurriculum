@@ -15,13 +15,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoginRegister">
         <activity
-            android:name=".Intro.SplashActivity"
-            android:screenOrientation="portrait"
+            android:name=".Notice_B.Post_Treeview"
             android:exported="true" />
         <activity
+            android:name=".Intro.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Licenses"
-            android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Notice_B.Image_zoom"
             android:exported="true"
