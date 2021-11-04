@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.push_alram.Alarm;
@@ -21,19 +22,26 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import de.blox.treeview.TreeNode;
 
 public class RegisterActivity extends AppCompatActivity {
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private EditText mEtEmail, mEtPwd,mEtPwd2,enick; // 회원가입 입력필드
     private TextView mBtnRegister; // 회원가입 버튼
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private String retVal;
+    ArrayList<Subject_> subjectList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,13 +98,32 @@ public class RegisterActivity extends AppCompatActivity {
                                 String major = "", taked = "";
                                 ArrayList<Alarm> alarms = new ArrayList<>();
                                 Alarms alarmdata = new Alarms(alarms);
-                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, retVal, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null);
-                                mStore.collection("user").document(user.getUid()).set(userAccount);
-                                mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
-                                finish();
+                                Map<String, String> takenSubject = new HashMap<>();
+
+                                db.collection("Subject")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        subjectList.add(document.toObject(Subject_.class));
+                                                    }
+                                                } else {
+                                                }
+                                                for(Subject_ subject_ : subjectList){
+                                                    takenSubject.put(subject_.getName(), ".1학년 1학기.0");
+                                                }
+
+                                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, retVal, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null, takenSubject);
+                                                mStore.collection("user").document(user.getUid()).set(userAccount);
+                                                mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
+                                                finish();
 
 
-                                Toast.makeText(RegisterActivity.this, "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this, "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                             } else {
                                 Toast.makeText(RegisterActivity.this, "회원가입에 실패하셨습니다", Toast.LENGTH_SHORT).show();
                             }
