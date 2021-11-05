@@ -182,7 +182,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/main_font_regular"
                                 android:includeFontPadding="false"
-                                android:text="개설학기: " />
+                                android:text="개설여부: " />
 
                             <TextView
                                 android:id="@+id/openTV"
@@ -198,6 +198,58 @@
                                 android:layout_weight="1"
                                 android:fontFamily="@font/main_font_regular"
                                 android:includeFontPadding="false" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false"
+                                android:text="선수과목: " />
+
+                            <TextView
+                                android:id="@+id/recpPre"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/main_font_bold"
+                                android:includeFontPadding="false" />
+
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/main_font_regular"
+                                android:includeFontPadding="false"
+                                android:text="후수과목: " />
+
+                            <TextView
+                                android:id="@+id/recoPost"
+                               android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/main_font_bold"
+                                android:includeFontPadding="false" />
+
+
 
                         </LinearLayout>
 

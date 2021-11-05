@@ -397,6 +397,7 @@ public class Post_Update extends AppCompatActivity {
                 linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                 postAddTreeRV.setLayoutManager(linearLayoutManager);
                 arrayList = new ArrayList<>();
+
                 for(String tableName : userAccount.getTableNames()){
                     Recycler_Data recycler_data = new Recycler_Data(tableName);
                     arrayList.add(recycler_data);

@@ -3,6 +3,7 @@ package com.UniPlan.loginregister;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -58,6 +59,8 @@ public class Fragment1 extends Fragment {
     private ArrayList<User_Info_Data> specs;
     private View btn_lang,btn_cert,btn_award,btn_extra,view;
     private ImageView setting;
+    private ConstraintLayout cur_layout;
+    private int layout_height;
     BottomNavigationView bottomNavigationView;
 
     @Override
@@ -75,6 +78,10 @@ public class Fragment1 extends Fragment {
         btn_extra = view.findViewById(R.id.btn_frag1_extra);
         setting = view.findViewById(R.id.frag1_setting);
         curi_recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+        cur_layout=(ConstraintLayout)view.findViewById(R.id.cur_layout);
+
+        layout_height = cur_layout.getMeasuredHeight();
+
         curi_linearLayoutManager = new LinearLayoutManager(getContext()){
             @Override
             public boolean canScrollVertically(){

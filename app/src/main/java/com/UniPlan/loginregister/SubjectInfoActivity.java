@@ -45,7 +45,7 @@ public class SubjectInfoActivity extends AppCompatActivity {
     BottomSheetDialog commentAddDialog,commentReviseDialog;
     Subject_ subject_;
     String subjectName;
-    TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname;
+    TextView nameTV, codeTV, semesterTV, gradeTV, openTV,totalsc,Pickname,recoPost, recoPre;
     RatingBar Totalrating;
     TabLayout tabLayout;
     NestedScrollView scrollView;
@@ -74,7 +74,8 @@ public class SubjectInfoActivity extends AppCompatActivity {
         scrollView = (NestedScrollView)findViewById(R.id.scrollId);
         picksubjectList=(RecyclerView)findViewById(R.id.Pick_subjectRecyclerView);
         Pickname = (TextView) findViewById(R.id.Pick_title);
-
+        recoPost =(TextView)findViewById(R.id.recoPost);
+        recoPre = (TextView)findViewById(R.id.recpPre);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -119,6 +120,11 @@ public class SubjectInfoActivity extends AppCompatActivity {
                 semesterTV.setText( subject_.getSemester()+"-"+ subject_.getGrade()+"학기");
                 if(subject_.getOpen() == true) openTV.setText("YES");
                 else openTV.setText("NO");
+
+                recoPost.setText(subject_.getRecoPost());
+                recoPre.setText(subject_.getRecoPre());
+
+
 
                 ArrayList<SubjectComment> subjectComments = subject_.getComments();
 

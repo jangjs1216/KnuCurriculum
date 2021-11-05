@@ -3,6 +3,7 @@ package com.UniPlan.loginregister.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +53,7 @@ public class CurriculumAdapter extends RecyclerView.Adapter<CurriculumAdapter.Cu
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
         protected TextView tv_title;
+        protected LinearLayout cur_item;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.tv_title = (TextView) itemView.findViewById(R.id.tv_curri_name);

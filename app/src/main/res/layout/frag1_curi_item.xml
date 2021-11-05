@@ -28,14 +28,14 @@
             android:id="@+id/choiceIV"
             android:layout_width="25sp"
             android:layout_height="25sp"
-            android:src="@drawable/pencil"
+            app:srcCompat="@drawable/pencil"
             android:layout_weight="1"/>
 
         <ImageView
             android:id="@+id/deleteIV"
             android:layout_width="25sp"
             android:layout_height="25sp"
-            android:src="@drawable/trashcan"
+            app:srcCompat="@drawable/trashcan"
             android:layout_weight="1"/>
 
     </LinearLayout>
