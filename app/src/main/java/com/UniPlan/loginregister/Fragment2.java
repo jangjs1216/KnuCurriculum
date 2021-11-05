@@ -633,6 +633,17 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                             }
                         } else {
                         }
+                        /*
+                        픽률 테이블 초기화 코드
+                        for(Subject_ subject_ : subjectList){
+                            Map<String, String> l = new HashMap<>();
+                            for(Subject_ subject_1 : subjectList){
+                                l.put(subject_1.getName(), "0");
+                            }
+                            Line line = new Line(l, subject_.getName());
+                            db.collection("UsersTableInfo").document(line.getRoot()).set(line);
+                        }*/
+
                         Log.e("###", "개수 : " + Integer.toString(subjectList.size()));
                         treeNodeList = new TreeNode[subjectList.size()];
 

@@ -65,7 +65,6 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     Dialog deleteTreeDialog;
     private FragmentManager fm;
     private FragmentTransaction ft;
-    Table UsersTableInfo;
     ArrayList<Subject_> subjectList = new ArrayList<>();
     ArrayList<Table> recommendationList = new ArrayList<>();
     Map<String, String> takenSubject;
@@ -120,15 +119,6 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                         }
                     }
                 });
-
-        //UsersTableInfo 처음에만 받아오고 후에 변화할땐 저장만 해주면 됨.
-        docRef = db.collection("UsersTableInfo").document("Matrix");
-        docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                UsersTableInfo = documentSnapshot.toObject(Table.class);
-            }
-        });
 
         docRef = db.collection("user").document(mAuth.getUid());
         docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
