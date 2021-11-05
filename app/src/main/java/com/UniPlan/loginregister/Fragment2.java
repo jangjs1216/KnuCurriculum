@@ -145,6 +145,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         actionBar.setDisplayHomeAsUpEnabled(true);
         //툴바끝
 
+        //BottomNavigation 띄우기
+        ((MainActivity)MainActivity.maincontext).setvisibleNavi(false);
+
         //과목 갯수
         int subjectNumber = 200;
         viewHolderList = new ViewHolder[subjectNumber];
@@ -1260,8 +1263,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         userAccount.setTaked(Integer.toString(sum));
         db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-        ft.replace(R.id.main_frame, new Fragment1());
-        ft.commit();
+        ft.replace(R.id.main_frame, new Fragment1()).commit();
+        //ft.remove(Curl_List_Fragment.this).commit();
+        fm.popBackStack();
     }
 
     public void onPause() {
