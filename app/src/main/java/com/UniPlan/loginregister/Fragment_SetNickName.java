@@ -2,6 +2,7 @@ package com.UniPlan.loginregister;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -18,8 +19,11 @@ import android.widget.Toast;
 
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.login.UserAccount;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
@@ -44,6 +48,32 @@ public class Fragment_SetNickName extends Fragment {
         tv_confirm = view.findViewById(R.id.tv_confirm);
 
         userAccount = new UserAccount();
+        mStore.collection("user").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                userAccount = task.getResult().toObject(UserAccount.class);
+                //닉네임설정시작
+                tv_confirm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String curNick=et_nickname.getText().toString();
+                        Log.e("###",curNick);
+                        if(curNick!=null&&curNick.length()!=0){
+                            Log.e(TAG, "닉네임입력완료");
+                            ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
+                            userAccount.setNickname(curNick);
+                            Log.e("Setnickname", String.valueOf(curNick));
+                            mStore.collection("user").document(mAuth.getUid()).set(userAccount);
+
+                            ft.replace(R.id.main_frame,new Fragment1()).commit();
+                        }
+                        else{
+                            Toast.makeText(getActivity(),"닉네임을 입력해주세요.",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
         toolbar = (Toolbar)view.findViewById(R.id.tb_setNickname);
         ((MainActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
@@ -55,27 +85,7 @@ public class Fragment_SetNickName extends Fragment {
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
 
-        //닉네임설정시작
-        tv_confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String curNick=et_nickname.getText().toString();
-                Log.e("###",curNick);
-                if(curNick!=null&&curNick.length()!=0){
-                    Log.e(TAG, "닉네임입력완료");
-                    ((MainActivity) getActivity()).bottomNavigationView.setVisibility(View.VISIBLE);
-                    userAccount = ((MainActivity)getActivity()).getUserAccount();
-                    userAccount.setNickname(curNick);
-                    Log.e("Setnickname", String.valueOf(curNick));
-                    mStore.collection("user").document(mAuth.getUid()).set(userAccount);
 
-                    ft.replace(R.id.main_frame,new Fragment1()).commit();
-                }
-                else{
-                    Toast.makeText(getActivity(),"닉네임을 입력해주세요.",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         return view;
     }
 }

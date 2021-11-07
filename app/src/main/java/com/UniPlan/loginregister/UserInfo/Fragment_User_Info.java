@@ -25,8 +25,11 @@ import com.UniPlan.loginregister.SettingsFragment;
 import com.UniPlan.loginregister.login.LogoutActivity;
 import com.UniPlan.loginregister.login.UserAccount;
 import com.UniPlan.loginregister.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
@@ -89,12 +92,19 @@ public class Fragment_User_Info extends Fragment implements MainActivity.IOnBack
         ((MainActivity) getActivity()).setBackPressedlistener(this);
 
 
-        userAccount = ((MainActivity)getActivity()).getUserAccount();
-        tv_userName.setText(userAccount.getNickname());
+        mStore.collection("user").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                userAccount = task.getResult().toObject(UserAccount.class);
+                tv_userName.setText(userAccount.getNickname());
+                tv_major.setText(userAccount.getMajor());
+                tv_taked.setText(userAccount.getTaked());
+            }
+        });
+
         tv_major=view.findViewById(R.id.tv_major);
         tv_taked=view.findViewById(R.id.tv_taked);
-        tv_major.setText(userAccount.getMajor());
-        tv_taked.setText(userAccount.getTaked());
+
         ft2.add(R.id.fragment_setting_container,new SettingsFragment()).commit();
         //상단 제목바꾸기 프래그먼트별로 설정 및 커스텀 및 안보이게 가능- 안승재
         toolbar = (Toolbar)view.findViewById(R.id.tb_user_info);

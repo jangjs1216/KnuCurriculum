@@ -66,10 +66,17 @@ public class Fragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         view=inflater.inflate(R.layout.fragment_1, container, false);
         tv_taked = view.findViewById(R.id.tv_taked);
         tv_major = view.findViewById(R.id.tv_major);
-        userAccount = ((MainActivity)getActivity()).getUserAccount();
+        mStore.collection("user").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                userAccount = task.getResult().toObject(UserAccount.class);
+            }
+        });
+
         treeMore=view.findViewById(R.id.treeMore);
         specMore = view.findViewById(R.id.tv_specmore);
         btn_lang = view.findViewById(R.id.btn_frag1_lang);

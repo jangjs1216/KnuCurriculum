@@ -258,10 +258,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
     }
