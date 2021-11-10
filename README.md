@@ -30,4 +30,4 @@
 **Curriculum Visualization** : 장준승(jangjs1216) / 최정인(rmfotjanj1234)<br>
 **Bulletin Board** : 박경무(rudan8256) / 손종하(thswhdgk)<br>
 **Notice** : 안승재(sonbe8704)<br>
-**Design** : 강지혜()<br>
+**Design** : 강지혜(Yellowtoast)<br>

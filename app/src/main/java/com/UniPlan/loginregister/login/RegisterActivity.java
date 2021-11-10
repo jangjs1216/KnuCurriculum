@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import de.blox.treeview.TreeNode;
 
@@ -48,6 +50,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        Pattern pattern= Patterns.EMAIL_ADDRESS;
+
         mFirebaseAuth=FirebaseAuth.getInstance();
         mEtEmail=findViewById(R.id.et_email);
         mEtPwd=findViewById(R.id.et_pwd);
@@ -63,6 +67,18 @@ public class RegisterActivity extends AppCompatActivity {
                 String strPwd1=mEtPwd.getText().toString();
                 String strPwd2=mEtPwd2.getText().toString();
                 String nickname=enick.getText().toString();
+
+                if(!pattern.matcher(strEmail).matches())
+                {
+                    Toast.makeText(RegisterActivity.this,"이메일 형식이 아닙니다",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(strPwd1.length()<6)
+                {
+                    Toast.makeText(RegisterActivity.this,"비밀번호는 6자리 이상 입력해주세요",Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if(strPwd1.equals(strPwd2) && !TextUtils.isEmpty(nickname)) {
                     //Firebase Auth 진행
