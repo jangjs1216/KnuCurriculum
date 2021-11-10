@@ -241,11 +241,11 @@ public class MainActivity extends AppCompatActivity {
                                 if(user_nick!=null&&user_nick.length()!=0) {
                                     Log.e(TAG, "닉네임받아오기성공 - "+user_nick);
                                     bottomNavigationView.setVisibility(View.VISIBLE);
-                                    getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commit();
+                                    getSupportFragmentManager().beginTransaction().add(R.id.main_frame, new Fragment1()).commitAllowingStateLoss();
                                 }
                                 else{
                                     Log.e(TAG,"닉네임없음");
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new Fragment_SetNickName()).commit();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.main_frame,new Fragment_SetNickName()).commitAllowingStateLoss();
                                 }
                             }
                             else Log.e(TAG,"계정정보받아오기좆버그");

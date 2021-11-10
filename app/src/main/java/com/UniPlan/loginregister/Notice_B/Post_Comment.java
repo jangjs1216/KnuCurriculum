@@ -276,6 +276,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
                 if (isTreeExist.equals("yes")) {
                     zoomLayout.setVisibility(View.VISIBLE);
+                    btn_window_treeview.setVisibility(View.VISIBLE);
                     adapter = new BaseTreeAdapter<ViewHolder>(getApplicationContext(), R.layout.node) {
                         @NonNull
                         @Override
