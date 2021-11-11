@@ -19,7 +19,7 @@
             android:fontFamily="@font/main_font_medium"
             android:includeFontPadding="false"
             android:textSize="16sp"
-            android:text="과목 추가"/>
+            android:text="과목 선택"/>
 
     </LinearLayout>
 

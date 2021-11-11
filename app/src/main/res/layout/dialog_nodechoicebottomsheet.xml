@@ -98,12 +98,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/black"
             android:fontFamily="@font/main_font_regular"
-            android:includeFontPadding="false"
             android:gravity="center_vertical"
-            android:textSize="15sp"
-            android:text="과목 삭제"/>
+            android:includeFontPadding="false"
+            android:text="과목 삭제"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
 
     </LinearLayout>
 
@@ -128,6 +128,30 @@
             android:gravity="center_vertical"
             android:textSize="15sp"
             android:text="과목 상세 정보"/>
+
+    </LinearLayout>
+
+    <!-- 구분선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F0F0F0"/>
+
+    <LinearLayout
+        android:id="@+id/LL4"
+        android:layout_width="match_parent"
+        android:layout_height="40sp"
+        android:layout_marginLeft="20sp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:fontFamily="@font/main_font_regular"
+            android:includeFontPadding="false"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:text="과목 변경"/>
 
     </LinearLayout>
 

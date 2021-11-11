@@ -187,7 +187,7 @@ public class Fragment4 extends Fragment {
         subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {
-                String choosedSubjectName = subjectList.get(pos).getName();
+                String choosedSubjectName = search_subjectList.get(pos).getName();
                 Intent intent = new Intent(getContext(),SubjectInfoActivity.class);
                 intent.putExtra("subjectName",choosedSubjectName);
                 startActivity(intent);

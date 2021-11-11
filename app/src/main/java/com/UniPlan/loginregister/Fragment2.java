@@ -205,7 +205,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         값 자체를 변환하기 어려우므로, String 값 자체에 모든 정보를 일괄적으로 넘겨주어 처리합니다.
                         Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.)
                  */
-                Log.e("###", "현재 데이터 : "+data.toString());
+                //Log.e("###", "현재 데이터 : "+data.toString());
                 String[] nodeData = data.toString().split("\\.");
                 //Log.e("###", "변환된 데이터 : ["+nodeData[0]+"] ["+nodeData[1]+"] ["+nodeData[2]+"]");
                 viewHolder.mTextView.setText(nodeData[0]);
@@ -402,9 +402,11 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         LinearLayout LL1 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL1);
                         LinearLayout LL2 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL2);
                         LinearLayout LL3 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL3);
+                        LinearLayout LL4 = nodeChoiceBottomSheetDialog.findViewById(R.id.LL4);
                         LL1.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL2.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                         LL3.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
+                        LL4.setOnClickListener(nodeChoiceBottomSheetOnClickListener);
                     }
                 });
             }
@@ -465,74 +467,20 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                     startActivity(intent);
                     nodeChoiceBottomSheetDialog.dismiss();
                     break;
+                case R.id.LL4: //과목 변경 기능
+                    nodeChoiceBottomSheetDialog.dismiss();
+                    // [장준승] BottomSheetDialog 를 사용하기 이전에 Listener를 업데이트 해 줍니다.
+                    makeRVBySubjectList_LL4();
+                    subjectChoiceBottomSheetDialog.show();
+/*
+                    parent = treeNodeList[m.get(curData)].getParent();
+                    if(parent == null){ //루트 노드인 경우
 
-//                case R.id.LL4:
-//                    SubjectDetailDialog sDialog = new SubjectDetailDialog(v.getContext(), curData);
-//                    sDialog.setDialogListener(new SubjectDetailDialog.CustomDialogListener() {
-//                        @Override
-//                        public void onReturnClicked(Boolean isTakenClass, String TakenSemester) {
-//                            String currSubjectName = (String) curViewHolder.mTextView.getText();
-//                            Log.e("###", "버튼 클릭됨");
-//
-//                            for(TreeNode tn : treeNodeList)
-//                            {
-//                                // [장준승] rootnode 예외 처리
-//                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]) && tn.getParent() == null)
-//                                {
-//                                    if(isTakenClass)
-//                                    {
-//                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
-//                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
-//                                    }else{
-//                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
-//                                        currTable.setRoot(currSubjectName+"."+TakenSemester+".1");
-//                                    }
-//                                    userAccount.getTables().set(tableLoc, currTable);
-//                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-//                                    break;
-//                                }
-//
-//                                if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
-//                                    String parentSubjectName = tn.getParent().getData().toString().split("\\.")[0];
-//                                    String currLinkInfo = currTable.getTable().get(parentSubjectName).get(currSubjectName);
-//
-//                                    Boolean isChecked = false;
-//
-//                                    if (currLinkInfo != null && currLinkInfo.split("\\.")[2].equals("1"))
-//                                    {
-//                                        isChecked = true;
-//                                    }
-//
-//                                    if(isTakenClass)
-//                                    {
-//                                        // 안듣 -> 듣
-//                                        if(!isChecked) {
-//                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, false);
-//                                        }
-//
-//                                        tn.setData(currSubjectName+"."+TakenSemester+".1");
-//                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".1");
-//                                    }else{
-//                                        //듣 -> 안듣
-//                                        if(isChecked)
-//                                        {
-//                                            ChangeMatrixToServer(parentSubjectName, currSubjectName, true);
-//                                        }
-//                                        tn.setData(currSubjectName+"."+TakenSemester+".0");
-//                                        currTable.getTable().get(parentSubjectName).put(currSubjectName, "."+TakenSemester+".0");
-//                                    }
-//                                    userAccount.getTables().set(tableLoc, currTable);
-//                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                    });
-//                    nodeChoiceBottomSheetDialog.dismiss();
-//                    sDialog.setCancelable(false);
-//                    sDialog.show();
-//
-//                    break;
+                    }
+                    else{ //루트 노드가 아닌 경우
+
+                    }*/
+                    break;
             }
         }
     };
@@ -1047,91 +995,204 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
             }
         });
     }
-    
-    //노드추가에서 검색 버튼 클릭 리스너
-    View.OnClickListener searchTVOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ArrayList<Subject_> searchSubjectList = new ArrayList<>();
-            for(Subject_ subject_ : subjectList){
-                if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+
+    // LL4(과목 변경) 눌렀을 때 띄울 BottomSheetDialog
+    public void makeRVBySubjectList_LL4(){
+        //과목 리스트 볼 수 있는 BottomSheetDialog
+        subjectChoiceBottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.NewDialog);
+        subjectChoiceBottomSheetDialog.setContentView(R.layout.dialog_subjectchoicebottomsheet);
+        subjectChoiceBottomSheetDialog.setCanceledOnTouchOutside(true);
+
+        noSearching_LL4();
+
+        searchET = subjectChoiceBottomSheetDialog.findViewById(R.id.searchET);
+        searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event)
+            {
+                switch (actionId)
+                {
+                    case IME_ACTION_SEARCH :
+                        inputMethodManager.hideSoftInputFromWindow(searchET.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        searching_LL4();
+                        break;
+                }
+                return true;
             }
-            subjectAdapter = new SubjectAdapter(searchSubjectList);
-            subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            subjectRecyclerView.setAdapter(subjectAdapter);
+        });
 
-            //RecyclerView에서 선택된 아이템에 접근
-            subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(View v, int pos) {
-                    if(currTable != null){
-                        String choosedSubjectName = searchSubjectList.get(pos).getName();
-                        Boolean isSubjectOverlapped = false;
+        searchET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                        Log.e("###", choosedSubjectName + " 선택 됨..");
+            }
 
-                        // [ 장준승 ] 노드 중복 방지
-                        for(TreeNode tn : treeNodeList)
-                        {
-                            if(tn != null && choosedSubjectName.equals(tn.getData().toString().split("\\.")[0]))
-                            {
-                                Toast.makeText(getContext(), "이미 선택된 과목입니다",Toast.LENGTH_LONG).show();
-                                isSubjectOverlapped = true;
-                                break;
-                            }
-                        }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0){
+                    cancelIV.setVisibility(View.INVISIBLE);
+                    noSearching_LL4();
+                }
+                else{
+                    cancelIV.setVisibility(View.VISIBLE);
+                    searching_LL4();
+                }
+            }
 
-                        if(!isSubjectOverlapped) {
-                            for (TreeNode tn : treeNodeList) {
-                                if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
-                                    //UserAccount 정보 업데이트
-                                    currTable.getTable().get(curData).put(choosedSubjectName, ".1학년 1학기.0");
-                                    userAccount.getTables().set(tableLoc, currTable);
-                                    db.collection("user").document(mAuth.getUid()).set(userAccount);
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                                    int mappingPos = m.get(choosedSubjectName);
+            }
+        });
 
-                                    //[장준승] 위의 규칙에 맞게 SubjectName을 변환합니다.
-                                    String convertedSubjectName = choosedSubjectName + ".1학년 1학기.0";
-                                    final TreeNode newChild = new TreeNode(convertedSubjectName);
+        cancelIV = subjectChoiceBottomSheetDialog.findViewById(R.id.cancelIV);
+        cancelIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchET.setText("");
+            }
+        });
+    }
 
-                                    //[장준승] 화면 사이즈 node 개수에 비례하여 변화
-                                    updateDisplaySize();
-                                    Log.e("###", "Current displaySize : " + displaySize);
+    public void searching_LL4(){
+        ArrayList<Subject_> searchSubjectList = new ArrayList<>();
+        for(Subject_ subject_ : subjectList){
+            if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
+        }
+        subjectAdapter = new SubjectAdapter(searchSubjectList);
+        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        subjectRecyclerView.setAdapter(subjectAdapter);
 
-                                    adj[m.get(curData)].add(mappingPos);
-                                    treeNodeList[mappingPos] = newChild;
-                                    tn.addChild(newChild);
-                                    break;
+        //RecyclerView에서 선택된 아이템에 접근
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String choosedSubjectName = searchSubjectList.get(pos).getName();
+                Boolean isSubjectOverlapped = false;
+
+                // [ 장준승 ] 노드 중복 방지
+                for(TreeNode tn : treeNodeList)
+                {
+                    if(tn != null && choosedSubjectName.equals(tn.getData().toString().split("\\.")[0]))
+                    {
+                        Toast.makeText(getContext(), "이미 선택된 과목입니다",Toast.LENGTH_LONG).show();
+                        isSubjectOverlapped = true;
+                        break;
+                    }
+                }
+
+                if(!isSubjectOverlapped) {
+                    for (TreeNode tn : treeNodeList) {
+                        if (tn != null && curData.equals(tn.getData().toString().split("\\.")[0])) {
+                            String subjectInfo = userAccount.getTakenSubject().get(choosedSubjectName);
+
+                            TreeNode parent = treeNodeList[m.get(curData)].getParent();
+                            if(parent == null){ //루트 노드인 경우
+                                currTable.setRoot(choosedSubjectName + subjectInfo);
+                                for(String inRoot : currTable.getTable().get(curData).keySet()){
+                                    subjectInfo = userAccount.getTakenSubject().get(inRoot);
+                                    Map<String, String> tempMap = new HashMap<>();
+                                    tempMap.put(inRoot, subjectInfo);
+                                    currTable.getTable().put(choosedSubjectName, tempMap);
                                 }
+                                currTable.getTable().get(curData).clear();
                             }
+                            else{ //루트 노드가 아닌 경우
+                                String parentName = parent.getData().toString().split("\\.")[0];
+                                currTable.getTable().get(parentName).remove(curData);
+                                currTable.getTable().get(parentName).put(choosedSubjectName, subjectInfo);
+
+                                Map<String, String> tempMap = new HashMap<>();
+                                for(String inRoot : currTable.getTable().get(curData).keySet()){
+                                    Log.e("###", "inRoot" + inRoot);
+                                    subjectInfo = userAccount.getTakenSubject().get(inRoot);
+                                    tempMap.put(inRoot, subjectInfo);
+                                }
+                                currTable.getTable().put(choosedSubjectName, tempMap);
+                                currTable.getTable().get(curData).clear();
+                            }
+                            userAccount.getTables().set(tableLoc, currTable);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            break;
                         }
                     }
-                    else {
-                        treeResisted = true;
-                        String choosedSubjectName = searchSubjectList.get(pos).getName();
-                        Log.e("###", choosedSubjectName + " 선택 됨");
+                }
 
-                        Map<String, Map<String, String>> tb = new HashMap<>();
-                        for (Subject_ subject_ : subjectList) {
-                            Map<String, String> line = new HashMap<>();
-                            tb.put(subject_.getName(), line);
-                        }
-                        Table table = new Table(tb, choosedSubjectName + ".1학년 1학기.0");
+                subjectChoiceBottomSheetDialog.dismiss();
+            }
+        });
+    }
 
-                        userAccount.getTableNames().add(tableName);
-                        userAccount.getTables().add(table);
-                        db.collection("user").document(mAuth.getUid()).set(userAccount);
+    public void noSearching_LL4(){
+        subjectAdapter = new SubjectAdapter(subjectList);
+        subjectRecyclerView = subjectChoiceBottomSheetDialog.findViewById(R.id.subjectChoiceRecyclerView);
+        subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        subjectRecyclerView.setAdapter(subjectAdapter);
 
-                        //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
-                        getTableFromFB();
+        //RecyclerView에서 선택된 아이템에 접근
+        subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int pos) {
+                String choosedSubjectName = subjectList.get(pos).getName();
+                Boolean isSubjectOverlapped = false;
+
+                Log.e("###", choosedSubjectName + " 선택 됨#########");
+
+                // [ 장준승 ] 노드 중복 방지
+                for(TreeNode tn : treeNodeList)
+                {
+                    if(tn != null && choosedSubjectName.equals(tn.getData().toString().split("\\.")[0]))
+                    {
+                        Toast.makeText(getContext(), "이미 선택된 과목입니다",Toast.LENGTH_LONG).show();
+                        isSubjectOverlapped = true;
+                        break;
                     }
+                }
 
+                // choosedSubjectName이 중복되지 않으면 과목을 추가합니다.
+                if(!isSubjectOverlapped)
+                {
+                    for(TreeNode tn : treeNodeList)
+                    {
+                        if(tn != null && curData.equals(tn.getData().toString().split("\\.")[0]))
+                        {
+                            String subjectInfo = userAccount.getTakenSubject().get(choosedSubjectName);
+
+                            TreeNode parent = treeNodeList[m.get(curData)].getParent();
+                            if(parent == null){ //루트 노드인 경우
+                                currTable.setRoot(choosedSubjectName + subjectInfo);
+                                for(String inRoot : currTable.getTable().get(curData).keySet()){
+                                    subjectInfo = userAccount.getTakenSubject().get(inRoot);
+                                    Map<String, String> tempMap = new HashMap<>();
+                                    tempMap.put(inRoot, subjectInfo);
+                                    currTable.getTable().put(choosedSubjectName, tempMap);
+                                }
+                                currTable.getTable().get(curData).clear();
+                            }
+                            else{ //루트 노드가 아닌 경우
+                                String parentName = parent.getData().toString().split("\\.")[0];
+                                currTable.getTable().get(parentName).remove(curData);
+                                currTable.getTable().get(parentName).put(choosedSubjectName, subjectInfo);
+
+                                Map<String, String> tempMap = new HashMap<>();
+                                for(String inRoot : currTable.getTable().get(curData).keySet()){
+                                    Log.e("###", "inRoot" + inRoot);
+                                    subjectInfo = userAccount.getTakenSubject().get(inRoot);
+                                    tempMap.put(inRoot, subjectInfo);
+                                }
+                                currTable.getTable().put(choosedSubjectName, tempMap);
+                                currTable.getTable().get(curData).clear();
+                            }
+                            userAccount.getTables().set(tableLoc, currTable);
+                            db.collection("user").document(mAuth.getUid()).set(userAccount);
+                            break;
+                        }
+                    }
                     subjectChoiceBottomSheetDialog.dismiss();
                 }
-            });
-        }
-    };
+            }
+        });
+    }
 
     // DB 바탕으로 트리 노드 삭제
     public void deleteTreeFromDB(String currNode){
