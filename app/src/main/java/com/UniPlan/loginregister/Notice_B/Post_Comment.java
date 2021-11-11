@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.UniPlan.loginregister.ImageViewpager;
 import com.UniPlan.loginregister.MainActivity;
 import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
@@ -58,6 +59,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.protobuf.StringValue;
 import com.otaliastudios.zoom.ZoomLayout;
 
 import java.text.SimpleDateFormat;
@@ -109,7 +111,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private Post post;
     private ArrayList<String > image_urllist;
     private MultiImageAdapter photoadapter;
-    private ArrayList<Uri> uriList = new ArrayList<>();
+    private ArrayList<Uri> uriList = new ArrayList<Uri>();
     private RecyclerView photo_list;
 
     // [ 장준승 ] TreeView 바로 보이도록 구현
@@ -201,6 +203,8 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
 
         docRef = mStore.collection(forum_sort).document(post_id);
 
+
+        //사진들 올리기 [박경무]\
         mStore.collection(forum_sort).document(post_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -257,8 +261,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void onItemClick(View v, int pos) {
 
-                                        Intent intent=new Intent(Post_Comment.this,Image_zoom.class);
-                                        intent.putExtra("uri",uriList.get(pos));
+                                        Intent intent=new Intent(Post_Comment.this, ImageViewpager.class);
+                                        intent.putExtra("uri",uriList);
+                                        intent.putExtra("uri_Num", String.valueOf(pos));
                                         startActivity(intent);
                                     }
                                 });

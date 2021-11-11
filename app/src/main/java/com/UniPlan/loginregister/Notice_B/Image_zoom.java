@@ -33,6 +33,7 @@ public class Image_zoom extends AppCompatActivity {
 //        btn_store=findViewById(R.id.btn_store);
         zoom_image=findViewById(R.id.zoom_image);
         image_url=getIntent().getParcelableExtra("uri");
+
         if (image_url != null) {
 
             Glide.with(Image_zoom.this).load(image_url).into(zoom_image);
