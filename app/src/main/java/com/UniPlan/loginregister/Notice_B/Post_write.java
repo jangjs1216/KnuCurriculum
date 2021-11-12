@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -183,9 +184,11 @@ public class Post_write extends AppCompatActivity {
         post_tree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addTreeDialog = new Dialog(Post_write.this);
+                addTreeDialog = new Dialog(Post_write.this, R.style.AddTreeDialog);
                 addTreeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 addTreeDialog.setContentView(R.layout.dialog_postaddtree);
+                addTreeDialog.setCanceledOnTouchOutside(true);
+                addTreeDialog.getWindow().setGravity(Gravity.CENTER);
                 showDialog();
             }
         });
