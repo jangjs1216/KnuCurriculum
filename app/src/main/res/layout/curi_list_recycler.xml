@@ -14,18 +14,18 @@
         android:gravity="center">
 
         <TextView
-            android:id="@+id/tv_curri_name"
+            android:id="@+id/choiceTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="6"
             android:padding="15dp"
             android:text="커리큘럼 이름"
             android:textColor="@color/black"
-            android:textSize="25sp"
-            android:layout_weight="6"/>
+            android:textSize="25sp" />
 
         <ImageView
-            android:id="@+id/choiceIV"
+            android:id="@+id/changeIV"
             android:layout_width="25sp"
             android:layout_height="25sp"
             android:src="@drawable/pencil"

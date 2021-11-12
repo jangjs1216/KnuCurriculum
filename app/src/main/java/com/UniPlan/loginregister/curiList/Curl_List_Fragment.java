@@ -63,6 +63,7 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
     private Toolbar toolbar;
     Dialog addTreeDialog;
     Dialog deleteTreeDialog;
+    Dialog changeNameDialog;
     private FragmentManager fm;
     private FragmentTransaction ft;
     ArrayList<Subject_> subjectList = new ArrayList<>();
@@ -155,6 +156,9 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                             transaction.replace(R.id.main_frame, fragment2);
                             transaction.commit();
                         }
+                        if(option.equals("change")){
+                            showChangeNameDialog(pos);
+                        }
                         if(option.equals("delete")){
                             showDeleteTreeDialog(pos);
                         }
@@ -169,6 +173,13 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
         addTreeDialog.setContentView(R.layout.dialog_addtree);
         addTreeDialog.setCanceledOnTouchOutside(true);
         addTreeDialog.getWindow().setGravity(Gravity.CENTER);
+        
+        //트리 이름 변경 다이얼로그
+        changeNameDialog = new Dialog(getContext(), R.style.ChangeNameDialog);
+        changeNameDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        changeNameDialog.setContentView(R.layout.dialog_changename);
+        changeNameDialog.setCanceledOnTouchOutside(true);
+        changeNameDialog.getWindow().setGravity(Gravity.CENTER);
 
         //트리 삭제 다이얼로그
         deleteTreeDialog = new Dialog(getContext(), R.style.DeleteTreeDialog);
@@ -363,12 +374,48 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
                 userAccount.getTableNames().remove(pos);
                 userAccount.getTables().remove(pos);
                 db.collection("user").document(userAccount.getIdToken()).set(userAccount);
-                Toast.makeText(getContext(), deleteTreeName + "을 삭제했습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), deleteTreeName + "을(를) 삭제했습니다.", Toast.LENGTH_SHORT).show();
 
                 arrayList.remove(pos);
                 ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
                 recycler_adapter.notifyDataSetChanged();
                 deleteTreeDialog.dismiss();
+            }
+        });
+    }
+
+    public void showChangeNameDialog(int pos) {
+        changeNameDialog.show();
+
+        String beforeName = userAccount.getTableNames().get(pos);
+        EditText treeNameET = changeNameDialog.findViewById(R.id.treeNameET);
+        TextView noTV = changeNameDialog.findViewById(R.id.noTV);
+        TextView yesTV = changeNameDialog.findViewById(R.id.yesTV);
+        noTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeNameDialog.dismiss();
+            }
+        });
+        yesTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newName = treeNameET.getText().toString();
+
+                if(checkName(newName)){
+                    Toast.makeText(getContext(), "이미 존재하는 이름입니다.", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    userAccount.getTableNames().set(pos, newName);
+                    db.collection("user").document(userAccount.getIdToken()).set(userAccount);
+                    Toast.makeText(getContext(), beforeName + "을(를) " + newName + "으로 변경했습니다.", Toast.LENGTH_SHORT).show();
+                    Recycler_Data recycler_data = arrayList.get(pos);
+                    recycler_data.setTv_title(newName);
+                    arrayList.set(pos, recycler_data);
+                    ((MainActivity)getActivity()).setArrayList_curiList(arrayList);
+                    recycler_adapter.notifyDataSetChanged();
+                    changeNameDialog.dismiss();
+                }
             }
         });
     }
@@ -387,6 +434,13 @@ public class Curl_List_Fragment extends Fragment implements MainActivity.IOnBack
         takenSubject.put(subjectName, info);
         userAccount.setTakenSubject(takenSubject);
         db.collection("user").document(mAuth.getUid()).set(userAccount);
+    }
+
+    public boolean checkName(String newName){
+        for(String treeName : userAccount.getTableNames()){
+            if(newName.equals(treeName)) return true;
+        }
+        return false;
     }
 
     //뒤로가기

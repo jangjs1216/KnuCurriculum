@@ -33,7 +33,7 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
 
     @Override
     public void onBindViewHolder(@NonNull Recycler_Adapter.CustomViewHolder holder, int position) {
-        holder.tv_title.setText(arrayList.get(position).getTv_title());
+        holder.choiceTV.setText(arrayList.get(position).getTv_title());
         holder.itemView.setTag(position);
     }
 
@@ -52,12 +52,12 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder {
-        protected TextView tv_title;
-        protected ImageView choiceIV, deleteIV;
+        protected TextView choiceTV;
+        protected ImageView changeIV, deleteIV;
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.tv_title = (TextView) itemView.findViewById(R.id.tv_curri_name);
-            this.choiceIV = (ImageView) itemView.findViewById(R.id.choiceIV);
+            this.choiceTV = (TextView) itemView.findViewById(R.id.choiceTV);
+            this.changeIV = (ImageView) itemView.findViewById(R.id.changeIV);
             this.deleteIV = (ImageView) itemView.findViewById(R.id.deleteIV);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +66,17 @@ public class Recycler_Adapter extends RecyclerView.Adapter<Recycler_Adapter.Cust
                     int pos = getAdapterPosition() ;
                     if (pos != RecyclerView.NO_POSITION) {
                         if(mListener != null){
-                            choiceIV.setOnClickListener(new View.OnClickListener() {
+                            choiceTV.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     mListener.onItemClick(v, pos, "choice");
+                                }
+                            });
+
+                            changeIV.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mListener.onItemClick(v, pos, "change");
                                 }
                             });
 
