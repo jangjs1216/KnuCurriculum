@@ -125,6 +125,9 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     //로딩
     private AppCompatDialog progressDialog;
 
+    //프래그먼트 새로고침용
+    Fragment refreshFragment;
+
     /*
     [20210807] 장준승 Fragment2 시각화 구현
      */
@@ -133,6 +136,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.fragment_2, container, false);
+        refreshFragment = this;
         fm=getActivity().getSupportFragmentManager();
         ft=fm.beginTransaction();
         //툴바 시작
@@ -1118,6 +1122,21 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                     }
                 }
 
+                // [장준승] 새로고침을 위해 프래그먼트 리로딩
+                FragmentTransaction tempft = fm.beginTransaction();
+                Log.e("###", "For refresh : "+refreshFragment.toString());
+                tempft.detach(refreshFragment);
+                //tempft.attach(refreshFragment);
+
+                Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+
+                Fragment2 refreshFragment2 = new Fragment2();
+                refreshFragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+
+                tempft.replace(R.id.main_frame, refreshFragment2);
+                tempft.commitAllowingStateLoss();
+
                 subjectChoiceBottomSheetDialog.dismiss();
             }
         });
@@ -1188,6 +1207,22 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                             break;
                         }
                     }
+
+                    // [장준승] 새로고침을 위해 프래그먼트 리로딩
+                    FragmentTransaction tempft = fm.beginTransaction();
+                    Log.e("###", "For refresh : "+refreshFragment.toString());
+                    tempft.detach(refreshFragment);
+                    //tempft.attach(refreshFragment);
+
+                    Bundle bundle = new Bundle(); // 번들을 통해 값 전달
+                    bundle.putString("tableName", tableName);//번들에 넘길 값 저장
+
+                    Fragment2 refreshFragment2 = new Fragment2();
+                    refreshFragment2.setArguments(bundle);//번들을 프래그먼트2로 보낼 준비
+
+                    tempft.replace(R.id.main_frame, refreshFragment2);
+                    tempft.commitAllowingStateLoss();
+
                     subjectChoiceBottomSheetDialog.dismiss();
                 }
             }
@@ -1324,7 +1359,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
         userAccount.setTaked(Integer.toString(sum));
         db.collection("user").document(mAuth.getUid()).set(userAccount);
 
-        ft.replace(R.id.main_frame, new Fragment1()).commit();
+        ft.replace(R.id.main_frame, new Fragment1()).commitAllowingStateLoss();
         //ft.remove(Curl_List_Fragment.this).commit();
         fm.popBackStack();
     }
