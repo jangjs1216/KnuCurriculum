@@ -103,7 +103,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
     private CardView cv_image;
     public static Context mcontext;
     public boolean Compared_c = true;
-    private ArrayList<String> subs, Liked = new ArrayList<>();
+    private ArrayList<String> subs, Liked,myposts = new ArrayList<>();
     private Menu menu;
     private MenuItem subscribe;
     private String photoUrl, uid, post_id, writer_id_post, current_user,  isTreeExist,token;
@@ -295,7 +295,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                 [장준승] treenode에 정보를 업데이트 할 때, 오픈소스의 특성상 textview의
                         값 자체를 변환하기 어려우므로, String 값 자체에 모든 정보를 일괄적으로 넘겨주어 처리합니다.
 
-                        Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.)
+                        Ex) 논리회로.1학년 1학기.1 (논리회로를 1학년 1학기에 듣고, 선택되었다.
                  */
 
                             String[] nodeData = data.toString().split("\\.");
@@ -386,6 +386,9 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                 current_user = (String) task.getResult().getData().get(FirebaseID.documentId);
 
                                 Liked = (ArrayList<String>) task.getResult().getData().get(FirebaseID.Liked);
+
+                                //게시글삭제시 사용부분
+                                myposts = (ArrayList<String>) task.getResult().getData().get("mypost");
 
                                 if (Liked != null) {
 
@@ -608,6 +611,23 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
             case R.id.action_btn_delete:
                 if (mAuth.getCurrentUser().getUid().equals(writer_id_post)) {
 
+                    if (myposts.contains(post_id)) {
+                        int pos=myposts.indexOf(post_id);
+
+                        myposts.remove(pos);
+
+
+                       DocumentReference del_documentref = mStore.collection("user").document(mAuth.getCurrentUser().getUid());
+
+                       del_documentref.update("mypost",myposts).addOnSuccessListener(new OnSuccessListener<Void>() {
+                           @Override
+                           public void onSuccess(Void unused) {
+
+                           }
+                       });
+
+                    }
+
                     mStore.collection(forum_sort).document(post_id)
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -617,6 +637,7 @@ public class Post_Comment extends AppCompatActivity implements View.OnClickListe
                                     finish();
                                 }
                             });
+
                 } else {
                     Toast.makeText(this, "작성자가 아닙니다.", Toast.LENGTH_SHORT).show();
                 }
