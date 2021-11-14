@@ -659,6 +659,7 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                     }
                 }
                 if(currTable == null){
+                    Toast.makeText(getContext(), "커리큘럼 시작과목을 선택해주세요.", Toast.LENGTH_SHORT).show();
                     subjectChoiceBottomSheetDialog.show();
                     ArrayList<Subject_> searchSubjectList = new ArrayList<>();
                     for(Subject_ subject_ : subjectList){
@@ -706,47 +707,10 @@ public class Fragment2 extends Fragment implements MainActivity.IOnBackPressed{
                         public void onDismiss(DialogInterface dialog) {
                             Log.e("###", "dismiss" + treeResisted.toString());
                             if(treeResisted == false){
-                                subjectChoiceBottomSheetDialog.show();
-                                ArrayList<Subject_> searchSubjectList = new ArrayList<>();
-                                for(Subject_ subject_ : subjectList){
-                                    if(subject_.getName().contains(searchET.getText().toString())) searchSubjectList.add(subject_);
-                                }
-                                subjectAdapter = new SubjectAdapter(searchSubjectList);
-                                subjectRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                subjectRecyclerView.setAdapter(subjectAdapter);
-
-                                //DBG
-                                //RecyclerView에서 선택된 아이템에 접근
-                                subjectAdapter.setOnItemListener(new SubjectAdapter.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(View v, int pos) {
-                                        treeResisted = true;
-                                        String choosedSubjectName = searchSubjectList.get(pos).getName();
-                                        Log.e("###", choosedSubjectName + " 선택 됨");
-
-                                        Map<String, Map<String, String>> tb = new HashMap<>();
-                                        for(Subject_ subject_ : subjectList){
-                                            Map<String, String> line = new HashMap<>();
-                                            tb.put(subject_.getName(), line);
-                                        }
-                                        Table table;
-                                        String rootString = choosedSubjectName + getSubjectInfo(choosedSubjectName);
-                                        table = new Table(tb, rootString);
-
-                                        userAccount.getTableNames().add(tableName);
-                                        userAccount.getTables().add(table);
-
-                                        Log.e("###", "트리 추가 " + tableName);
-                                        db.collection("user").document(mAuth.getUid()).set(userAccount);
-
-                                        //테이블 만들어서 넣어줬으니까 여기서부터 다시 시작
-
-                                        getTableFromFB();
-
-                                        subjectChoiceBottomSheetDialog.dismiss();
-                                    }
-
-                                });
+                                Toast.makeText(getContext(), "커리큘럼 생성을 취소합니다.", Toast.LENGTH_SHORT).show();
+                                Curl_List_Fragment curl_list_fragment = new Curl_List_Fragment();
+                                ft.replace(R.id.main_frame, curl_list_fragment);
+                                ft.commit();
                             }
                         }
                     });

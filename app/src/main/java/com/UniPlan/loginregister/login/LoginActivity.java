@@ -64,7 +64,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         if(PreferencesManager.getAccount(LoginActivity.this).length()!=0)
         {
-            Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
             Intent intent=new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -102,7 +101,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             PreferencesManager.storeAccount(LoginActivity.this,mAuth.getUid());
                         }
                         Log.e("Login","로그인성공");
-                        Toast.makeText(LoginActivity.this,"로그인 성공",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
