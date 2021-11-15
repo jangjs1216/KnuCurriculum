@@ -1,5 +1,7 @@
 package com.UniPlan.loginregister.login;
 
+import static com.UniPlan.loginregister.login.FirebaseID.user;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.UniPlan.loginregister.Notice_B.Post;
 import com.UniPlan.loginregister.Subject_;
 import com.UniPlan.loginregister.Table;
 import com.UniPlan.loginregister.R;
@@ -22,6 +25,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -43,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView mBtnRegister; // 회원가입 버튼
     private FirebaseFirestore mStore = FirebaseFirestore.getInstance();
     private String retVal;
+    private DatabaseReference mDatabase;
     ArrayList<Subject_> subjectList = new ArrayList<>();
 
     @Override
@@ -58,6 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
         mEtPwd2=findViewById(R.id.et_pwd2);
         mBtnRegister=findViewById(R.id.btn_register);
         enick=findViewById(R.id.et_nick);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +89,66 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
+                mStore.collection("user")
+                        .whereEqualTo("nickname", nickname)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(RegisterActivity.this,"사용할 수 없는 닉네임입니다",Toast.LENGTH_SHORT).show();
+                                    return;
+                                } else {
+                                    mFirebaseAuth.createUserWithEmailAndPassword(strEmail, retVal).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if(task.isSuccessful()) {
+                                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                                                //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
+                                                ArrayList<String> liked_Post = new ArrayList<>();
+                                                ArrayList<String> Mypost = new ArrayList<>();
+                                                ArrayList<Table> tables = new ArrayList<>();
+                                                ArrayList<String> tableNames = new ArrayList<>();
+                                                ArrayList<String> Subscribed= new ArrayList<>();
+                                                ArrayList<String> specs = new ArrayList<>();
+                                                String major = "", taked = "";
+                                                ArrayList<Alarm> alarms = new ArrayList<>();
+                                                Alarms alarmdata = new Alarms(alarms);
+                                                Map<String, String> takenSubject = new HashMap<>();
+
+                                                db.collection("Subject")
+                                                        .get()
+                                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                        subjectList.add(document.toObject(Subject_.class));
+                                                                    }
+                                                                } else {
+                                                                }
+                                                                for(Subject_ subject_ : subjectList){
+                                                                    takenSubject.put(subject_.getName(), ".1학년 1학기.0");
+                                                                }
+
+                                                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, retVal, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null, takenSubject);
+                                                                mStore.collection("user").document(user.getUid()).set(userAccount);
+                                                                mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
+                                                                finish();
+
+
+                                                                Toast.makeText(RegisterActivity.this, "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, "회원가입에 실패하셨습니다", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
                 if(strPwd1.equals(strPwd2) && !TextUtils.isEmpty(nickname)) {
                     //Firebase Auth 진행
                     MessageDigest md= null;
@@ -98,53 +167,6 @@ public class RegisterActivity extends AppCompatActivity {
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
-
-                    mFirebaseAuth.createUserWithEmailAndPassword(strEmail, retVal).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()) {
-                                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                                //String idToken, String emailId, String password, String nickname, ArrayList<String> liked_Post
-                                ArrayList<String> liked_Post = new ArrayList<>();
-                                ArrayList<String> Mypost = new ArrayList<>();
-                                ArrayList<Table> tables = new ArrayList<>();
-                                ArrayList<String> tableNames = new ArrayList<>();
-                                ArrayList<String> Subscribed= new ArrayList<>();
-                                ArrayList<String> specs = new ArrayList<>();
-                                String major = "", taked = "";
-                                ArrayList<Alarm> alarms = new ArrayList<>();
-                                Alarms alarmdata = new Alarms(alarms);
-                                Map<String, String> takenSubject = new HashMap<>();
-
-                                db.collection("Subject")
-                                        .get()
-                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        subjectList.add(document.toObject(Subject_.class));
-                                                    }
-                                                } else {
-                                                }
-                                                for(Subject_ subject_ : subjectList){
-                                                    takenSubject.put(subject_.getName(), ".1학년 1학기.0");
-                                                }
-
-                                                UserAccount userAccount = new UserAccount(user.getUid(),  strEmail, retVal, nickname, liked_Post, Mypost, Subscribed, tables, tableNames, specs, "0", "0", null, takenSubject);
-                                                mStore.collection("user").document(user.getUid()).set(userAccount);
-                                                mStore.collection("Alarm").document(user.getUid()).set(alarmdata);
-                                                finish();
-
-
-                                                Toast.makeText(RegisterActivity.this, "회원가입에 성공하셨습니다", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            } else {
-                                Toast.makeText(RegisterActivity.this, "회원가입에 실패하셨습니다", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
                 }
                 else if(!TextUtils.isEmpty(nickname)){
                     Toast.makeText(RegisterActivity.this, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show();
