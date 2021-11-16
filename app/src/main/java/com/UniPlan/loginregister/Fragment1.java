@@ -1,5 +1,6 @@
 package com.UniPlan.loginregister;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.UniPlan.loginregister.Intro.SplashActivity;
 import com.UniPlan.loginregister.R;
 import com.UniPlan.loginregister.UserInfo.Fragment_UserSpec;
 import com.UniPlan.loginregister.UserInfo.Fragment_User_Info;
@@ -59,6 +61,7 @@ public class Fragment1 extends Fragment {
     private ArrayList<User_Info_Data> specs;
     private View btn_lang,btn_cert,btn_award,btn_extra,view;
     private ImageView setting;
+    private ImageView help;
     private ConstraintLayout cur_layout;
     private int layout_height;
     BottomNavigationView bottomNavigationView;
@@ -84,6 +87,7 @@ public class Fragment1 extends Fragment {
         btn_award = view.findViewById(R.id.btn_frag1_award);
         btn_extra = view.findViewById(R.id.btn_frag1_extra);
         setting = view.findViewById(R.id.frag1_setting);
+        help = view.findViewById(R.id.frag1_help);
         curi_recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
         cur_layout=(ConstraintLayout)view.findViewById(R.id.cur_layout);
 
@@ -174,6 +178,13 @@ public class Fragment1 extends Fragment {
                 ft.replace(R.id.main_frame, new Fragment_User_Info());
                 ft.commit();
                 ((MainActivity)MainActivity.maincontext).setvisibleNavi(true);
+            }
+        });
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent it = new Intent(getContext(), SplashActivity.class);
+                startActivity(it);
             }
         });
         specMore.setOnClickListener(new View.OnClickListener() {
