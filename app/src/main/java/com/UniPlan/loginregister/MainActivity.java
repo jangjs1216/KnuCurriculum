@@ -281,8 +281,6 @@ public class MainActivity extends AppCompatActivity {
         bottom_alarm.setIcon(ic_baseline_notifications_24);
     }
 
-
-
     public void Onprogress(Activity activity,String message){
 
         if (activity == null || activity.isFinishing()) {
